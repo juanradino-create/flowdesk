@@ -1,0 +1,5 @@
+{
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/flowdesk-v2.html" }
+  ]
+}
