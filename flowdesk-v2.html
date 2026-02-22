@@ -1,0 +1,2176 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Flowdesk</title>
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body style="margin:0">
+  <div id="root"></div>
+  <script type="text/babel" data-presets="react">
+    const { useState, useEffect } = React;
+
+    // Lucide icons inline
+    const iconProps = (size=24) => ({ width: size, height: size, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 2, strokeLinecap: "round", strokeLinejoin: "round" });
+    const Plus = ({size=24,className=""}) => <svg {...iconProps(size)} className={className}><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>;
+    const ChevronDown = ({size=24,className=""}) => <svg {...iconProps(size)} className={className}><polyline points="6 9 12 15 18 9"/></svg>;
+    const ChevronRight = ({size=24,className=""}) => <svg {...iconProps(size)} className={className}><polyline points="9 18 15 12 9 6"/></svg>;
+    const Eye = ({size=24,className=""}) => <svg {...iconProps(size)} className={className}><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>;
+    const Edit2 = ({size=24,className=""}) => <svg {...iconProps(size)} className={className}><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>;
+    const Check = ({size=24,className=""}) => <svg {...iconProps(size)} className={className}><polyline points="20 6 9 17 4 12"/></svg>;
+    const X = ({size=24,className=""}) => <svg {...iconProps(size)} className={className}><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>;
+    const Trash2 = ({size=24,className=""}) => <svg {...iconProps(size)} className={className}><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>;
+    const FileText = ({size=24,className=""}) => <svg {...iconProps(size)} className={className}><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>;
+    const Paperclip = ({size=24,className=""}) => <svg {...iconProps(size)} className={className}><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>;
+    const Download = ({size=24,className=""}) => <svg {...iconProps(size)} className={className}><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>;
+    const Share2 = ({size=24,className=""}) => <svg {...iconProps(size)} className={className}><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>;
+    const Image = ({size=24,className=""}) => <svg {...iconProps(size)} className={className}><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>;
+    const File = ({size=24,className=""}) => <svg {...iconProps(size)} className={className}><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>;
+    const Music = ({size=24,className=""}) => <svg {...iconProps(size)} className={className}><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>;
+    const User = ({size=24,className=""}) => <svg {...iconProps(size)} className={className}><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>;
+    const Users = ({size=24,className=""}) => <svg {...iconProps(size)} className={className}><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>;
+    const Filter = ({size=24,className=""}) => <svg {...iconProps(size)} className={className}><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>;
+    const Mic = ({size=24,className=""}) => <svg {...iconProps(size)} className={className}><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>;
+
+const ProjectManager = () => {
+  const [currentUser, setCurrentUser] = useState(null);
+  const [showLogin, setShowLogin] = useState(true);
+  const [loginName, setLoginName] = useState('');
+  const [loginEmail, setLoginEmail] = useState('');
+  const [loginRole, setLoginRole] = useState('team');
+  
+  const [projects, setProjects] = useState([]);
+  const [isListening, setIsListening] = useState(false);
+  const [voiceError, setVoiceError] = useState('');
+  const [lastVoiceCommand, setLastVoiceCommand] = useState('');
+  const [viewMode, setViewMode] = useState('work');
+  const [filterMode, setFilterMode] = useState('all');
+  const [expandedProjects, setExpandedProjects] = useState({});
+  const [showAddProject, setShowAddProject] = useState(false);
+  const [newProjectName, setNewProjectName] = useState('');
+  const [addingObjectiveTo, setAddingObjectiveTo] = useState(null);
+  const [newObjectiveName, setNewObjectiveName] = useState('');
+  const [addingSubObjectiveTo, setAddingSubObjectiveTo] = useState(null);
+  const [newSubObjectiveName, setNewSubObjectiveName] = useState('');
+  const [editingNotes, setEditingNotes] = useState(null);
+  const [noteText, setNoteText] = useState('');
+  const [assigningTo, setAssigningTo] = useState(null);
+  const [showHistory, setShowHistory] = useState(null);
+  const [teamMembers, setTeamMembers] = useState([]);
+  const [settingDependency, setSettingDependency] = useState(null);
+  const [showTeamPanel, setShowTeamPanel] = useState(false);
+  const [newMemberName, setNewMemberName] = useState('');
+  const [newMemberEmail, setNewMemberEmail] = useState('');
+  const [newMemberRole, setNewMemberRole] = useState('team');
+  const [managingAccessFor, setManagingAccessFor] = useState(null);
+  const [confirmDialog, setConfirmDialog] = useState(null);
+  // confirmDialog = { message, onConfirm }
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [seenNotifications, setSeenNotifications] = useState(() => {
+    try { return JSON.parse(localStorage.getItem('seenNotifications') || '[]'); }
+    catch { return []; }
+  });
+  const [clientComment, setClientComment] = useState('');
+  const [editingClientComment, setEditingClientComment] = useState(null);
+
+  useEffect(() => {
+    const savedUser = localStorage.getItem('currentUser');
+    if (savedUser) {
+      const user = JSON.parse(savedUser);
+      setCurrentUser(user);
+      setShowLogin(false);
+      if (user.role === 'client') setViewMode('client');
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!currentUser) return;
+    loadData();
+  }, [currentUser]);
+
+  const loadData = async () => {
+    try {
+      const projectsData = localStorage.getItem('flowdesk-projects');
+      if (projectsData) setProjects(JSON.parse(projectsData));
+      
+      const membersData = localStorage.getItem('flowdesk-members');
+      if (membersData) setTeamMembers(JSON.parse(membersData));
+    } catch (error) {
+      console.log('No hay datos previos');
+    }
+  };
+
+  const saveData = async (data) => {
+    try {
+      localStorage.setItem('flowdesk-projects', JSON.stringify(data));
+    } catch (error) {
+      console.error('Error guardando:', error);
+    }
+  };
+
+  const saveTeamMembers = async (members) => {
+    try {
+      localStorage.setItem('flowdesk-members', JSON.stringify(members));
+    } catch (error) {
+      console.error('Error guardando miembros:', error);
+    }
+  };
+
+  const handleLogin = () => {
+    if (!loginName.trim() || !loginEmail.trim()) {
+      alert('Por favor completa todos los campos');
+      return;
+    }
+    
+    const user = {
+      name: loginName,
+      email: loginEmail.trim(),
+      id: Date.now(),
+      joinedAt: new Date().toISOString(),
+      role: loginRole
+    };
+    
+    // Check if this email is already registered with a role
+    const existingMember = teamMembers.find(m => m.email === loginEmail.trim());
+    const resolvedRole = existingMember?.role || loginRole;
+    const finalUser = { ...user, role: resolvedRole };
+
+    setCurrentUser(finalUser);
+    localStorage.setItem('currentUser', JSON.stringify(finalUser));
+    setShowLogin(false);
+    if (resolvedRole === 'client') setViewMode('client');
+    
+    // Siempre actualizar/agregar el usuario actual en la lista de miembros
+    const updatedMembers = [
+      ...teamMembers.filter(m => m.email !== loginEmail),
+      user
+    ];
+    setTeamMembers(updatedMembers);
+    saveTeamMembers(updatedMembers);
+  };
+
+  // Lista de miembros para asignación: siempre incluye al usuario actual
+  const getNotifications = () => {
+    if (currentUser?.role === 'client') return [];
+    const notes = [];
+    projects.forEach(project => {
+      project.objectives.forEach(obj => {
+        // Client comments on objectives
+        if (obj.clientComment) {
+          notes.push({
+            id: `comment-obj-${obj.id}`,
+            projectName: project.name,
+            text: `💬 Comentario en "${obj.name}"`,
+            detail: obj.clientComment,
+            type: 'comment'
+          });
+        }
+        // Client approvals tracked in history
+        const approvals = (obj.history || []).filter(h => h.action === 'client_approved');
+        approvals.forEach(a => {
+          notes.push({
+            id: `approval-obj-${obj.id}-${a.id}`,
+            projectName: project.name,
+            text: `✅ "${obj.name}" aprobado por cliente`,
+            detail: `Aprobado el ${new Date(a.timestamp).toLocaleDateString('es-ES')}`,
+            type: 'approval'
+          });
+        });
+        obj.subObjectives?.forEach(sub => {
+          if (sub.clientComment) {
+            notes.push({
+              id: `comment-sub-${sub.id}`,
+              projectName: project.name,
+              text: `💬 Comentario en tarea "${sub.name}"`,
+              detail: sub.clientComment,
+              type: 'comment'
+            });
+          }
+          const subApprovals = (sub.history || []).filter(h => h.action === 'client_approved');
+          subApprovals.forEach(a => {
+            notes.push({
+              id: `approval-sub-${sub.id}-${a.id}`,
+              projectName: project.name,
+              text: `✅ Tarea "${sub.name}" aprobada por cliente`,
+              detail: `Aprobado el ${new Date(a.timestamp).toLocaleDateString('es-ES')}`,
+              type: 'approval'
+            });
+          });
+        });
+      });
+    });
+    return notes;
+  };
+
+  const getDueDateStatus = (dueDate, status) => {
+    if (!dueDate || status === 'completed') return null;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const due = new Date(dueDate);
+    const diffDays = Math.ceil((due - today) / (1000 * 60 * 60 * 24));
+    if (diffDays < 0) return { label: `Vencida hace ${Math.abs(diffDays)} día${Math.abs(diffDays) !== 1 ? 's' : ''}`, color: 'text-red-600 bg-red-50 border-red-200' };
+    if (diffDays === 0) return { label: 'Vence hoy', color: 'text-orange-600 bg-orange-50 border-orange-200' };
+    if (diffDays <= 3) return { label: `Vence en ${diffDays} día${diffDays !== 1 ? 's' : ''}`, color: 'text-yellow-600 bg-yellow-50 border-yellow-200' };
+    return { label: `Vence ${new Date(dueDate).toLocaleDateString('es-ES', { day: '2-digit', month: 'short' })}`, color: 'text-gray-500 bg-gray-50 border-gray-200' };
+  };
+
+  const markNotificationSeen = (id) => {
+    const updated = [...new Set([...seenNotifications, id])];
+    setSeenNotifications(updated);
+    localStorage.setItem('seenNotifications', JSON.stringify(updated));
+  };
+
+  const markAllSeen = () => {
+    const notifs = getNotifications();
+    const allIds = notifs.map(n => n.id);
+    const updated = [...new Set([...seenNotifications, ...allIds])];
+    setSeenNotifications(updated);
+    localStorage.setItem('seenNotifications', JSON.stringify(updated));
+  };
+
+  const isPreviousCompleted = (objective, subId) => {
+    const idx = objective.subObjectives.findIndex(s => s.id === subId);
+    if (idx <= 0) return true;
+    return objective.subObjectives[idx - 1].status === 'completed';
+  };
+
+  const getAssignableMembers = () => {
+    if (!currentUser) return teamMembers;
+    const alreadyIn = teamMembers.some(m => m.email === currentUser.email);
+    if (alreadyIn) return teamMembers;
+    return [currentUser, ...teamMembers];
+  };
+
+  const handleLogout = () => {
+    setCurrentUser(null);
+    localStorage.removeItem('currentUser');
+    setShowLogin(true);
+  };
+
+  const addManualMember = () => {
+    if (!newMemberName.trim() || !newMemberEmail.trim()) return;
+    const exists = teamMembers.some(m => m.email === newMemberEmail.trim());
+    if (exists) {
+      alert('Ya existe un miembro con ese email');
+      return;
+    }
+    const newMember = {
+      name: newMemberName.trim(),
+      email: newMemberEmail.trim(),
+      id: Date.now(),
+      joinedAt: new Date().toISOString(),
+      manual: true,
+      role: newMemberRole
+    };
+    const updated = [...teamMembers, newMember];
+    setTeamMembers(updated);
+    saveTeamMembers(updated);
+    setNewMemberName('');
+    setNewMemberEmail('');
+    setNewMemberRole('team');
+  };
+
+  const removeMember = (memberId) => {
+    const member = teamMembers.find(m => m.id === memberId);
+    setConfirmDialog({
+      message: `¿Eliminar a ${member?.name} del equipo?`,
+      onConfirm: () => _doRemoveMember(memberId)
+    });
+    return;
+  };
+  const _doRemoveMember = (memberId) => {
+    const updated = teamMembers.filter(m => m.id !== memberId);
+    setTeamMembers(updated);
+    saveTeamMembers(updated);
+  };
+
+  const approveTask = (projectId, objectiveId, subObjectiveId = null) => {
+    let newProjects = projects.map(p => {
+      if (p.id !== projectId) return p;
+      return {
+        ...p,
+        objectives: p.objectives.map(o => {
+          if (o.id !== objectiveId) return o;
+          if (subObjectiveId) {
+            return {
+              ...o,
+              subObjectives: o.subObjectives.map(s =>
+                s.id === subObjectiveId ? { ...s, status: 'in-progress' } : s
+              )
+            };
+          }
+          return { ...o, status: 'in-progress' };
+        })
+      };
+    });
+    newProjects = addHistoryEntry(newProjects, projectId, objectiveId, subObjectiveId, 'client_approved', 'Aprobado por el cliente');
+    setProjects(newProjects);
+    saveData(newProjects);
+  };
+
+  const saveClientComment = (projectId, objectiveId, subObjectiveId = null, comment) => {
+    const newProjects = projects.map(p => {
+      if (p.id !== projectId) return p;
+      return {
+        ...p,
+        objectives: p.objectives.map(o => {
+          if (o.id !== objectiveId) return o;
+          if (subObjectiveId) {
+            return {
+              ...o,
+              subObjectives: o.subObjectives.map(s =>
+                s.id === subObjectiveId ? { ...s, clientComment: comment } : s
+              )
+            };
+          }
+          return { ...o, clientComment: comment };
+        })
+      };
+    });
+    setProjects(newProjects);
+    saveData(newProjects);
+    setEditingClientComment(null);
+    setClientComment('');
+  };
+
+  const addHistoryEntry = (newProjects, projectId, objectiveId, subObjectiveId, action, details) => {
+    const entry = {
+      id: Date.now(),
+      user: currentUser.name,
+      userEmail: currentUser.email,
+      action,
+      details,
+      timestamp: new Date().toISOString()
+    };
+
+    return newProjects.map(p => {
+      if (p.id === projectId) {
+        return {
+          ...p,
+          objectives: p.objectives.map(o => {
+            if (o.id === objectiveId) {
+              if (subObjectiveId) {
+                return {
+                  ...o,
+                  subObjectives: o.subObjectives.map(s =>
+                    s.id === subObjectiveId 
+                      ? { ...s, history: [...(s.history || []), entry] }
+                      : s
+                  )
+                };
+              }
+              return { ...o, history: [...(o.history || []), entry] };
+            }
+            return o;
+          })
+        };
+      }
+      return p;
+    });
+  };
+
+  const canStartTask = (project, objective, subObjective = null) => {
+    const task = subObjective || objective;
+    if (!task.dependsOn) return true;
+
+    for (const obj of project.objectives) {
+      if (obj.id === task.dependsOn) {
+        return obj.status === 'completed' || obj.status === 'in-progress';
+      }
+      for (const sub of obj.subObjectives || []) {
+        if (sub.id === task.dependsOn) {
+          return sub.status === 'completed' || sub.status === 'in-progress';
+        }
+      }
+    }
+    return true;
+  };
+
+  const getDependencyName = (project, dependencyId) => {
+    if (!dependencyId) return null;
+    
+    for (const obj of project.objectives) {
+      if (obj.id === dependencyId) return obj.name;
+      for (const sub of obj.subObjectives || []) {
+        if (sub.id === dependencyId) return sub.name;
+      }
+    }
+    return null;
+  };
+
+  const getAllTasksForDependency = (project, currentObjectiveId, currentSubId = null) => {
+    const tasks = [];
+    
+    project.objectives.forEach(obj => {
+      if (obj.id !== currentObjectiveId) {
+        tasks.push({ id: obj.id, name: obj.name, type: 'objective' });
+      }
+      
+      obj.subObjectives?.forEach(sub => {
+        if (sub.id !== currentSubId && obj.id !== currentObjectiveId) {
+          tasks.push({ id: sub.id, name: `${obj.name} → ${sub.name}`, type: 'sub' });
+        }
+      });
+    });
+    
+    return tasks;
+  };
+
+  const addProject = () => {
+    if (!newProjectName.trim()) return;
+    const newProjects = [...projects, {
+      id: Date.now(),
+      name: newProjectName,
+      objectives: [],
+      createdAt: new Date().toISOString(),
+      createdBy: currentUser.name,
+      createdByEmail: currentUser.email,
+      allowedMembers: [currentUser.email]
+    }];
+    setProjects(newProjects);
+    saveData(newProjects);
+    setNewProjectName('');
+    setShowAddProject(false);
+  };
+
+  const addObjective = (projectId, objectiveName) => {
+    if (!objectiveName.trim()) return;
+    const newProjects = projects.map(p => {
+      if (p.id === projectId) {
+        return {
+          ...p,
+          objectives: [...p.objectives, {
+            id: Date.now(),
+            name: objectiveName,
+            status: 'pending',
+            subObjectives: [],
+            notes: '',
+            files: [],
+            assignedTo: null,
+            dependsOn: null,
+            dueDate: null,
+            history: [{
+              id: Date.now(),
+              user: currentUser.name,
+              userEmail: currentUser.email,
+              action: 'created',
+              details: 'Objetivo creado',
+              timestamp: new Date().toISOString()
+            }]
+          }]
+        };
+      }
+      return p;
+    });
+    setProjects(newProjects);
+    saveData(newProjects);
+    setAddingObjectiveTo(null);
+    setNewObjectiveName('');
+  };
+
+  const addSubObjective = (projectId, objectiveId, subName) => {
+    if (!subName.trim()) return;
+    const newProjects = projects.map(p => {
+      if (p.id === projectId) {
+        return {
+          ...p,
+          objectives: p.objectives.map(o => {
+            if (o.id === objectiveId) {
+              return {
+                ...o,
+                subObjectives: [...o.subObjectives, {
+                  id: Date.now(),
+                  name: subName,
+                  status: 'pending',
+                  notes: '',
+                  files: [],
+                  assignedTo: null,
+                  dependsOn: null,
+                  requiresPrevious: false,
+                  dueDate: null,
+                  history: [{
+                    id: Date.now(),
+                    user: currentUser.name,
+                    userEmail: currentUser.email,
+                    action: 'created',
+                    details: 'Tarea creada',
+                    timestamp: new Date().toISOString()
+                  }]
+                }]
+              };
+            }
+            return o;
+          })
+        };
+      }
+      return p;
+    });
+    setProjects(newProjects);
+    saveData(newProjects);
+    setAddingSubObjectiveTo(null);
+    setNewSubObjectiveName('');
+  };
+
+  const updateStatus = (projectId, objectiveId, subObjectiveId = null, newStatus) => {
+    let newProjects = projects.map(p => {
+      if (p.id === projectId) {
+        return {
+          ...p,
+          objectives: p.objectives.map(o => {
+            if (o.id === objectiveId) {
+              if (subObjectiveId) {
+                return {
+                  ...o,
+                  subObjectives: o.subObjectives.map(s =>
+                    s.id === subObjectiveId ? { ...s, status: newStatus } : s
+                  )
+                };
+              }
+              return { ...o, status: newStatus };
+            }
+            return o;
+          })
+        };
+      }
+      return p;
+    });
+
+    newProjects = addHistoryEntry(
+      newProjects,
+      projectId, 
+      objectiveId, 
+      subObjectiveId, 
+      'status_changed', 
+      `Estado cambiado a: ${getStatusText(newStatus)}`
+    );
+
+    setProjects(newProjects);
+    saveData(newProjects);
+  };
+
+  const updateDueDate = (projectId, objectiveId, subObjectiveId = null, date) => {
+    const newProjects = projects.map(p => {
+      if (p.id !== projectId) return p;
+      return {
+        ...p,
+        objectives: p.objectives.map(o => {
+          if (o.id !== objectiveId) return o;
+          if (subObjectiveId) {
+            return {
+              ...o,
+              subObjectives: o.subObjectives.map(s =>
+                s.id === subObjectiveId ? { ...s, dueDate: date } : s
+              )
+            };
+          }
+          return { ...o, dueDate: date };
+        })
+      };
+    });
+    setProjects(newProjects);
+    saveData(newProjects);
+  };
+
+  const setDependency = (projectId, objectiveId, subObjectiveId = null, dependencyId) => {
+    let newProjects = projects.map(p => {
+      if (p.id === projectId) {
+        return {
+          ...p,
+          objectives: p.objectives.map(o => {
+            if (o.id === objectiveId) {
+              if (subObjectiveId) {
+                return {
+                  ...o,
+                  subObjectives: o.subObjectives.map(s =>
+                    s.id === subObjectiveId ? { ...s, dependsOn: dependencyId } : s
+                  )
+                };
+              }
+              return { ...o, dependsOn: dependencyId };
+            }
+            return o;
+          })
+        };
+      }
+      return p;
+    });
+
+    if (dependencyId) {
+      newProjects = addHistoryEntry(
+        newProjects,
+        projectId,
+        objectiveId,
+        subObjectiveId,
+        'dependency_set',
+        'Dependencia establecida'
+      );
+    }
+
+    setProjects(newProjects);
+    saveData(newProjects);
+    setSettingDependency(null);
+  };
+
+  const toggleRequiresPrevious = (projectId, objectiveId, subId) => {
+    const newProjects = projects.map(p => {
+      if (p.id !== projectId) return p;
+      return {
+        ...p,
+        objectives: p.objectives.map(o => {
+          if (o.id !== objectiveId) return o;
+          return {
+            ...o,
+            subObjectives: o.subObjectives.map(s =>
+              s.id === subId ? { ...s, requiresPrevious: !s.requiresPrevious } : s
+            )
+          };
+        })
+      };
+    });
+    setProjects(newProjects);
+    saveData(newProjects);
+  };
+
+  const moveTask = (projectId, objectiveId, subId, direction) => {
+    const newProjects = projects.map(p => {
+      if (p.id !== projectId) return p;
+      return {
+        ...p,
+        objectives: p.objectives.map(o => {
+          if (o.id !== objectiveId) return o;
+          const subs = [...o.subObjectives];
+          const idx = subs.findIndex(s => s.id === subId);
+          if (direction === 'up' && idx === 0) return o;
+          if (direction === 'down' && idx === subs.length - 1) return o;
+          const swapIdx = direction === 'up' ? idx - 1 : idx + 1;
+          [subs[idx], subs[swapIdx]] = [subs[swapIdx], subs[idx]];
+          // Limpiar dependencias de las dos tareas intercambiadas para evitar confusión
+          subs[idx] = { ...subs[idx], requiresPrevious: false };
+          subs[swapIdx] = { ...subs[swapIdx], requiresPrevious: false };
+          return { ...o, subObjectives: subs };
+        })
+      };
+    });
+    setProjects(newProjects);
+    saveData(newProjects);
+  };
+
+  const assignTask = (projectId, objectiveId, subObjectiveId = null, member) => {
+    let newProjects = projects.map(p => {
+      if (p.id === projectId) {
+        return {
+          ...p,
+          objectives: p.objectives.map(o => {
+            if (o.id === objectiveId) {
+              if (subObjectiveId) {
+                return {
+                  ...o,
+                  subObjectives: o.subObjectives.map(s =>
+                    s.id === subObjectiveId ? { ...s, assignedTo: member } : s
+                  )
+                };
+              }
+              return { ...o, assignedTo: member };
+            }
+            return o;
+          })
+        };
+      }
+      return p;
+    });
+
+    newProjects = addHistoryEntry(
+      newProjects,
+      projectId,
+      objectiveId,
+      subObjectiveId,
+      'assigned',
+      `Asignado a: ${member ? member.name : 'Nadie'}`
+    );
+
+    setProjects(newProjects);
+    saveData(newProjects);
+    setAssigningTo(null);
+  };
+
+  const updateNotes = (projectId, objectiveId, subObjectiveId = null, notes) => {
+    let newProjects = projects.map(p => {
+      if (p.id === projectId) {
+        return {
+          ...p,
+          objectives: p.objectives.map(o => {
+            if (o.id === objectiveId) {
+              if (subObjectiveId) {
+                return {
+                  ...o,
+                  subObjectives: o.subObjectives.map(s =>
+                    s.id === subObjectiveId ? { ...s, notes } : s
+                  )
+                };
+              }
+              return { ...o, notes };
+            }
+            return o;
+          })
+        };
+      }
+      return p;
+    });
+
+    newProjects = addHistoryEntry(
+      newProjects,
+      projectId,
+      objectiveId,
+      subObjectiveId,
+      'notes_updated',
+      'Informe actualizado'
+    );
+
+    setProjects(newProjects);
+    saveData(newProjects);
+    setEditingNotes(null);
+    setNoteText('');
+  };
+
+  const handleFileUpload = (projectId, objectiveId, subObjectiveId = null, event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const fileData = {
+        id: Date.now(),
+        name: file.name,
+        type: file.type,
+        size: file.size,
+        data: e.target.result,
+        uploadedAt: new Date().toISOString(),
+        uploadedBy: currentUser.name
+      };
+
+      let newProjects = projects.map(p => {
+        if (p.id === projectId) {
+          return {
+            ...p,
+            objectives: p.objectives.map(o => {
+              if (o.id === objectiveId) {
+                if (subObjectiveId) {
+                  return {
+                    ...o,
+                    subObjectives: o.subObjectives.map(s =>
+                      s.id === subObjectiveId ? { ...s, files: [...(s.files || []), fileData] } : s
+                    )
+                  };
+                }
+                return { ...o, files: [...(o.files || []), fileData] };
+              }
+              return o;
+            })
+          };
+        }
+        return p;
+      });
+
+      newProjects = addHistoryEntry(
+        newProjects,
+        projectId,
+        objectiveId,
+        subObjectiveId,
+        'file_uploaded',
+        `Archivo subido: ${file.name}`
+      );
+
+      setProjects(newProjects);
+      saveData(newProjects);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const deleteFile = (projectId, objectiveId, subObjectiveId = null, fileId) => {
+    setConfirmDialog({
+      message: '¿Eliminar este archivo? Esta acción no se puede deshacer.',
+      onConfirm: () => _doDeleteFile(projectId, objectiveId, subObjectiveId, fileId)
+    });
+    return;
+  };
+  const _doDeleteFile = (projectId, objectiveId, subObjectiveId = null, fileId) => {
+    const newProjects = projects.map(p => {
+      if (p.id === projectId) {
+        return {
+          ...p,
+          objectives: p.objectives.map(o => {
+            if (o.id === objectiveId) {
+              if (subObjectiveId) {
+                return {
+                  ...o,
+                  subObjectives: o.subObjectives.map(s =>
+                    s.id === subObjectiveId ? { ...s, files: (s.files || []).filter(f => f.id !== fileId) } : s
+                  )
+                };
+              }
+              return { ...o, files: (o.files || []).filter(f => f.id !== fileId) };
+            }
+            return o;
+          })
+        };
+      }
+      return p;
+    });
+    setProjects(newProjects);
+    saveData(newProjects);
+  };
+
+  const deleteItem = (projectId, objectiveId = null, subObjectiveId = null) => {
+    const label = !objectiveId ? 'este proyecto y todo su contenido' : !subObjectiveId ? 'este objetivo' : 'esta tarea';
+    setConfirmDialog({
+      message: `¿Eliminár ${label}? Esta acción no se puede deshacer.`,
+      onConfirm: () => _doDeleteItem(projectId, objectiveId, subObjectiveId)
+    });
+    return;
+  };
+  const _doDeleteItem = (projectId, objectiveId = null, subObjectiveId = null) => {
+    let newProjects;
+    if (!objectiveId) {
+      newProjects = projects.filter(p => p.id !== projectId);
+    } else if (!subObjectiveId) {
+      newProjects = projects.map(p => {
+        if (p.id === projectId) {
+          return {
+            ...p,
+            objectives: p.objectives.filter(o => o.id !== objectiveId)
+          };
+        }
+        return p;
+      });
+    } else {
+      newProjects = projects.map(p => {
+        if (p.id === projectId) {
+          return {
+            ...p,
+            objectives: p.objectives.map(o => {
+              if (o.id === objectiveId) {
+                return {
+                  ...o,
+                  subObjectives: o.subObjectives.filter(s => s.id !== subObjectiveId)
+                };
+              }
+              return o;
+            })
+          };
+        }
+        return p;
+      });
+    }
+    setProjects(newProjects);
+    saveData(newProjects);
+  };
+
+  const isProjectAdmin = (project) => {
+    return project.createdByEmail === currentUser.email || !project.createdByEmail;
+  };
+
+  const canAccessProject = (project) => {
+    if (isProjectAdmin(project)) return true;
+    if (!project.allowedMembers) return true; // legacy projects visible to all
+    return project.allowedMembers.includes(currentUser.email);
+  };
+
+  const toggleProjectAccess = (projectId, memberEmail) => {
+    const newProjects = projects.map(p => {
+      if (p.id !== projectId) return p;
+      const allowed = p.allowedMembers || [];
+      const hasAccess = allowed.includes(memberEmail);
+      return {
+        ...p,
+        allowedMembers: hasAccess
+          ? allowed.filter(e => e !== memberEmail)
+          : [...allowed, memberEmail]
+      };
+    });
+    setProjects(newProjects);
+    saveData(newProjects);
+  };
+
+  const getFilteredProjects = () => {
+    const accessible = projects.filter(p => canAccessProject(p));
+    if (filterMode === 'all') return accessible;
+    
+    return accessible.map(project => ({
+      ...project,
+      objectives: project.objectives.filter(obj => {
+        const isMyTask = obj.assignedTo?.email === currentUser.email;
+        const hasMySubTask = obj.subObjectives.some(sub => sub.assignedTo?.email === currentUser.email);
+        return isMyTask || hasMySubTask;
+      }).map(obj => ({
+        ...obj,
+        subObjectives: obj.subObjectives.filter(sub => 
+          filterMode === 'all' || sub.assignedTo?.email === currentUser.email
+        )
+      }))
+    })).filter(project => project.objectives.length > 0);
+  };
+
+  const generateHTMLReport = (project) => {
+    const progress = calculateProgress(project.objectives);
+    const totalObjectives = project.objectives.length;
+    const completedObjectives = project.objectives.filter(o => o.status === 'completed').length;
+    const inProgressObjectives = project.objectives.filter(o => o.status === 'in-progress').length;
+    const waitingObjectives = project.objectives.filter(o => o.status === 'waiting').length;
+    const pendingObjectives = project.objectives.filter(o => o.status === 'pending').length;
+
+    let allTasks = 0;
+    let completedTasks = 0;
+    project.objectives.forEach(obj => {
+      if (obj.subObjectives.length === 0) {
+        allTasks++;
+        if (obj.status === 'completed') completedTasks++;
+      } else {
+        allTasks += obj.subObjectives.length;
+        completedTasks += obj.subObjectives.filter(s => s.status === 'completed').length;
+      }
+    });
+
+    return `<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reporte: ${project.name}</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            color: #333;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        .header h1 { font-size: 32px; margin-bottom: 10px; }
+        .header .date { opacity: 0.9; font-size: 14px; }
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            padding: 30px;
+            background: #f8f9fa;
+        }
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .stat-value { font-size: 48px; font-weight: bold; margin: 10px 0; }
+        .stat-label { color: #666; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; }
+        .progress-card {
+            grid-column: 1 / -1;
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .progress-bar-container {
+            background: #e9ecef;
+            height: 40px;
+            border-radius: 20px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        .progress-bar {
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        .content { padding: 30px; }
+        .objective {
+            background: white;
+            margin-bottom: 25px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .objective-header {
+            padding: 20px;
+            border-left: 5px solid #667eea;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #f8f9fa;
+        }
+        .objective-title { font-size: 18px; font-weight: 600; color: #333; }
+        .status-badge {
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .status-completed { background: #d4edda; color: #155724; }
+        .status-in-progress { background: #fff3cd; color: #856404; }
+        .status-waiting { background: #fed7aa; color: #92400e; }
+        .status-pending { background: #e2e3e5; color: #383d41; }
+        .objective-body { padding: 20px; }
+        .notes {
+            background: #fffbeb;
+            border-left: 3px solid #fbbf24;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+        .notes-title { font-weight: 600; color: #92400e; margin-bottom: 8px; font-size: 14px; }
+        .notes-text { color: #78350f; line-height: 1.6; white-space: pre-wrap; }
+        .tasks-section { margin-top: 15px; padding-left: 20px; border-left: 2px solid #e9ecef; }
+        .task-item {
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+        .task-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .task-title { font-weight: 500; color: #495057; }
+        .footer {
+            text-align: center;
+            padding: 30px;
+            background: #f8f9fa;
+            color: #666;
+            font-size: 14px;
+        }
+        @media print {
+            body { background: white; padding: 0; }
+            .container { box-shadow: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>${project.name}</h1>
+            <p class="date">Reporte generado el ${new Date().toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+        </div>
+        <div class="dashboard">
+            <div class="stat-card">
+                <div class="stat-label">Progreso Total</div>
+                <div class="stat-value" style="color: #667eea;">${progress}%</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Completadas</div>
+                <div class="stat-value" style="color: #10b981;">${completedTasks}</div>
+                <div style="color: #999; font-size: 12px;">de ${allTasks} tareas</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">En Progreso</div>
+                <div class="stat-value" style="color: #f59e0b;">${inProgressObjectives}</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Pendientes</div>
+                <div class="stat-value" style="color: #6b7280;">${pendingObjectives}</div>
+            </div>
+            <div class="progress-card">
+                <h3 style="margin-bottom: 10px;">Estado General del Proyecto</h3>
+                <div class="progress-bar-container">
+                    <div class="progress-bar" style="width: ${progress}%">${progress}% Completado</div>
+                </div>
+            </div>
+        </div>
+        <div class="content">
+            <h2 style="margin-bottom: 20px; color: #333;">Detalle de Objetivos</h2>
+            ${project.objectives.map((obj, idx) => `
+                <div class="objective">
+                    <div class="objective-header">
+                        <div class="objective-title">${idx + 1}. ${obj.name}</div>
+                        <div class="status-badge status-${obj.status}">${getStatusText(obj.status)}</div>
+                    </div>
+                    <div class="objective-body">
+                        ${obj.notes ? `
+                            <div class="notes">
+                                <div class="notes-title">📝 Informe</div>
+                                <div class="notes-text">${obj.notes}</div>
+                            </div>
+                        ` : ''}
+                        ${obj.files && obj.files.length > 0 ? `
+                            <div style="margin: 15px 0;">
+                                <div style="font-weight: 600; margin-bottom: 10px; color: #495057;">📎 Archivos Adjuntos (${obj.files.length})</div>
+                                ${obj.files.map(file => `
+                                    <div style="display:flex;gap:10px;padding:10px;background:#f8f9fa;border-radius:8px;margin:8px 0;">
+                                        <div style="font-weight: 500;">${file.name}</div>
+                                        <div style="font-size: 12px; color: #6b7280;">${formatFileSize(file.size)}</div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        ` : ''}
+                        ${obj.subObjectives && obj.subObjectives.length > 0 ? `
+                            <div class="tasks-section">
+                                <h4 style="margin-bottom: 15px; color: #495057;">Tareas</h4>
+                                ${obj.subObjectives.map((sub, subIdx) => `
+                                    <div class="task-item">
+                                        <div class="task-header">
+                                            <div class="task-title">${idx + 1}.${subIdx + 1}. ${sub.name}</div>
+                                            <div class="status-badge status-${sub.status}" style="font-size: 11px;">${getStatusText(sub.status)}</div>
+                                        </div>
+                                        ${sub.notes ? `
+                                            <div class="notes" style="margin: 10px 0;">
+                                                <div class="notes-title">📝 Informe</div>
+                                                <div class="notes-text">${sub.notes}</div>
+                                            </div>
+                                        ` : ''}
+                                        ${sub.files && sub.files.length > 0 ? `
+                                            <div style="margin-top: 10px;">
+                                                <div style="font-size: 12px; font-weight: 600; color: #6b7280; margin-bottom: 5px;">📎 Archivos (${sub.files.length})</div>
+                                                ${sub.files.map(file => `<div style="font-size:13px;padding:5px 0;">${file.name} (${formatFileSize(file.size)})</div>`).join('')}
+                                            </div>
+                                        ` : ''}
+                                    </div>
+                                `).join('')}
+                            </div>
+                        ` : ''}
+                    </div>
+                </div>
+            `).join('')}
+        </div>
+        <div class="footer">
+            <p>Este reporte fue generado automáticamente</p>
+            <p style="margin-top: 5px;">© ${new Date().getFullYear()} - Flowdesk</p>
+        </div>
+    </div>
+</body>
+</html>`;
+  };
+
+  const downloadReport = (project) => {
+    const htmlReport = generateHTMLReport(project);
+    const blob = new Blob([htmlReport], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `Reporte_${project.name.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.html`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  const shareReport = async (project) => {
+    downloadReport(project);
+  };
+
+  const getFileIcon = (type) => {
+    if (type.startsWith('image/')) return <Image size={16} className="text-blue-500" />;
+    if (type.startsWith('audio/')) return <Music size={16} className="text-purple-500" />;
+    return <File size={16} className="text-gray-500" />;
+  };
+
+  const formatFileSize = (bytes) => {
+    if (bytes < 1024) return bytes + ' B';
+    if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
+    return (bytes / 1048576).toFixed(1) + ' MB';
+  };
+
+  const startVoiceInput = () => {
+    setVoiceError('');
+    setLastVoiceCommand('');
+    
+    if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+      setVoiceError('Tu navegador no soporta reconocimiento de voz. Usa Chrome o Safari.');
+      return;
+    }
+
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const recognition = new SpeechRecognition();
+    recognition.lang = 'es-ES';
+    recognition.continuous = false;
+    recognition.interimResults = false;
+
+    recognition.onstart = () => { setIsListening(true); setVoiceError(''); };
+    recognition.onend = () => { setIsListening(false); };
+    recognition.onerror = (event) => {
+      setIsListening(false);
+      if (event.error === 'not-allowed') {
+        setVoiceError('Debes permitir el acceso al micrófono en la configuración de tu navegador');
+      } else if (event.error === 'no-speech') {
+        setVoiceError('No se detectó ninguna voz. Intenta de nuevo.');
+      } else {
+        setVoiceError('Error: ' + event.error);
+      }
+    };
+    recognition.onresult = (event) => {
+      const transcript = event.results[0][0].transcript;
+      setLastVoiceCommand(transcript);
+      processVoiceCommand(transcript);
+    };
+
+    try {
+      recognition.start();
+    } catch (error) {
+      setVoiceError('No se pudo iniciar el micrófono. Intenta de nuevo.');
+      setIsListening(false);
+    }
+  };
+
+  const processVoiceCommand = (command) => {
+    const lower = command.toLowerCase();
+    
+    if (lower.includes('proyecto') || lower.includes('nuevo proyecto')) {
+      let name = command.replace(/nuevo proyecto|proyecto/gi, '').trim();
+      if (!name) name = 'Proyecto ' + (projects.length + 1);
+      const newProjects = [...projects, {
+        id: Date.now(),
+        name: name,
+        objectives: [],
+        createdAt: new Date().toISOString(),
+        createdBy: currentUser.name
+      }];
+      setProjects(newProjects);
+      saveData(newProjects);
+      setVoiceError('✓ Proyecto creado: ' + name);
+      return;
+    }
+    
+    if (lower.includes('tarea') || lower.includes('objetivo')) {
+      let name = command.replace(/nueva tarea|tarea|nuevo objetivo|objetivo/gi, '').trim();
+      if (!name) { setVoiceError('No entendí el nombre de la tarea'); return; }
+      if (projects.length === 0) { setVoiceError('Primero crea un proyecto'); return; }
+      addObjective(projects[projects.length - 1].id, name);
+      setVoiceError('✓ Tarea agregada: ' + name);
+      return;
+    }
+    
+    setVoiceError('No entendí. Di "proyecto [nombre]" o "tarea [nombre]"');
+  };
+
+  const toggleExpand = (projectId) => {
+    setExpandedProjects(prev => ({ ...prev, [projectId]: !prev[projectId] }));
+  };
+
+  const getStatusColor = (status) => {
+    switch(status) {
+      case 'completed': return 'bg-green-500';
+      case 'in-progress': return 'bg-yellow-500';
+      case 'waiting': return 'bg-orange-400';
+      default: return 'bg-gray-400';
+    }
+  };
+
+  const getStatusText = (status) => {
+    switch(status) {
+      case 'completed': return 'Completado';
+      case 'in-progress': return 'En Progreso';
+      case 'waiting': return 'En Espera';
+      default: return 'Pendiente';
+    }
+  };
+
+  const calculateProgress = (objectives) => {
+    if (objectives.length === 0) return 0;
+    const total = objectives.reduce((acc, obj) => acc + (obj.subObjectives.length || 1), 0);
+    const completed = objectives.reduce((acc, obj) => {
+      if (obj.subObjectives.length === 0) return acc + (obj.status === 'completed' ? 1 : 0);
+      return acc + obj.subObjectives.filter(s => s.status === 'completed').length;
+    }, 0);
+    return Math.round((completed / total) * 100);
+  };
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('es-ES', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' });
+  };
+
+  if (showLogin) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
+        <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full">
+          <div className="text-center mb-8">
+            <div className="w-20 h-20 bg-indigo-600 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Users size={40} className="text-white" />
+            </div>
+            <h1 className="text-3xl font-bold text-gray-800 mb-1">Flowdesk</h1>
+            <p className="text-indigo-500 font-medium text-sm mb-1">Gestión de proyectos simple y colaborativa</p>
+            <p className="text-gray-500 text-sm">Identificate para continuar</p>
+          </div>
+          <div className="space-y-4">
+            {/* Role selector - only shown if email not pre-registered */}
+            {(() => {
+              const found = teamMembers.find(m => m.email === loginEmail.trim());
+              if (found) {
+                return (
+                  <div className={`p-3 rounded-xl border-2 text-sm font-medium text-center ${found.role === 'client' ? 'border-green-400 bg-green-50 text-green-700' : 'border-indigo-400 bg-indigo-50 text-indigo-700'}`}>
+                    <div className="text-2xl mb-1">{found.role === 'client' ? '👁️' : '🛠️'}</div>
+                    <p className="font-semibold">{found.role === 'client' ? 'Cliente' : 'Equipo'}</p>
+                    <p className="text-xs opacity-70 mt-0.5">Acceso asignado por el administrador</p>
+                  </div>
+                );
+              }
+              return (
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    onClick={() => setLoginRole('team')}
+                    className={`p-3 rounded-xl border-2 text-sm font-medium transition-all ${loginRole === 'team' ? 'border-indigo-600 bg-indigo-50 text-indigo-700' : 'border-gray-200 text-gray-500 hover:border-indigo-300'}`}
+                  >
+                    <div className="text-2xl mb-1">🛠️</div>
+                    Soy del equipo
+                  </button>
+                  <button
+                    onClick={() => setLoginRole('client')}
+                    className={`p-3 rounded-xl border-2 text-sm font-medium transition-all ${loginRole === 'client' ? 'border-green-600 bg-green-50 text-green-700' : 'border-gray-200 text-gray-500 hover:border-green-300'}`}
+                  >
+                    <div className="text-2xl mb-1">👁️</div>
+                    Soy cliente
+                  </button>
+                </div>
+              );
+            })()}
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Nombre completo</label>
+              <input type="text" value={loginName} onChange={(e) => setLoginName(e.target.value)} placeholder="Ej: Juan Pérez" className="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:outline-none" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
+              <input type="email" value={loginEmail} onChange={(e) => setLoginEmail(e.target.value)} placeholder="tu@email.com" className="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:outline-none" />
+            </div>
+            <button
+              onClick={handleLogin}
+              className={`w-full py-3 rounded-lg font-semibold transition-colors text-white ${loginRole === 'client' ? 'bg-green-600 hover:bg-green-700' : 'bg-indigo-600 hover:bg-indigo-700'}`}
+            >
+              {loginRole === 'client' ? '👁️ Ver mis proyectos' : '🛠️ Entrar al equipo'}
+            </button>
+            <p className="text-xs text-center text-gray-500 mt-4">
+              {loginRole === 'client' ? 'Podrás ver el avance, aprobar tareas y dejar comentarios' : 'Al entrar, podrás colaborar con tu equipo en proyectos compartidos'}
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  const filteredProjects = getFilteredProjects();
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 pb-20">
+      <div className="bg-white shadow-sm sticky top-0 z-10">
+        <div className="max-w-4xl mx-auto px-4 py-4">
+          <div className="flex items-center justify-between mb-3">
+            <div>
+              <h1 className="text-2xl font-bold text-gray-800">Flowdesk</h1>
+              <p className="text-sm text-gray-600">👤 {currentUser.name}</p>
+            </div>
+            <div className="flex items-center gap-2">
+              {/* Micrófono desactivado en artifact - reactivar en Vercel */}
+              {false && (
+                <button onClick={startVoiceInput} className={`p-3 rounded-full ${isListening ? 'bg-red-500 animate-pulse' : 'bg-indigo-600'} text-white shadow-lg`}>
+                  <Mic size={24} />
+                </button>
+              )}
+              {currentUser?.role !== 'client' && (() => {
+                const notifs = getNotifications();
+                return (
+                  <button
+                    onClick={() => setShowNotifications(!showNotifications)}
+                    className={`relative p-3 rounded-full ${showNotifications ? 'bg-indigo-100 text-indigo-700' : 'bg-gray-200 text-gray-700'} hover:bg-indigo-100`}
+                    title="Notificaciones"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                    {notifs.filter(n => !seenNotifications.includes(n.id)).length > 0 && (
+                      <span className="absolute top-1.5 right-1.5 w-4 h-4 bg-red-500 rounded-full text-white text-xs flex items-center justify-center font-bold leading-none">
+                        {notifs.filter(n => !seenNotifications.includes(n.id)).length > 9 ? '9+' : notifs.filter(n => !seenNotifications.includes(n.id)).length}
+                      </span>
+                    )}
+                  </button>
+                );
+              })()}
+              {currentUser?.role !== 'client' && (
+                <button onClick={() => setShowTeamPanel(!showTeamPanel)} className={`p-3 rounded-full ${showTeamPanel ? 'bg-indigo-100 text-indigo-700' : 'bg-gray-200 text-gray-700'} hover:bg-indigo-100`} title="Gestionar equipo">
+                  <Users size={24} />
+                </button>
+              )}
+              <button onClick={handleLogout} className="p-3 rounded-full bg-gray-200 text-gray-700 hover:bg-gray-300" title="Cerrar sesión">
+                <X size={24} />
+              </button>
+            </div>
+          </div>
+          
+          {currentUser?.role !== 'client' && (
+            <div className="flex gap-2 mb-2">
+              <button onClick={() => setViewMode('work')} className={`flex-1 py-2 px-4 rounded-lg font-medium ${viewMode === 'work' ? 'bg-indigo-600 text-white' : 'bg-gray-200 text-gray-700'}`}>
+                <Edit2 size={16} className="inline mr-1" />Modo Trabajo
+              </button>
+              <button onClick={() => setViewMode('client')} className={`flex-1 py-2 px-4 rounded-lg font-medium ${viewMode === 'client' ? 'bg-green-600 text-white' : 'bg-gray-200 text-gray-700'}`}>
+                <Eye size={16} className="inline mr-1" />Vista Cliente
+              </button>
+            </div>
+          )}
+          {currentUser?.role === 'client' && (
+            <div className="flex items-center justify-center py-2 px-4 bg-green-50 rounded-lg mb-2">
+              <Eye size={16} className="inline mr-2 text-green-600" />
+              <span className="text-sm font-medium text-green-700">Vista Cliente</span>
+            </div>
+          )}
+
+          {viewMode === 'work' && currentUser?.role !== 'client' && (
+            <div className="flex gap-2">
+              <button onClick={() => setFilterMode('all')} className={`flex-1 py-2 px-3 rounded-lg text-sm font-medium ${filterMode === 'all' ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-600'}`}>
+                <Filter size={14} className="inline mr-1" />Todas
+              </button>
+              <button onClick={() => setFilterMode('my-tasks')} className={`flex-1 py-2 px-3 rounded-lg text-sm font-medium ${filterMode === 'my-tasks' ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-600'}`}>
+                <User size={14} className="inline mr-1" />Mis Tareas
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+
+      <div className="max-w-4xl mx-auto px-4 py-6">
+        {/* Panel de notificaciones */}
+        {showNotifications && currentUser?.role !== 'client' && (() => {
+          const notifs = getNotifications();
+          return (
+            <div className="mb-4 bg-white rounded-lg shadow-md overflow-hidden">
+              <div className="bg-gradient-to-r from-indigo-600 to-purple-600 p-4 text-white flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                  <h3 className="font-bold">Novedades</h3>
+                  {notifs.filter(n => !seenNotifications.includes(n.id)).length > 0 && (
+                    <span className="bg-red-500 text-white text-xs px-2 py-0.5 rounded-full font-bold">
+                      {notifs.filter(n => !seenNotifications.includes(n.id)).length} nuevas
+                    </span>
+                  )}
+                </div>
+                <button onClick={() => setShowNotifications(false)} className="p-1 hover:bg-white hover:bg-opacity-20 rounded"><X size={18} /></button>
+              </div>
+              <div className="p-4">
+                {notifs.length === 0 ? (
+                  <div className="text-center py-6">
+                    <p className="text-3xl mb-2">✨</p>
+                    <p className="text-sm text-gray-500">Todo al día, no hay novedades</p>
+                  </div>
+                ) : (
+                  <div>
+                    {notifs.some(n => !seenNotifications.includes(n.id)) && (
+                      <button
+                        onClick={markAllSeen}
+                        className="w-full text-xs text-indigo-500 hover:text-indigo-700 text-right mb-2 font-medium"
+                      >Marcar todas como vistas</button>
+                    )}
+                    <div className="space-y-2">
+                      {notifs.map(n => {
+                        const isSeen = seenNotifications.includes(n.id);
+                        return (
+                          <div
+                            key={n.id}
+                            onClick={() => markNotificationSeen(n.id)}
+                            className={`p-3 rounded-lg border-l-4 cursor-pointer transition-opacity ${isSeen ? 'opacity-40' : 'opacity-100'} ${n.type === 'approval' ? 'bg-green-50 border-green-400' : 'bg-blue-50 border-blue-400'}`}
+                          >
+                            <div className="flex items-center justify-between mb-0.5">
+                              <p className="text-xs font-semibold text-gray-400 uppercase">{n.projectName}</p>
+                              {!isSeen && <span className="w-2 h-2 bg-red-500 rounded-full flex-shrink-0"></span>}
+                              {isSeen && <span className="text-xs text-gray-400">Vista ✓</span>}
+                            </div>
+                            <p className="text-sm font-medium text-gray-800">{n.text}</p>
+                            {n.detail && <p className="text-xs text-gray-500 mt-0.5 italic">"{n.detail}"</p>}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          );
+        })()}
+
+        {/* Panel de equipo */}
+        {showTeamPanel && (
+          <div className="mb-4 bg-white rounded-lg shadow-md overflow-hidden">
+            <div className="bg-gradient-to-r from-indigo-600 to-purple-600 p-4 text-white flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Users size={20} />
+                <h3 className="font-bold">Equipo</h3>
+              </div>
+              <button onClick={() => setShowTeamPanel(false)} className="p-1 hover:bg-white hover:bg-opacity-20 rounded"><X size={18} /></button>
+            </div>
+            <div className="p-4">
+              {/* Miembros actuales */}
+              <div className="mb-4">
+                {getAssignableMembers().length === 0 && (
+                  <p className="text-sm text-gray-400 text-center py-2">No hay miembros todavía</p>
+                )}
+                {getAssignableMembers().map(member => (
+                  <div key={member.id} className="flex items-center justify-between py-2 border-b border-gray-100 last:border-0">
+                    <div>
+                      <p className="text-sm font-medium text-gray-800">{member.name}</p>
+                      <p className="text-xs text-gray-400">{member.email}</p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      {member.email === currentUser.email && (
+                        <span className="text-xs bg-indigo-100 text-indigo-600 px-2 py-0.5 rounded-full">Vos</span>
+                      )}
+                      <span className={`text-xs px-2 py-0.5 rounded-full ${member.role === 'client' ? 'bg-green-100 text-green-600' : 'bg-indigo-100 text-indigo-600'}`}>
+                        {member.role === 'client' ? '👁️ Cliente' : '🛠️ Equipo'}
+                      </span>
+                      {member.manual && member.email !== currentUser.email && (
+                        <span className="text-xs bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full">Pendiente ingreso</span>
+                      )}
+                      {member.email !== currentUser.email && (
+                        <button onClick={() => removeMember(member.id)} className="p-1 text-red-400 hover:text-red-600" title="Eliminar miembro"><X size={14} /></button>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Agregar miembro */}
+              <div className="border-t pt-3">
+                <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Agregar miembro</p>
+                <input
+                  type="text"
+                  value={newMemberName}
+                  onChange={e => setNewMemberName(e.target.value)}
+                  placeholder="Nombre completo"
+                  className="w-full p-2 border border-gray-300 rounded-lg mb-2 text-sm"
+                />
+                <input
+                  type="email"
+                  value={newMemberEmail}
+                  onChange={e => setNewMemberEmail(e.target.value)}
+                  placeholder="Email"
+                  className="w-full p-2 border border-gray-300 rounded-lg mb-2 text-sm"
+                />
+                <div className="grid grid-cols-2 gap-2 mb-2">
+                  <button
+                    onClick={() => setNewMemberRole('team')}
+                    className={`p-2 rounded-lg border-2 text-xs font-medium transition-all ${newMemberRole === 'team' ? 'border-indigo-500 bg-indigo-50 text-indigo-700' : 'border-gray-200 text-gray-500'}`}
+                  >🛠️ Equipo</button>
+                  <button
+                    onClick={() => setNewMemberRole('client')}
+                    className={`p-2 rounded-lg border-2 text-xs font-medium transition-all ${newMemberRole === 'client' ? 'border-green-500 bg-green-50 text-green-700' : 'border-gray-200 text-gray-500'}`}
+                  >👁️ Cliente</button>
+                </div>
+                <button
+                  onClick={addManualMember}
+                  className="w-full bg-indigo-600 text-white py-2 rounded-lg text-sm font-medium hover:bg-indigo-700"
+                >
+                  <Plus size={14} className="inline mr-1" />Agregar al equipo
+                </button>
+                <p className="text-xs text-gray-400 mt-2 text-center">
+                  Cuando esta persona ingrese con ese email, su rol quedará asignado automáticamente
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {viewMode === 'work' && !showAddProject && currentUser?.role !== 'client' && (
+          <button onClick={() => setShowAddProject(true)} className="w-full mb-4 py-3 border-2 border-dashed border-indigo-300 rounded-lg text-indigo-600 font-medium hover:bg-indigo-50">
+            <Plus size={20} className="inline mr-2" />Nuevo Proyecto
+          </button>
+        )}
+
+        {showAddProject && (
+          <div className="mb-4 bg-white p-4 rounded-lg shadow">
+            <input type="text" value={newProjectName} onChange={(e) => setNewProjectName(e.target.value)} placeholder="Nombre del proyecto..." className="w-full p-3 border border-gray-300 rounded-lg mb-2" autoFocus />
+            <div className="flex gap-2">
+              <button onClick={addProject} className="flex-1 bg-indigo-600 text-white py-2 rounded-lg"><Check size={18} className="inline mr-1" />Crear</button>
+              <button onClick={() => setShowAddProject(false)} className="flex-1 bg-gray-300 text-gray-700 py-2 rounded-lg"><X size={18} className="inline mr-1" />Cancelar</button>
+            </div>
+          </div>
+        )}
+
+        {filteredProjects.map(project => {
+          const progress = calculateProgress(project.objectives);
+          
+          return (
+            <div key={project.id} className="mb-4 bg-white rounded-lg shadow-md overflow-hidden">
+              <div className="bg-gradient-to-r from-indigo-600 to-purple-600 p-4 text-white">
+                <div className="flex items-center justify-between">
+                  <div className="flex-1">
+                    <h2 className="text-xl font-bold mb-2">{project.name}</h2>
+                    <div className="flex items-center gap-3">
+                      <div className="flex-1 bg-white bg-opacity-30 rounded-full h-2">
+                        <div className="bg-white h-2 rounded-full transition-all" style={{ width: `${progress}%` }} />
+                      </div>
+                      <span className="text-sm font-semibold">{progress}%</span>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2 ml-4">
+                    {viewMode === 'client' && (
+                      <>
+                        <button onClick={() => shareReport(project)} className="p-2 hover:bg-white hover:bg-opacity-20 rounded" title="Compartir"><Share2 size={18} /></button>
+                        <button onClick={() => downloadReport(project)} className="p-2 hover:bg-white hover:bg-opacity-20 rounded" title="Descargar"><Download size={18} /></button>
+                      </>
+                    )}
+                    {viewMode === 'work' && isProjectAdmin(project) && (
+                      <button
+                        onClick={() => setManagingAccessFor(managingAccessFor === project.id ? null : project.id)}
+                        className="p-2 hover:bg-white hover:bg-opacity-20 rounded"
+                        title="Gestionar acceso"
+                      ><Users size={18} /></button>
+                    )}
+                    {viewMode === 'work' && isProjectAdmin(project) && (
+                      <button onClick={() => deleteItem(project.id)} className="p-2 hover:bg-white hover:bg-opacity-20 rounded"><Trash2 size={18} /></button>
+                    )}
+                    <button onClick={() => toggleExpand(project.id)} className="p-2 hover:bg-white hover:bg-opacity-20 rounded">
+                      {expandedProjects[project.id] ? <ChevronDown size={24} /> : <ChevronRight size={24} />}
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {expandedProjects[project.id] && (
+                <div className="p-4">
+                  {/* Access management panel */}
+                  {managingAccessFor === project.id && isProjectAdmin(project) && (
+                    <div className="mb-4 bg-indigo-50 rounded-lg p-3 border border-indigo-200">
+                      <p className="text-xs font-semibold text-indigo-700 uppercase tracking-wide mb-2">
+                        👥 Acceso al proyecto
+                      </p>
+                      {getAssignableMembers().filter(m => m.email !== currentUser.email).length === 0 && (
+                        <p className="text-xs text-gray-400 text-center py-1">No hay otros miembros. Agregá desde el panel de equipo.</p>
+                      )}
+                      {getAssignableMembers().filter(m => m.email !== currentUser.email).map(member => {
+                        const hasAccess = (project.allowedMembers || []).includes(member.email);
+                        return (
+                          <div key={member.id} className="flex items-center justify-between py-1.5 border-b border-indigo-100 last:border-0">
+                            <div>
+                              <p className="text-sm font-medium text-gray-700">{member.name}</p>
+                              <p className="text-xs text-gray-400">{member.role === 'client' ? '👁️ Cliente' : '🛠️ Equipo'}</p>
+                            </div>
+                            <button
+                              onClick={() => toggleProjectAccess(project.id, member.email)}
+                              className={`px-3 py-1 rounded-full text-xs font-medium transition-all ${hasAccess ? 'bg-indigo-600 text-white' : 'bg-white border border-gray-300 text-gray-500 hover:border-indigo-400'}`}
+                            >
+                              {hasAccess ? '✓ Con acceso' : 'Sin acceso'}
+                            </button>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+
+                  {project.objectives.map(objective => (
+                    <div key={objective.id} className="mb-4 border-l-4 border-indigo-300 pl-4">
+                      <div className="flex items-start justify-between mb-2">
+                        <div className="flex-1">
+                          <h3 className="font-semibold text-gray-800 mb-2">{objective.name}</h3>
+                          
+                          {viewMode === 'work' && (
+                            <div className="flex gap-2 flex-wrap mb-2">
+                              <button onClick={() => updateStatus(project.id, objective.id, null, 'pending')} className={`px-3 py-1 rounded text-xs ${objective.status === 'pending' ? 'bg-gray-400 text-white' : 'bg-gray-200'}`}>Pendiente</button>
+                              <button onClick={() => updateStatus(project.id, objective.id, null, 'in-progress')} className={`px-3 py-1 rounded text-xs ${objective.status === 'in-progress' ? 'bg-yellow-500 text-white' : 'bg-gray-200'}`}>En Progreso</button>
+                              <button onClick={() => updateStatus(project.id, objective.id, null, 'waiting')} className={`px-3 py-1 rounded text-xs ${objective.status === 'waiting' ? 'bg-orange-400 text-white' : 'bg-gray-200'}`}>En Espera</button>
+                              <button onClick={() => updateStatus(project.id, objective.id, null, 'completed')} className={`px-3 py-1 rounded text-xs ${objective.status === 'completed' ? 'bg-green-500 text-white' : 'bg-gray-200'}`}>Completado</button>
+                              <button onClick={() => setAssigningTo(assigningTo === `obj-${objective.id}` ? null : `obj-${objective.id}`)} className="px-3 py-1 rounded text-xs bg-blue-100 text-blue-700"><User size={12} className="inline mr-1" />Asignar</button>
+                            </div>
+                          )}
+                          {viewMode === 'work' && (() => {
+                            const ds = getDueDateStatus(objective.dueDate, objective.status);
+                            return (
+                              <div className="flex items-center gap-2 mb-2 flex-wrap">
+                                <label className="text-xs text-gray-400 flex items-center gap-1">
+                                  📅 Fecha límite:
+                                  <input
+                                    type="date"
+                                    value={objective.dueDate || ''}
+                                    onChange={e => updateDueDate(project.id, objective.id, null, e.target.value || null)}
+                                    className="ml-1 text-xs border border-gray-200 rounded px-1 py-0.5 text-gray-600"
+                                  />
+                                </label>
+                                {ds && <span className={`text-xs px-2 py-0.5 rounded-full border font-medium ${ds.color}`}>{ds.label}</span>}
+                                {objective.dueDate && <button onClick={() => updateDueDate(project.id, objective.id, null, null)} className="text-xs text-gray-300 hover:text-red-400">✕</button>}
+                              </div>
+                            );
+                          })()}
+
+                          {assigningTo === `obj-${objective.id}` && (
+                            <div className="mt-2 mb-2 bg-blue-50 p-3 rounded">
+                              <p className="text-sm font-medium mb-2">Asignar a:</p>
+                              <div className="flex flex-wrap gap-2">
+                                {getAssignableMembers().map(member => (
+                                  <button key={member.id} onClick={() => assignTask(project.id, objective.id, null, member)} className="px-3 py-1 bg-white border rounded text-sm">{member.name}</button>
+                                ))}
+                                <button onClick={() => assignTask(project.id, objective.id, null, null)} className="px-3 py-1 bg-white border rounded text-sm">Sin asignar</button>
+                              </div>
+                            </div>
+                          )}
+
+                          {viewMode === 'client' && (
+                            <div className="space-y-2">
+                              <div className="flex items-center gap-2 flex-wrap mb-1">
+                                <span className={`inline-block px-3 py-1 rounded-full text-xs text-white ${getStatusColor(objective.status)}`}>{getStatusText(objective.status)}</span>
+                                {objective.assignedTo && (
+                                  <span className="text-xs text-gray-500 flex items-center gap-1">
+                                    <User size={12} className="inline" /> {objective.assignedTo.name}
+                                  </span>
+                                )}
+                              </div>
+                              {objective.status === 'waiting' && (
+                                <div>
+                                  <button
+                                    onClick={() => approveTask(project.id, objective.id)}
+                                    className="ml-2 px-3 py-1 bg-green-500 text-white text-xs rounded-full font-medium hover:bg-green-600"
+                                  >✅ Aprobar</button>
+                                </div>
+                              )}
+                              {objective.clientComment && (
+                                <div className="mt-2 bg-blue-50 p-2 rounded border-l-2 border-blue-400">
+                                  <p className="text-xs font-medium text-blue-700 mb-1">💬 Tu comentario:</p>
+                                  <p className="text-xs text-gray-700">{objective.clientComment}</p>
+                                </div>
+                              )}
+                              {editingClientComment === `obj-${objective.id}` ? (
+                                <div className="mt-2 bg-blue-50 p-2 rounded border border-blue-200">
+                                  <textarea
+                                    value={clientComment}
+                                    onChange={e => setClientComment(e.target.value)}
+                                    placeholder="Dejá un comentario..."
+                                    className="w-full p-2 border rounded text-xs mb-2"
+                                    rows="2"
+                                    autoFocus
+                                  />
+                                  <div className="flex gap-2">
+                                    <button onClick={() => saveClientComment(project.id, objective.id, null, clientComment)} className="flex-1 bg-blue-600 text-white py-1 rounded text-xs"><Check size={12} className="inline mr-1" />Guardar</button>
+                                    <button onClick={() => { setEditingClientComment(null); setClientComment(''); }} className="flex-1 bg-gray-300 text-gray-700 py-1 rounded text-xs"><X size={12} className="inline mr-1" />Cancelar</button>
+                                  </div>
+                                </div>
+                              ) : (
+                                <button
+                                  onClick={() => { setEditingClientComment(`obj-${objective.id}`); setClientComment(objective.clientComment || ''); }}
+                                  className="text-xs text-blue-500 hover:text-blue-700"
+                                >💬 {objective.clientComment ? 'Editar comentario' : 'Dejar comentario'}</button>
+                              )}
+                            </div>
+                          )}
+
+                          {objective.notes && (
+                            <div className="mt-3 bg-yellow-50 p-3 rounded border-l-2 border-yellow-400">
+                              <p className="text-sm font-medium text-yellow-800 mb-1">📝 Informe:</p>
+                              <p className="text-sm text-gray-700 whitespace-pre-wrap">{objective.notes}</p>
+                            </div>
+                          )}
+
+                          {objective.files && objective.files.length > 0 && (
+                            <div className="mt-3 space-y-2">
+                              {objective.files.map(file => (
+                                <div key={file.id} className="flex items-center gap-2 bg-gray-50 p-2 rounded">
+                                  {getFileIcon(file.type)}
+                                  <div className="flex-1 min-w-0">
+                                    <p className="text-sm font-medium truncate">{file.name}</p>
+                                    <p className="text-xs text-gray-500">{formatFileSize(file.size)}</p>
+                                  </div>
+                                  <a href={file.data} download={file.name} className="p-1 text-blue-600 hover:bg-blue-50 rounded"><Download size={14} /></a>
+                                  {viewMode === 'work' && (
+                                    <button onClick={() => deleteFile(project.id, objective.id, null, file.id)} className="p-1 text-red-500 hover:bg-red-50 rounded"><X size={14} /></button>
+                                  )}
+                                </div>
+                              ))}
+                            </div>
+                          )}
+
+                          {viewMode === 'work' && editingNotes !== `obj-${objective.id}` && (
+                            <div className="flex gap-2 mt-3">
+                              <button onClick={() => { setEditingNotes(`obj-${objective.id}`); setNoteText(objective.notes || ''); }} className="text-xs px-3 py-1.5 bg-yellow-100 text-yellow-700 rounded">
+                                <FileText size={14} className="inline mr-1" />{objective.notes ? 'Editar Informe' : 'Agregar Informe'}
+                              </button>
+                              <label className="text-xs px-3 py-1.5 bg-blue-100 text-blue-700 rounded cursor-pointer">
+                                <Paperclip size={14} className="inline mr-1" />Adjuntar Archivo
+                                <input type="file" className="hidden" accept="image/*,audio/*,.pdf,.doc,.docx,.txt" onChange={(e) => handleFileUpload(project.id, objective.id, null, e)} />
+                              </label>
+                            </div>
+                          )}
+
+                          {viewMode === 'work' && editingNotes === `obj-${objective.id}` && (
+                            <div className="mt-3 bg-yellow-50 p-3 rounded border-2 border-yellow-300">
+                              <textarea value={noteText} onChange={(e) => setNoteText(e.target.value)} placeholder="Escribe tu informe aquí..." className="w-full p-2 border rounded mb-2 text-sm" rows="4" autoFocus />
+                              <div className="flex gap-2">
+                                <button onClick={() => updateNotes(project.id, objective.id, null, noteText)} className="flex-1 bg-yellow-600 text-white py-2 rounded text-sm"><Check size={14} className="inline mr-1" />Guardar</button>
+                                <button onClick={() => { setEditingNotes(null); setNoteText(''); }} className="flex-1 bg-gray-400 text-white py-2 rounded text-sm"><X size={14} className="inline mr-1" />Cancelar</button>
+                              </div>
+                            </div>
+                          )}
+
+                          {/* TAREAS (antes: sub-objetivos) */}
+                          {objective.subObjectives && objective.subObjectives.length > 0 && (
+                            <div className="mt-3">
+                              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Tareas</p>
+                              {objective.subObjectives.map(sub => (
+                                <div key={sub.id} className="ml-4 mt-2 bg-gray-50 p-3 rounded">
+                                  <div className="flex items-start justify-between">
+                                    <div className="flex-1">
+                                      <div className="flex items-center gap-2 mb-1 flex-wrap">
+                                        <p className="text-sm font-medium">{sub.name}</p>
+                                        {sub.requiresPrevious && !isPreviousCompleted(objective, sub.id) && (
+                                          <span className="text-xs bg-red-100 text-red-600 px-2 py-0.5 rounded-full flex items-center gap-1">🔒 Bloqueada</span>
+                                        )}
+                                        {sub.requiresPrevious && isPreviousCompleted(objective, sub.id) && (
+                                          <span className="text-xs bg-green-100 text-green-600 px-2 py-0.5 rounded-full">✓ Desbloqueada</span>
+                                        )}
+                                      </div>
+                                      {sub.requiresPrevious && (() => {
+                                        const idx = objective.subObjectives.findIndex(s => s.id === sub.id);
+                                        const prevTask = idx > 0 ? objective.subObjectives[idx - 1] : null;
+                                        return prevTask ? (
+                                          <p className="text-xs text-gray-400 mb-2">⬆ Depende de: <span className="font-medium text-gray-600">{prevTask.name}</span></p>
+                                        ) : null;
+                                      })()}
+
+                                      {viewMode === 'work' && (
+                                        <div className="flex gap-2 flex-wrap mb-2">
+                                          <button onClick={() => updateStatus(project.id, objective.id, sub.id, 'pending')} className={`px-2 py-1 rounded text-xs ${sub.status === 'pending' ? 'bg-gray-400 text-white' : 'bg-gray-200'}`}>Pendiente</button>
+                                          <button onClick={() => updateStatus(project.id, objective.id, sub.id, 'in-progress')} className={`px-2 py-1 rounded text-xs ${sub.status === 'in-progress' ? 'bg-yellow-500 text-white' : 'bg-gray-200'}`}>En Progreso</button>
+                                          <button onClick={() => updateStatus(project.id, objective.id, sub.id, 'waiting')} className={`px-2 py-1 rounded text-xs ${sub.status === 'waiting' ? 'bg-orange-400 text-white' : 'bg-gray-200'}`}>En Espera</button>
+                                          <button onClick={() => updateStatus(project.id, objective.id, sub.id, 'completed')} className={`px-2 py-1 rounded text-xs ${sub.status === 'completed' ? 'bg-green-500 text-white' : 'bg-gray-200'}`}>Completado</button>
+                                          <button onClick={() => setAssigningTo(assigningTo === `sub-${sub.id}` ? null : `sub-${sub.id}`)} className="px-2 py-1 rounded text-xs bg-blue-100 text-blue-700"><User size={10} className="inline mr-1" />Asignar</button>
+                                        </div>
+                                      )}
+                                      {viewMode === 'work' && (() => {
+                                        const ds = getDueDateStatus(sub.dueDate, sub.status);
+                                        return (
+                                          <div className="flex items-center gap-2 mb-2 flex-wrap">
+                                            <label className="text-xs text-gray-400 flex items-center gap-1">
+                                              📅
+                                              <input
+                                                type="date"
+                                                value={sub.dueDate || ''}
+                                                onChange={e => updateDueDate(project.id, objective.id, sub.id, e.target.value || null)}
+                                                className="text-xs border border-gray-200 rounded px-1 py-0.5 text-gray-600"
+                                              />
+                                            </label>
+                                            {ds && <span className={`text-xs px-2 py-0.5 rounded-full border font-medium ${ds.color}`}>{ds.label}</span>}
+                                            {sub.dueDate && <button onClick={() => updateDueDate(project.id, objective.id, sub.id, null)} className="text-xs text-gray-300 hover:text-red-400">✕</button>}
+                                          </div>
+                                        );
+                                      })()}
+
+                                      {viewMode === 'work' && objective.subObjectives.findIndex(s => s.id === sub.id) > 0 && (
+                                        <label className="flex items-center gap-2 text-xs text-gray-500 cursor-pointer mb-2 select-none">
+                                          <input
+                                            type="checkbox"
+                                            checked={!!sub.requiresPrevious}
+                                            onChange={() => toggleRequiresPrevious(project.id, objective.id, sub.id)}
+                                            className="w-3 h-3 accent-orange-400"
+                                          />
+                                          🔒 Requiere tarea anterior
+                                        </label>
+                                      )}
+
+                                      {assigningTo === `sub-${sub.id}` && (
+                                        <div className="mt-2 mb-2 bg-blue-50 p-2 rounded">
+                                          <p className="text-xs font-medium mb-2">Asignar a:</p>
+                                          <div className="flex flex-wrap gap-1">
+                                            {getAssignableMembers().map(member => (
+                                              <button key={member.id} onClick={() => assignTask(project.id, objective.id, sub.id, member)} className="px-2 py-1 bg-white border rounded text-xs">{member.name}</button>
+                                            ))}
+                                            <button onClick={() => assignTask(project.id, objective.id, sub.id, null)} className="px-2 py-1 bg-white border rounded text-xs">Sin asignar</button>
+                                          </div>
+                                        </div>
+                                      )}
+
+                                      {viewMode === 'client' && (
+                                        <div className="space-y-1">
+                                          <div className="flex items-center gap-2 flex-wrap mb-1">
+                                            <span className={`inline-block px-2 py-1 rounded-full text-xs text-white ${getStatusColor(sub.status)}`}>{getStatusText(sub.status)}</span>
+                                            {sub.assignedTo && (
+                                              <span className="text-xs text-gray-500 flex items-center gap-1">
+                                                <User size={12} className="inline" /> {sub.assignedTo.name}
+                                              </span>
+                                            )}
+                                          </div>
+                                          {sub.status === 'waiting' && (
+                                            <div>
+                                              <button
+                                                onClick={() => approveTask(project.id, objective.id, sub.id)}
+                                                className="ml-2 px-3 py-1 bg-green-500 text-white text-xs rounded-full font-medium hover:bg-green-600"
+                                              >✅ Aprobar</button>
+                                            </div>
+                                          )}
+                                          {sub.clientComment && (
+                                            <div className="mt-1 bg-blue-50 p-2 rounded border-l-2 border-blue-400">
+                                              <p className="text-xs font-medium text-blue-700 mb-0.5">💬 Tu comentario:</p>
+                                              <p className="text-xs text-gray-700">{sub.clientComment}</p>
+                                            </div>
+                                          )}
+                                          {editingClientComment === `sub-${sub.id}` ? (
+                                            <div className="mt-1 bg-blue-50 p-2 rounded border border-blue-200">
+                                              <textarea
+                                                value={clientComment}
+                                                onChange={e => setClientComment(e.target.value)}
+                                                placeholder="Dejá un comentario..."
+                                                className="w-full p-2 border rounded text-xs mb-2"
+                                                rows="2"
+                                                autoFocus
+                                              />
+                                              <div className="flex gap-2">
+                                                <button onClick={() => saveClientComment(project.id, objective.id, sub.id, clientComment)} className="flex-1 bg-blue-600 text-white py-1 rounded text-xs"><Check size={12} className="inline mr-1" />Guardar</button>
+                                                <button onClick={() => { setEditingClientComment(null); setClientComment(''); }} className="flex-1 bg-gray-300 text-gray-700 py-1 rounded text-xs"><X size={12} className="inline mr-1" />Cancelar</button>
+                                              </div>
+                                            </div>
+                                          ) : (
+                                            <button
+                                              onClick={() => { setEditingClientComment(`sub-${sub.id}`); setClientComment(sub.clientComment || ''); }}
+                                              className="text-xs text-blue-500 hover:text-blue-700"
+                                            >💬 {sub.clientComment ? 'Editar comentario' : 'Dejar comentario'}</button>
+                                          )}
+                                        </div>
+                                      )}
+
+                                      {sub.notes && (
+                                        <div className="mt-2 bg-yellow-50 p-2 rounded border-l-2 border-yellow-400">
+                                          <p className="text-xs font-medium text-yellow-800">📝 Informe:</p>
+                                          <p className="text-xs text-gray-700 whitespace-pre-wrap">{sub.notes}</p>
+                                        </div>
+                                      )}
+
+                                      {sub.files && sub.files.length > 0 && (
+                                        <div className="mt-2 space-y-1">
+                                          {sub.files.map(file => (
+                                            <div key={file.id} className="flex items-center gap-2 bg-white p-2 rounded text-xs">
+                                              {getFileIcon(file.type)}
+                                              <div className="flex-1 min-w-0">
+                                                <p className="font-medium truncate">{file.name}</p>
+                                                <p className="text-gray-500">{formatFileSize(file.size)}</p>
+                                              </div>
+                                              <a href={file.data} download={file.name} className="p-1 text-blue-600"><Download size={12} /></a>
+                                              {viewMode === 'work' && (
+                                                <button onClick={() => deleteFile(project.id, objective.id, sub.id, file.id)} className="p-1 text-red-500"><X size={12} /></button>
+                                              )}
+                                            </div>
+                                          ))}
+                                        </div>
+                                      )}
+
+                                      {viewMode === 'work' && editingNotes !== `sub-${sub.id}` && (
+                                        <div className="flex gap-2 mt-2">
+                                          <button onClick={() => { setEditingNotes(`sub-${sub.id}`); setNoteText(sub.notes || ''); }} className="text-xs px-2 py-1 bg-yellow-100 text-yellow-700 rounded"><FileText size={12} className="inline mr-1" />{sub.notes ? 'Editar' : 'Informe'}</button>
+                                          <label className="text-xs px-2 py-1 bg-blue-100 text-blue-700 rounded cursor-pointer"><Paperclip size={12} className="inline mr-1" />Archivo<input type="file" className="hidden" accept="image/*,audio/*,.pdf,.doc,.docx,.txt" onChange={(e) => handleFileUpload(project.id, objective.id, sub.id, e)} /></label>
+                                        </div>
+                                      )}
+
+                                      {viewMode === 'work' && editingNotes === `sub-${sub.id}` && (
+                                        <div className="mt-2 bg-yellow-50 p-2 rounded border border-yellow-300">
+                                          <textarea value={noteText} onChange={(e) => setNoteText(e.target.value)} placeholder="Escribe tu informe..." className="w-full p-2 border rounded mb-2 text-xs" rows="3" autoFocus />
+                                          <div className="flex gap-2">
+                                            <button onClick={() => updateNotes(project.id, objective.id, sub.id, noteText)} className="flex-1 bg-yellow-600 text-white py-1 rounded text-xs"><Check size={12} className="inline mr-1" />Guardar</button>
+                                            <button onClick={() => { setEditingNotes(null); setNoteText(''); }} className="flex-1 bg-gray-400 text-white py-1 rounded text-xs"><X size={12} className="inline mr-1" />Cancelar</button>
+                                          </div>
+                                        </div>
+                                      )}
+                                    </div>
+                                    {viewMode === 'work' && (
+                                      <div className="flex flex-col ml-2">
+                                        <button
+                                          onClick={() => moveTask(project.id, objective.id, sub.id, 'up')}
+                                          disabled={objective.subObjectives.findIndex(s => s.id === sub.id) === 0}
+                                          className="p-0.5 text-gray-400 hover:text-indigo-600 disabled:opacity-20 disabled:cursor-not-allowed"
+                                          title="Subir tarea"
+                                        >▲</button>
+                                        <button
+                                          onClick={() => moveTask(project.id, objective.id, sub.id, 'down')}
+                                          disabled={objective.subObjectives.findIndex(s => s.id === sub.id) === objective.subObjectives.length - 1}
+                                          className="p-0.5 text-gray-400 hover:text-indigo-600 disabled:opacity-20 disabled:cursor-not-allowed"
+                                          title="Bajar tarea"
+                                        >▼</button>
+                                      </div>
+                                    )}
+                                    {viewMode === 'work' && (
+                                      <button onClick={() => deleteItem(project.id, objective.id, sub.id)} className="p-1 text-red-500 ml-1"><Trash2 size={14} /></button>
+                                    )}
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+
+                          {/* Botón agregar tarea */}
+                          {viewMode === 'work' && addingSubObjectiveTo !== objective.id && (
+                            <button onClick={() => setAddingSubObjectiveTo(objective.id)} className="mt-2 ml-4 text-sm text-indigo-600">
+                              <Plus size={16} className="inline mr-1" />Agregar tarea
+                            </button>
+                          )}
+
+                          {viewMode === 'work' && addingSubObjectiveTo === objective.id && (
+                            <div className="mt-3 ml-4 bg-indigo-50 p-3 rounded">
+                              <input
+                                type="text"
+                                value={newSubObjectiveName}
+                                onChange={(e) => setNewSubObjectiveName(e.target.value)}
+                                placeholder="Nombre de la tarea..."
+                                className="w-full p-2 border rounded mb-2"
+                                autoFocus
+                                onKeyPress={(e) => { if (e.key === 'Enter' && newSubObjectiveName.trim()) addSubObjective(project.id, objective.id, newSubObjectiveName); }}
+                              />
+                              <div className="flex gap-2">
+                                <button onClick={() => addSubObjective(project.id, objective.id, newSubObjectiveName)} className="flex-1 bg-indigo-600 text-white py-2 rounded text-sm"><Check size={14} className="inline mr-1" />Agregar</button>
+                                <button onClick={() => { setAddingSubObjectiveTo(null); setNewSubObjectiveName(''); }} className="flex-1 bg-gray-400 text-white py-2 rounded text-sm"><X size={14} className="inline mr-1" />Cancelar</button>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                        {viewMode === 'work' && (
+                          <button onClick={() => deleteItem(project.id, objective.id)} className="p-2 text-red-500 ml-2"><Trash2 size={16} /></button>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+
+                  {viewMode === 'work' && addingObjectiveTo !== project.id && (
+                    <button onClick={() => setAddingObjectiveTo(project.id)} className="mt-4 w-full py-3 border-2 border-indigo-300 text-indigo-600 rounded-lg">
+                      <Plus size={20} className="inline mr-1" />Agregar Objetivo
+                    </button>
+                  )}
+
+                  {viewMode === 'work' && addingObjectiveTo === project.id && (
+                    <div className="mt-4 bg-indigo-50 p-4 rounded-lg">
+                      <input
+                        type="text"
+                        value={newObjectiveName}
+                        onChange={(e) => setNewObjectiveName(e.target.value)}
+                        placeholder="Escribe el nombre del objetivo..."
+                        className="w-full p-3 border-2 rounded-lg mb-3"
+                        autoFocus
+                        onKeyPress={(e) => { if (e.key === 'Enter' && newObjectiveName.trim()) addObjective(project.id, newObjectiveName); }}
+                      />
+                      <div className="flex gap-2">
+                        <button onClick={() => addObjective(project.id, newObjectiveName)} className="flex-1 bg-indigo-600 text-white py-3 rounded-lg"><Check size={18} className="inline mr-1" />Agregar</button>
+                        <button onClick={() => { setAddingObjectiveTo(null); setNewObjectiveName(''); }} className="flex-1 bg-gray-400 text-white py-3 rounded-lg"><X size={18} className="inline mr-1" />Cancelar</button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          );
+        })}
+
+        {filteredProjects.length === 0 && (
+          <div>
+            {filterMode === 'my-tasks' ? (
+              <div className="text-center py-12 text-gray-500">
+                <p className="text-lg mb-2">No tenés tareas asignadas</p>
+                <p className="text-sm">Cambiá a "Todas" para ver todos los proyectos</p>
+              </div>
+            ) : (
+              <div className="bg-white rounded-2xl shadow-md overflow-hidden">
+                {/* Header onboarding */}
+                <div className="bg-gradient-to-r from-indigo-600 to-purple-600 p-8 text-white text-center">
+                  <div className="text-5xl mb-3">🚀</div>
+                  <h2 className="text-2xl font-bold mb-2">¡Bienvenido a Flowdesk!</h2>
+                  <p className="text-indigo-200 text-sm max-w-xs mx-auto">Tu espacio para gestionar proyectos de forma simple, clara y colaborativa</p>
+                </div>
+
+                {/* Steps */}
+                <div className="p-6">
+                  <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest text-center mb-5">Empezá en 3 pasos</p>
+                  <div className="space-y-4">
+                    <div className="flex items-start gap-4 p-4 bg-indigo-50 rounded-xl border-l-4 border-indigo-500">
+                      <div className="w-9 h-9 bg-indigo-600 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0">1</div>
+                      <div>
+                        <p className="font-semibold text-gray-800">Creá tu primer proyecto</p>
+                        <p className="text-sm text-gray-500 mt-0.5">Un proyecto agrupa todo el trabajo relacionado a un cliente o iniciativa. Ej: "Rediseño web Empresa XYZ"</p>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-4 p-4 bg-purple-50 rounded-xl border-l-4 border-purple-400">
+                      <div className="w-9 h-9 bg-purple-500 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0">2</div>
+                      <div>
+                        <p className="font-semibold text-gray-800">Agregá objetivos</p>
+                        <p className="text-sm text-gray-500 mt-0.5">Los objetivos son las grandes etapas del proyecto. Ej: "Diseño", "Desarrollo", "Lanzamiento"</p>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-4 p-4 bg-green-50 rounded-xl border-l-4 border-green-400">
+                      <div className="w-9 h-9 bg-green-500 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0">3</div>
+                      <div>
+                        <p className="font-semibold text-gray-800">Asigná tareas a tu equipo</p>
+                        <p className="text-sm text-gray-500 mt-0.5">Dentro de cada objetivo, creá tareas concretas y asignalas a los responsables. El cliente puede ver el avance en tiempo real.</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* CTA */}
+                  {currentUser?.role !== 'client' && (
+                    <button
+                      onClick={() => setShowAddProject(true)}
+                      className="w-full mt-6 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl font-semibold text-base shadow-md hover:opacity-90 transition-opacity"
+                    >
+                      <Plus size={20} className="inline mr-2" />Crear mi primer proyecto
+                    </button>
+                  )}
+
+                  <p className="text-xs text-center text-gray-400 mt-4">
+                    ¿Tenés dudas? Compartí este link con tu equipo y empiecen juntos.
+                  </p>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+
+      {/* Confirm Dialog Modal */}
+      {confirmDialog && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 px-4">
+          <div className="bg-white rounded-2xl shadow-2xl p-6 max-w-sm w-full">
+            <div className="text-center mb-5">
+              <div className="w-14 h-14 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                <Trash2 size={26} className="text-red-500" />
+              </div>
+              <p className="text-gray-800 font-medium text-base">{confirmDialog.message}</p>
+            </div>
+            <div className="flex gap-3">
+              <button
+                onClick={() => setConfirmDialog(null)}
+                className="flex-1 py-3 rounded-xl bg-gray-100 text-gray-700 font-semibold hover:bg-gray-200 transition-colors"
+              >Cancelar</button>
+              <button
+                onClick={() => { confirmDialog.onConfirm(); setConfirmDialog(null); }}
+                className="flex-1 py-3 rounded-xl bg-red-500 text-white font-semibold hover:bg-red-600 transition-colors"
+              >Eliminar</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Overlay micrófono desactivado en artifact - reactivar en Vercel */}
+      {false && isListening && (
+        <div className="fixed bottom-4 left-4 right-4 bg-red-500 text-white p-4 rounded-lg shadow-lg text-center z-50">
+          <p className="font-bold">🎤 Escuchando...</p>
+          <p className="text-sm">Di: "proyecto [nombre]" o "tarea [descripción]"</p>
+        </div>
+      )}
+
+      {/* Toast voz desactivado en artifact - reactivar en Vercel */}
+      {false && voiceError && !isListening && (
+        <div className={`fixed bottom-4 left-4 right-4 p-4 rounded-lg shadow-lg text-center z-50 ${voiceError.startsWith('✓') ? 'bg-green-500' : 'bg-orange-500'} text-white`}>
+          <p className="font-medium">{voiceError}</p>
+          {lastVoiceCommand && <p className="text-sm mt-1">Escuché: "{lastVoiceCommand}"</p>}
+          <button onClick={() => { setVoiceError(''); setLastVoiceCommand(''); }} className="mt-2 px-4 py-1 bg-white bg-opacity-30 rounded text-sm">OK</button>
+        </div>
+      )}
+    </div>
+  );
+};
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(React.createElement(ProjectManager));
+  </script>
+</body>
+</html>
