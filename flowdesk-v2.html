@@ -68,7 +68,12 @@ const ProjectManager = () => {
   const [isListening, setIsListening] = useState(false);
   const [voiceError, setVoiceError] = useState('');
   const [lastVoiceCommand, setLastVoiceCommand] = useState('');
-  const [viewMode, setViewMode] = useState('work');
+  const [viewMode, setViewModeRaw] = useState('work');
+  const setViewMode = (mode) => {
+    if (currentUser?.role === 'client') return;
+    setViewModeRaw(mode);
+  };
+  const effectiveViewMode = currentUser?.role === 'client' ? 'client' : viewMode;
   const [filterMode, setFilterMode] = useState('all');
   const [expandedProjects, setExpandedProjects] = useState({});
   const [showAddProject, setShowAddProject] = useState(false);
@@ -1450,10 +1455,10 @@ const ProjectManager = () => {
           
           {currentUser?.role !== 'client' && (
             <div className="flex gap-2 mb-2">
-              <button onClick={() => setViewMode('work')} className={`flex-1 py-2 px-4 rounded-lg font-medium ${viewMode === 'work' ? 'bg-indigo-600 text-white' : 'bg-gray-200 text-gray-700'}`}>
+              <button onClick={() => setViewMode('work')} className={`flex-1 py-2 px-4 rounded-lg font-medium ${effectiveViewMode === 'work' ? 'bg-indigo-600 text-white' : 'bg-gray-200 text-gray-700'}`}>
                 <Edit2 size={16} className="inline mr-1" />Modo Trabajo
               </button>
-              <button onClick={() => setViewMode('client')} className={`flex-1 py-2 px-4 rounded-lg font-medium ${viewMode === 'client' ? 'bg-green-600 text-white' : 'bg-gray-200 text-gray-700'}`}>
+              <button onClick={() => setViewMode('client')} className={`flex-1 py-2 px-4 rounded-lg font-medium ${effectiveViewMode === 'client' ? 'bg-green-600 text-white' : 'bg-gray-200 text-gray-700'}`}>
                 <Eye size={16} className="inline mr-1" />Vista Cliente
               </button>
             </div>
@@ -1465,7 +1470,7 @@ const ProjectManager = () => {
             </div>
           )}
 
-          {viewMode === 'work' && currentUser?.role !== 'client' && (
+          {effectiveViewMode === 'work' && currentUser?.role !== 'client' && (
             <div className="flex gap-2">
               <button onClick={() => setFilterMode('all')} className={`flex-1 py-2 px-3 rounded-lg text-sm font-medium ${filterMode === 'all' ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-600'}`}>
                 <Filter size={14} className="inline mr-1" />Todas
@@ -1618,7 +1623,7 @@ const ProjectManager = () => {
           </div>
         )}
 
-        {viewMode === 'work' && !showAddProject && currentUser?.role !== 'client' && (
+        {effectiveViewMode === 'work' && !showAddProject && currentUser?.role !== 'client' && (
           <button onClick={() => setShowAddProject(true)} className="w-full mb-4 py-3 border-2 border-dashed border-indigo-300 rounded-lg text-indigo-600 font-medium hover:bg-indigo-50">
             <Plus size={20} className="inline mr-2" />Nuevo Proyecto
           </button>
@@ -1651,20 +1656,20 @@ const ProjectManager = () => {
                     </div>
                   </div>
                   <div className="flex items-center gap-2 ml-4">
-                    {viewMode === 'client' && (
+                    {effectiveViewMode === 'client' && (
                       <>
                         <button onClick={() => shareReport(project)} className="p-2 hover:bg-white hover:bg-opacity-20 rounded" title="Compartir"><Share2 size={18} /></button>
                         <button onClick={() => downloadReport(project)} className="p-2 hover:bg-white hover:bg-opacity-20 rounded" title="Descargar"><Download size={18} /></button>
                       </>
                     )}
-                    {viewMode === 'work' && isProjectAdmin(project) && (
+                    {effectiveViewMode === 'work' && isProjectAdmin(project) && (
                       <button
                         onClick={() => setManagingAccessFor(managingAccessFor === project.id ? null : project.id)}
                         className="p-2 hover:bg-white hover:bg-opacity-20 rounded"
                         title="Gestionar acceso"
                       ><Users size={18} /></button>
                     )}
-                    {viewMode === 'work' && isProjectAdmin(project) && (
+                    {effectiveViewMode === 'work' && isProjectAdmin(project) && (
                       <button onClick={() => deleteItem(project.id)} className="p-2 hover:bg-white hover:bg-opacity-20 rounded"><Trash2 size={18} /></button>
                     )}
                     <button onClick={() => toggleExpand(project.id)} className="p-2 hover:bg-white hover:bg-opacity-20 rounded">
@@ -1711,16 +1716,21 @@ const ProjectManager = () => {
                         <div className="flex-1">
                           <h3 className="font-semibold text-gray-800 mb-2">{objective.name}</h3>
                           
-                          {viewMode === 'work' && (
+                          {effectiveViewMode === 'work' && (
                             <div className="flex gap-2 flex-wrap mb-2">
                               <button onClick={() => updateStatus(project.id, objective.id, null, 'pending')} className={`px-3 py-1 rounded text-xs ${objective.status === 'pending' ? 'bg-gray-400 text-white' : 'bg-gray-200'}`}>Pendiente</button>
                               <button onClick={() => updateStatus(project.id, objective.id, null, 'in-progress')} className={`px-3 py-1 rounded text-xs ${objective.status === 'in-progress' ? 'bg-yellow-500 text-white' : 'bg-gray-200'}`}>En Progreso</button>
                               <button onClick={() => updateStatus(project.id, objective.id, null, 'waiting')} className={`px-3 py-1 rounded text-xs ${objective.status === 'waiting' ? 'bg-orange-400 text-white' : 'bg-gray-200'}`}>En Espera</button>
                               <button onClick={() => updateStatus(project.id, objective.id, null, 'completed')} className={`px-3 py-1 rounded text-xs ${objective.status === 'completed' ? 'bg-green-500 text-white' : 'bg-gray-200'}`}>Completado</button>
                               <button onClick={() => setAssigningTo(assigningTo === `obj-${objective.id}` ? null : `obj-${objective.id}`)} className="px-3 py-1 rounded text-xs bg-blue-100 text-blue-700"><User size={12} className="inline mr-1" />Asignar</button>
+                              {objective.assignedTo && (
+                                <span className="px-3 py-1 rounded text-xs bg-indigo-50 text-indigo-700 font-medium flex items-center gap-1">
+                                  <User size={12} />👤 {objective.assignedTo.name}
+                                </span>
+                              )}
                             </div>
                           )}
-                          {viewMode === 'work' && (() => {
+                          {effectiveViewMode === 'work' && (() => {
                             const ds = getDueDateStatus(objective.dueDate, objective.status);
                             return (
                               <div className="flex items-center gap-2 mb-2 flex-wrap">
@@ -1751,7 +1761,7 @@ const ProjectManager = () => {
                             </div>
                           )}
 
-                          {viewMode === 'client' && (
+                          {effectiveViewMode === 'client' && (
                             <div className="space-y-2">
                               <div className="flex items-center gap-2 flex-wrap mb-1">
                                 <span className={`inline-block px-3 py-1 rounded-full text-xs text-white ${getStatusColor(objective.status)}`}>{getStatusText(objective.status)}</span>
@@ -1816,7 +1826,7 @@ const ProjectManager = () => {
                                     <p className="text-xs text-gray-500">{formatFileSize(file.size)}</p>
                                   </div>
                                   <a href={file.data} download={file.name} className="p-1 text-blue-600 hover:bg-blue-50 rounded"><Download size={14} /></a>
-                                  {viewMode === 'work' && (
+                                  {effectiveViewMode === 'work' && (
                                     <button onClick={() => deleteFile(project.id, objective.id, null, file.id)} className="p-1 text-red-500 hover:bg-red-50 rounded"><X size={14} /></button>
                                   )}
                                 </div>
@@ -1824,7 +1834,7 @@ const ProjectManager = () => {
                             </div>
                           )}
 
-                          {viewMode === 'work' && editingNotes !== `obj-${objective.id}` && (
+                          {effectiveViewMode === 'work' && editingNotes !== `obj-${objective.id}` && (
                             <div className="flex gap-2 mt-3">
                               <button onClick={() => { setEditingNotes(`obj-${objective.id}`); setNoteText(objective.notes || ''); }} className="text-xs px-3 py-1.5 bg-yellow-100 text-yellow-700 rounded">
                                 <FileText size={14} className="inline mr-1" />{objective.notes ? 'Editar Informe' : 'Agregar Informe'}
@@ -1836,7 +1846,7 @@ const ProjectManager = () => {
                             </div>
                           )}
 
-                          {viewMode === 'work' && editingNotes === `obj-${objective.id}` && (
+                          {effectiveViewMode === 'work' && editingNotes === `obj-${objective.id}` && (
                             <div className="mt-3 bg-yellow-50 p-3 rounded border-2 border-yellow-300">
                               <textarea value={noteText} onChange={(e) => setNoteText(e.target.value)} placeholder="Escribe tu informe aquí..." className="w-full p-2 border rounded mb-2 text-sm" rows="4" autoFocus />
                               <div className="flex gap-2">
@@ -1871,16 +1881,21 @@ const ProjectManager = () => {
                                         ) : null;
                                       })()}
 
-                                      {viewMode === 'work' && (
+                                      {effectiveViewMode === 'work' && (
                                         <div className="flex gap-2 flex-wrap mb-2">
                                           <button onClick={() => updateStatus(project.id, objective.id, sub.id, 'pending')} className={`px-2 py-1 rounded text-xs ${sub.status === 'pending' ? 'bg-gray-400 text-white' : 'bg-gray-200'}`}>Pendiente</button>
                                           <button onClick={() => updateStatus(project.id, objective.id, sub.id, 'in-progress')} className={`px-2 py-1 rounded text-xs ${sub.status === 'in-progress' ? 'bg-yellow-500 text-white' : 'bg-gray-200'}`}>En Progreso</button>
                                           <button onClick={() => updateStatus(project.id, objective.id, sub.id, 'waiting')} className={`px-2 py-1 rounded text-xs ${sub.status === 'waiting' ? 'bg-orange-400 text-white' : 'bg-gray-200'}`}>En Espera</button>
                                           <button onClick={() => updateStatus(project.id, objective.id, sub.id, 'completed')} className={`px-2 py-1 rounded text-xs ${sub.status === 'completed' ? 'bg-green-500 text-white' : 'bg-gray-200'}`}>Completado</button>
                                           <button onClick={() => setAssigningTo(assigningTo === `sub-${sub.id}` ? null : `sub-${sub.id}`)} className="px-2 py-1 rounded text-xs bg-blue-100 text-blue-700"><User size={10} className="inline mr-1" />Asignar</button>
+                                          {sub.assignedTo && (
+                                            <span className="px-2 py-1 rounded text-xs bg-indigo-50 text-indigo-700 font-medium flex items-center gap-1">
+                                              <User size={10} />👤 {sub.assignedTo.name}
+                                            </span>
+                                          )}
                                         </div>
                                       )}
-                                      {viewMode === 'work' && (() => {
+                                      {effectiveViewMode === 'work' && (() => {
                                         const ds = getDueDateStatus(sub.dueDate, sub.status);
                                         return (
                                           <div className="flex items-center gap-2 mb-2 flex-wrap">
@@ -1899,7 +1914,7 @@ const ProjectManager = () => {
                                         );
                                       })()}
 
-                                      {viewMode === 'work' && objective.subObjectives.findIndex(s => s.id === sub.id) > 0 && (
+                                      {effectiveViewMode === 'work' && objective.subObjectives.findIndex(s => s.id === sub.id) > 0 && (
                                         <label className="flex items-center gap-2 text-xs text-gray-500 cursor-pointer mb-2 select-none">
                                           <input
                                             type="checkbox"
@@ -1923,7 +1938,7 @@ const ProjectManager = () => {
                                         </div>
                                       )}
 
-                                      {viewMode === 'client' && (
+                                      {effectiveViewMode === 'client' && (
                                         <div className="space-y-1">
                                           <div className="flex items-center gap-2 flex-wrap mb-1">
                                             <span className={`inline-block px-2 py-1 rounded-full text-xs text-white ${getStatusColor(sub.status)}`}>{getStatusText(sub.status)}</span>
@@ -1988,7 +2003,7 @@ const ProjectManager = () => {
                                                 <p className="text-gray-500">{formatFileSize(file.size)}</p>
                                               </div>
                                               <a href={file.data} download={file.name} className="p-1 text-blue-600"><Download size={12} /></a>
-                                              {viewMode === 'work' && (
+                                              {effectiveViewMode === 'work' && (
                                                 <button onClick={() => deleteFile(project.id, objective.id, sub.id, file.id)} className="p-1 text-red-500"><X size={12} /></button>
                                               )}
                                             </div>
@@ -1996,14 +2011,14 @@ const ProjectManager = () => {
                                         </div>
                                       )}
 
-                                      {viewMode === 'work' && editingNotes !== `sub-${sub.id}` && (
+                                      {effectiveViewMode === 'work' && editingNotes !== `sub-${sub.id}` && (
                                         <div className="flex gap-2 mt-2">
                                           <button onClick={() => { setEditingNotes(`sub-${sub.id}`); setNoteText(sub.notes || ''); }} className="text-xs px-2 py-1 bg-yellow-100 text-yellow-700 rounded"><FileText size={12} className="inline mr-1" />{sub.notes ? 'Editar' : 'Informe'}</button>
                                           <label className="text-xs px-2 py-1 bg-blue-100 text-blue-700 rounded cursor-pointer"><Paperclip size={12} className="inline mr-1" />Archivo<input type="file" className="hidden" accept="image/*,audio/*,.pdf,.doc,.docx,.txt" onChange={(e) => handleFileUpload(project.id, objective.id, sub.id, e)} /></label>
                                         </div>
                                       )}
 
-                                      {viewMode === 'work' && editingNotes === `sub-${sub.id}` && (
+                                      {effectiveViewMode === 'work' && editingNotes === `sub-${sub.id}` && (
                                         <div className="mt-2 bg-yellow-50 p-2 rounded border border-yellow-300">
                                           <textarea value={noteText} onChange={(e) => setNoteText(e.target.value)} placeholder="Escribe tu informe..." className="w-full p-2 border rounded mb-2 text-xs" rows="3" autoFocus />
                                           <div className="flex gap-2">
@@ -2013,7 +2028,7 @@ const ProjectManager = () => {
                                         </div>
                                       )}
                                     </div>
-                                    {viewMode === 'work' && (
+                                    {effectiveViewMode === 'work' && (
                                       <div className="flex flex-col ml-2">
                                         <button
                                           onClick={() => moveTask(project.id, objective.id, sub.id, 'up')}
@@ -2029,7 +2044,7 @@ const ProjectManager = () => {
                                         >▼</button>
                                       </div>
                                     )}
-                                    {viewMode === 'work' && (
+                                    {effectiveViewMode === 'work' && (
                                       <button onClick={() => deleteItem(project.id, objective.id, sub.id)} className="p-1 text-red-500 ml-1"><Trash2 size={14} /></button>
                                     )}
                                   </div>
@@ -2039,13 +2054,13 @@ const ProjectManager = () => {
                           )}
 
                           {/* Botón agregar tarea */}
-                          {viewMode === 'work' && addingSubObjectiveTo !== objective.id && (
+                          {effectiveViewMode === 'work' && addingSubObjectiveTo !== objective.id && (
                             <button onClick={() => setAddingSubObjectiveTo(objective.id)} className="mt-2 ml-4 text-sm text-indigo-600">
                               <Plus size={16} className="inline mr-1" />Agregar tarea
                             </button>
                           )}
 
-                          {viewMode === 'work' && addingSubObjectiveTo === objective.id && (
+                          {effectiveViewMode === 'work' && addingSubObjectiveTo === objective.id && (
                             <div className="mt-3 ml-4 bg-indigo-50 p-3 rounded">
                               <input
                                 type="text"
@@ -2063,20 +2078,20 @@ const ProjectManager = () => {
                             </div>
                           )}
                         </div>
-                        {viewMode === 'work' && (
+                        {effectiveViewMode === 'work' && (
                           <button onClick={() => deleteItem(project.id, objective.id)} className="p-2 text-red-500 ml-2"><Trash2 size={16} /></button>
                         )}
                       </div>
                     </div>
                   ))}
 
-                  {viewMode === 'work' && addingObjectiveTo !== project.id && (
+                  {effectiveViewMode === 'work' && addingObjectiveTo !== project.id && (
                     <button onClick={() => setAddingObjectiveTo(project.id)} className="mt-4 w-full py-3 border-2 border-indigo-300 text-indigo-600 rounded-lg">
                       <Plus size={20} className="inline mr-1" />Agregar Objetivo
                     </button>
                   )}
 
-                  {viewMode === 'work' && addingObjectiveTo === project.id && (
+                  {effectiveViewMode === 'work' && addingObjectiveTo === project.id && (
                     <div className="mt-4 bg-indigo-50 p-4 rounded-lg">
                       <input
                         type="text"
