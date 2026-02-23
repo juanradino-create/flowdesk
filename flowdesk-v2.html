@@ -917,7 +917,7 @@ const ProjectManager = () => {
 
   const canAccessProject = (project) => {
     if (isProjectAdmin(project)) return true;
-    if (!project.allowedMembers) return true; // legacy projects visible to all
+    if (!project.allowedMembers || project.allowedMembers.length === 0) return false;
     return project.allowedMembers.includes(currentUser.email);
   };
 
@@ -1684,11 +1684,12 @@ const ProjectManager = () => {
                   {/* Access management panel */}
                   {managingAccessFor === project.id && isProjectAdmin(project) && (
                     <div className="mb-4 bg-indigo-50 rounded-lg p-3 border border-indigo-200">
-                      <p className="text-xs font-semibold text-indigo-700 uppercase tracking-wide mb-2">
-                        👥 Acceso al proyecto
+                      <p className="text-xs font-semibold text-indigo-700 uppercase tracking-wide mb-1">
+                        👥 ¿Quién puede ver este proyecto?
                       </p>
+                      <p className="text-xs text-gray-400 mb-3">Solo vos y las personas que activés aquí van a ver este proyecto.</p>
                       {getAssignableMembers().filter(m => m.email !== currentUser.email).length === 0 && (
-                        <p className="text-xs text-gray-400 text-center py-1">No hay otros miembros. Agregá desde el panel de equipo.</p>
+                        <p className="text-xs text-gray-400 text-center py-1">No hay otros miembros. Agregá desde el panel de equipo (ícono 👥 arriba).</p>
                       )}
                       {getAssignableMembers().filter(m => m.email !== currentUser.email).map(member => {
                         const hasAccess = (project.allowedMembers || []).includes(member.email);
@@ -1696,13 +1697,13 @@ const ProjectManager = () => {
                           <div key={member.id} className="flex items-center justify-between py-1.5 border-b border-indigo-100 last:border-0">
                             <div>
                               <p className="text-sm font-medium text-gray-700">{member.name}</p>
-                              <p className="text-xs text-gray-400">{member.role === 'client' ? '👁️ Cliente' : '🛠️ Equipo'}</p>
+                              <p className="text-xs text-gray-400">{member.role === 'client' ? '👁️ Cliente' : '🛠️ Colaborador'}</p>
                             </div>
                             <button
                               onClick={() => toggleProjectAccess(project.id, member.email)}
-                              className={`px-3 py-1 rounded-full text-xs font-medium transition-all ${hasAccess ? 'bg-indigo-600 text-white' : 'bg-white border border-gray-300 text-gray-500 hover:border-indigo-400'}`}
+                              className={`px-3 py-1 rounded-full text-xs font-medium transition-all ${hasAccess ? 'bg-green-500 text-white' : 'bg-white border border-gray-300 text-gray-500 hover:border-green-400'}`}
                             >
-                              {hasAccess ? '✓ Con acceso' : 'Sin acceso'}
+                              {hasAccess ? '✅ Puede verlo' : '🔒 Sin acceso'}
                             </button>
                           </div>
                         );
