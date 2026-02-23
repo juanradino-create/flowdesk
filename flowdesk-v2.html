@@ -8,33 +8,24 @@
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Firebase -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getFirestore, doc, setDoc, onSnapshot, collection } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-    // ✅ REEMPLAZÁ ESTO CON TU CONFIGURACIÓN DE FIREBASE
-    // Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
-
-// Your web app's Firebase configuration
-const firebaseConfig = {
-  apiKey: "AIzaSyA1xGu9l4eg0gyQNAoeyQDdYRMphjeiOS0",
-  authDomain: "flowdesk-c18bf.firebaseapp.com",
-  projectId: "flowdesk-c18bf",
-  storageBucket: "flowdesk-c18bf.firebasestorage.app",
-  messagingSenderId: "468967336736",
-  appId: "1:468967336736:web:bd565cebd95befd6524545"
-};
-
-// Initialize Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyA1xGu9l4eg0gyQNAoeyQDdYRMphjeiOS0",
+      authDomain: "flowdesk-c18bf.firebaseapp.com",
+      projectId: "flowdesk-c18bf",
+      storageBucket: "flowdesk-c18bf.appspot.com",
+      messagingSenderId: "468967336736",
+      appId: "1:468967336736:web:bd565cebd95befd6524545"
+    };
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
     window.__firebaseDb = db;
+    window.__firebaseModules = { doc, setDoc, onSnapshot };
     window.__firebaseReady = true;
     window.dispatchEvent(new Event('firebaseReady'));
   </script>
@@ -107,7 +98,6 @@ const ProjectManager = () => {
   const [clientComment, setClientComment] = useState('');
   const [editingClientComment, setEditingClientComment] = useState(null);
 
-  // Estado de Firebase
   const [firebaseReady, setFirebaseReady] = useState(!!window.__firebaseReady);
 
   useEffect(() => {
@@ -129,49 +119,27 @@ const ProjectManager = () => {
   useEffect(() => {
     if (!currentUser || !firebaseReady) return;
     const db = window.__firebaseDb;
-    const { doc, onSnapshot } = window.__firebaseModules || {};
-    
-    // Usar los módulos que ya importamos via window
-    let unsubProjects, unsubMembers;
-    
-    const setupListeners = async () => {
-      const { doc, onSnapshot } = await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js");
-      
-      // Listener en tiempo real para proyectos
-      unsubProjects = onSnapshot(doc(db, 'flowdesk', 'projects'), (snap) => {
-        if (snap.exists()) {
-          setProjects(snap.data().list || []);
-        } else {
-          setProjects([]);
-        }
-      });
+    const { doc, onSnapshot } = window.__firebaseModules;
 
-      // Listener en tiempo real para miembros
-      unsubMembers = onSnapshot(doc(db, 'flowdesk', 'members'), (snap) => {
-        if (snap.exists()) {
-          setTeamMembers(snap.data().list || []);
-        } else {
-          setTeamMembers([]);
-        }
-      });
-    };
+    const unsubProjects = onSnapshot(doc(db, 'flowdesk', 'projects'), (snap) => {
+      if (snap.exists()) setProjects(snap.data().list || []);
+      else setProjects([]);
+    });
 
-    setupListeners();
-    
-    return () => {
-      if (unsubProjects) unsubProjects();
-      if (unsubMembers) unsubMembers();
-    };
+    const unsubMembers = onSnapshot(doc(db, 'flowdesk', 'members'), (snap) => {
+      if (snap.exists()) setTeamMembers(snap.data().list || []);
+      else setTeamMembers([]);
+    });
+
+    return () => { unsubProjects(); unsubMembers(); };
   }, [currentUser, firebaseReady]);
 
-  const loadData = async () => {
-    // Ya no se usa - reemplazado por onSnapshot en tiempo real
-  };
+  const loadData = async () => {};
 
   const saveData = async (data) => {
     try {
       const db = window.__firebaseDb;
-      const { doc, setDoc } = await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js");
+      const { doc, setDoc } = window.__firebaseModules;
       await setDoc(doc(db, 'flowdesk', 'projects'), { list: data });
     } catch (error) {
       console.error('Error guardando en Firebase:', error);
@@ -182,7 +150,7 @@ const ProjectManager = () => {
   const saveTeamMembers = async (members) => {
     try {
       const db = window.__firebaseDb;
-      const { doc, setDoc } = await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js");
+      const { doc, setDoc } = window.__firebaseModules;
       await setDoc(doc(db, 'flowdesk', 'members'), { list: members });
     } catch (error) {
       console.error('Error guardando miembros en Firebase:', error);
@@ -1477,10 +1445,6 @@ const ProjectManager = () => {
               <button onClick={handleLogout} className="p-3 rounded-full bg-gray-200 text-gray-700 hover:bg-gray-300" title="Cerrar sesión">
                 <X size={24} />
               </button>
-              <div className={`flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${firebaseReady ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`} title={firebaseReady ? 'Conectado a Firebase' : 'Conectando...'}>
-                <span className={`w-2 h-2 rounded-full ${firebaseReady ? 'bg-green-500' : 'bg-yellow-500 animate-pulse'}`}></span>
-                {firebaseReady ? '🔴 Live' : 'Conectando'}
-              </div>
             </div>
           </div>
           
