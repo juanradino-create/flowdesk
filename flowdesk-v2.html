@@ -1438,9 +1438,8 @@ const ProjectManager = () => {
               <p className="text-sm text-gray-600">👤 {currentUser.name}</p>
             </div>
             <div className="flex items-center gap-2">
-              {/* Micrófono desactivado en artifact - reactivar en Vercel */}
-              {false && (
-                <button onClick={startVoiceInput} className={`p-3 rounded-full ${isListening ? 'bg-red-500 animate-pulse' : 'bg-indigo-600'} text-white shadow-lg`}>
+              {currentUser?.role !== 'client' && (
+                <button onClick={startVoiceInput} className={`p-3 rounded-full ${isListening ? 'bg-red-500 animate-pulse' : 'bg-indigo-600'} text-white shadow-lg`} title="Comando de voz">
                   <Mic size={24} />
                 </button>
               )}
