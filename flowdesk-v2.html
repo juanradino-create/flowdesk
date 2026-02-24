@@ -1893,6 +1893,22 @@ const ProjectManager = () => {
                             </div>
                           )}
 
+                          {effectiveViewMode === 'work' && objective.clientComment && (
+                            <div className="mt-2 mb-2 bg-blue-50 p-2 rounded border-l-2 border-blue-400">
+                              <div className="flex items-center gap-2 mb-1 flex-wrap">
+                                <span className="text-xs font-semibold text-blue-700">
+                                  {objective.clientComment.authorRole === 'client' ? '👁️ Cliente:' : '🛠️ Equipo:'} {objective.clientComment.author || 'Usuario'}
+                                </span>
+                                {objective.clientComment.savedAt && (
+                                  <span className="text-xs text-gray-400">
+                                    {new Date(objective.clientComment.savedAt).toLocaleDateString('es-ES', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}
+                                  </span>
+                                )}
+                              </div>
+                              <p className="text-xs text-gray-700">{objective.clientComment.text || objective.clientComment}</p>
+                            </div>
+                          )}
+
                           {objective.notes && (
                             <div className="mt-3 bg-yellow-50 p-3 rounded border-l-2 border-yellow-400">
                               <p className="text-sm font-medium text-yellow-800 mb-1">📝 Informe:</p>
@@ -2076,6 +2092,22 @@ const ProjectManager = () => {
                                               className="text-xs text-blue-500 hover:text-blue-700"
                                             >💬 {sub.clientComment ? 'Editar comentario' : 'Dejar comentario'}</button>
                                           )}
+                                        </div>
+                                      )}
+
+                                      {effectiveViewMode === 'work' && sub.clientComment && (
+                                        <div className="mt-2 mb-1 bg-blue-50 p-2 rounded border-l-2 border-blue-400">
+                                          <div className="flex items-center gap-2 mb-1 flex-wrap">
+                                            <span className="text-xs font-semibold text-blue-700">
+                                              {sub.clientComment.authorRole === 'client' ? '👁️ Cliente:' : '🛠️ Equipo:'} {sub.clientComment.author || 'Usuario'}
+                                            </span>
+                                            {sub.clientComment.savedAt && (
+                                              <span className="text-xs text-gray-400">
+                                                {new Date(sub.clientComment.savedAt).toLocaleDateString('es-ES', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}
+                                              </span>
+                                            )}
+                                          </div>
+                                          <p className="text-xs text-gray-700">{sub.clientComment.text || sub.clientComment}</p>
                                         </div>
                                       )}
 
@@ -2294,16 +2326,16 @@ const ProjectManager = () => {
         </div>
       )}
 
-      {/* Overlay micrófono desactivado en artifact - reactivar en Vercel */}
-      {false && isListening && (
+      {/* Overlay micrófono */}
+      {isListening && (
         <div className="fixed bottom-4 left-4 right-4 bg-red-500 text-white p-4 rounded-lg shadow-lg text-center z-50">
           <p className="font-bold">🎤 Escuchando...</p>
           <p className="text-sm">Di: "proyecto [nombre]" o "tarea [descripción]"</p>
         </div>
       )}
 
-      {/* Toast voz desactivado en artifact - reactivar en Vercel */}
-      {false && voiceError && !isListening && (
+      {/* Toast voz */}
+      {voiceError && !isListening && (
         <div className={`fixed bottom-4 left-4 right-4 p-4 rounded-lg shadow-lg text-center z-50 ${voiceError.startsWith('✓') ? 'bg-green-500' : 'bg-orange-500'} text-white`}>
           <p className="font-medium">{voiceError}</p>
           {lastVoiceCommand && <p className="text-sm mt-1">Escuché: "{lastVoiceCommand}"</p>}
