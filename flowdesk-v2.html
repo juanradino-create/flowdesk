@@ -1243,9 +1243,14 @@ const ProjectManager = () => {
   const startVoiceInput = () => {
     setVoiceError('');
     setLastVoiceCommand('');
+
+    if (isListening) {
+      setIsListening(false);
+      return;
+    }
     
     if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-      setVoiceError('Tu navegador no soporta reconocimiento de voz. Usa Chrome o Safari.');
+      setVoiceError('Tu navegador no soporta reconocimiento de voz. Usá Chrome.');
       return;
     }
 
@@ -1254,29 +1259,48 @@ const ProjectManager = () => {
     recognition.lang = 'es-ES';
     recognition.continuous = false;
     recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
 
-    recognition.onstart = () => { setIsListening(true); setVoiceError(''); };
-    recognition.onend = () => { setIsListening(false); };
-    recognition.onerror = (event) => {
-      setIsListening(false);
-      if (event.error === 'not-allowed') {
-        setVoiceError('Debes permitir el acceso al micrófono en la configuración de tu navegador');
-      } else if (event.error === 'no-speech') {
-        setVoiceError('No se detectó ninguna voz. Intenta de nuevo.');
-      } else {
-        setVoiceError('Error: ' + event.error);
-      }
+    let resultReceived = false;
+
+    recognition.onstart = () => {
+      setIsListening(true);
+      setVoiceError('');
     };
+
     recognition.onresult = (event) => {
+      resultReceived = true;
       const transcript = event.results[0][0].transcript;
       setLastVoiceCommand(transcript);
+      setIsListening(false);
       processVoiceCommand(transcript);
+    };
+
+    recognition.onend = () => {
+      setIsListening(false);
+      if (!resultReceived) {
+        setVoiceError('No se detectó ninguna voz. Tocá el micrófono e intentá de nuevo.');
+      }
+    };
+
+    recognition.onerror = (event) => {
+      setIsListening(false);
+      resultReceived = true; // evitar doble mensaje
+      if (event.error === 'not-allowed') {
+        setVoiceError('Permiso denegado. Habilitá el micrófono en ajustes del navegador.');
+      } else if (event.error === 'no-speech') {
+        setVoiceError('No se detectó voz. Intentá de nuevo.');
+      } else if (event.error === 'network') {
+        setVoiceError('Error de red. Verificá tu conexión a internet.');
+      } else {
+        setVoiceError('Error: ' + event.error + '. Intentá de nuevo.');
+      }
     };
 
     try {
       recognition.start();
     } catch (error) {
-      setVoiceError('No se pudo iniciar el micrófono. Intenta de nuevo.');
+      setVoiceError('No se pudo iniciar. Intentá de nuevo.');
       setIsListening(false);
     }
   };
