@@ -1290,34 +1290,47 @@ const ProjectManager = () => {
   };
 
   const processVoiceCommand = (command) => {
-    const lower = command.toLowerCase();
-    
-    if (lower.includes('proyecto') || lower.includes('nuevo proyecto')) {
-      let name = command.replace(/nuevo proyecto|proyecto/gi, '').trim();
-      if (!name) name = 'Proyecto ' + (projects.length + 1);
+    const lower = command.toLowerCase().trim();
+
+    // Extraer nombre limpiando todas las variantes del comando
+    const extractName = (text, keywords) => {
+      let name = text;
+      // Ordenar keywords de más larga a más corta para evitar reemplazos parciales
+      keywords.sort((a, b) => b.length - a.length);
+      keywords.forEach(kw => {
+        name = name.replace(new RegExp(kw, 'gi'), '');
+      });
+      return name.trim();
+    };
+
+    if (lower.includes('proyecto')) {
+      const name = extractName(command, ['crear nuevo proyecto', 'nuevo proyecto', 'crear proyecto', 'proyecto nuevo', 'proyecto']);
+      const finalName = name || 'Proyecto ' + (projects.length + 1);
       const newProjects = [...projects, {
         id: Date.now(),
-        name: name,
+        name: finalName,
         objectives: [],
         createdAt: new Date().toISOString(),
-        createdBy: currentUser.name
+        createdBy: currentUser.name,
+        createdByEmail: currentUser.email,
+        allowedMembers: [currentUser.email]
       }];
       setProjects(newProjects);
       saveData(newProjects);
-      setVoiceError('✓ Proyecto creado: ' + name);
+      setVoiceError('✓ Proyecto creado: ' + finalName);
       return;
     }
-    
+
     if (lower.includes('tarea') || lower.includes('objetivo')) {
-      let name = command.replace(/nueva tarea|tarea|nuevo objetivo|objetivo/gi, '').trim();
-      if (!name) { setVoiceError('No entendí el nombre de la tarea'); return; }
-      if (projects.length === 0) { setVoiceError('Primero crea un proyecto'); return; }
+      const name = extractName(command, ['nueva tarea', 'agregar tarea', 'crear tarea', 'tarea nueva', 'tarea', 'nuevo objetivo', 'agregar objetivo', 'objetivo']);
+      if (!name) { setVoiceError('No entendí el nombre. Decí: "tarea diseño del logo"'); return; }
+      if (projects.length === 0) { setVoiceError('Primero creá un proyecto'); return; }
       addObjective(projects[projects.length - 1].id, name);
       setVoiceError('✓ Tarea agregada: ' + name);
       return;
     }
-    
-    setVoiceError('No entendí. Di "proyecto [nombre]" o "tarea [nombre]"');
+
+    setVoiceError('No entendí. Decí "proyecto [nombre]" o "tarea [nombre]"');
   };
 
   const toggleExpand = (projectId) => {
@@ -1446,11 +1459,7 @@ const ProjectManager = () => {
               <p className="text-sm text-gray-600">👤 {currentUser.name}</p>
             </div>
             <div className="flex items-center gap-2">
-              {currentUser?.role !== 'client' && (
-                <button onClick={startVoiceInput} className={`p-3 rounded-full ${isListening ? 'bg-red-500 animate-pulse' : 'bg-indigo-600'} text-white shadow-lg`} title="Comando de voz">
-                  <Mic size={24} />
-                </button>
-              )}
+              {/* Micrófono reservado para futura implementación con agente IA */}
               {currentUser?.role !== 'client' && (() => {
                 const notifs = getNotifications();
                 return (
