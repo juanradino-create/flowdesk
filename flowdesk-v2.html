@@ -1248,62 +1248,45 @@ const ProjectManager = () => {
       setIsListening(false);
       return;
     }
-    
-    if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-      setVoiceError('Tu navegador no soporta reconocimiento de voz. Usá Chrome.');
+
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SR) {
+      setVoiceError('Tu navegador no soporta voz. Usá Chrome en Android.');
       return;
     }
 
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    const recognition = new SpeechRecognition();
-    recognition.lang = 'es-ES';
+    setIsListening(true);
+    setVoiceError('🎤 Hablá ahora...');
+
+    const recognition = new SR();
+    recognition.lang = 'es-AR';
     recognition.continuous = false;
     recognition.interimResults = false;
-    recognition.maxAlternatives = 1;
-
-    let resultReceived = false;
-
-    recognition.onstart = () => {
-      setIsListening(true);
-      setVoiceError('');
-    };
+    recognition.maxAlternatives = 3;
 
     recognition.onresult = (event) => {
-      resultReceived = true;
       const transcript = event.results[0][0].transcript;
-      setLastVoiceCommand(transcript);
       setIsListening(false);
-      setVoiceError('🎤 Escuché: "' + transcript + '" - procesando...');
-      processVoiceCommand(transcript);
+      setVoiceError('✓ Escuché: "' + transcript + '"');
+      setLastVoiceCommand(transcript);
+      setTimeout(() => processVoiceCommand(transcript), 100);
+    };
+
+    recognition.onnomatch = () => {
+      setIsListening(false);
+      setVoiceError('No entendí. Intentá de nuevo.');
+    };
+
+    recognition.onerror = (e) => {
+      setIsListening(false);
+      setVoiceError('Error (' + e.error + '). Intentá de nuevo.');
     };
 
     recognition.onend = () => {
       setIsListening(false);
-      if (!resultReceived) {
-        setVoiceError('No se detectó ninguna voz. Tocá el micrófono e intentá de nuevo.');
-      }
     };
 
-    recognition.onerror = (event) => {
-      setIsListening(false);
-      resultReceived = true; // evitar doble mensaje
-      if (event.error === 'not-allowed') {
-        setVoiceError('Permiso denegado. Habilitá el micrófono en ajustes del navegador.');
-      } else if (event.error === 'no-speech') {
-        setVoiceError('No se detectó voz. Intentá de nuevo.');
-      } else if (event.error === 'network') {
-        setVoiceError('Error de red. Verificá tu conexión a internet.');
-      } else {
-        setVoiceError('Error: ' + event.error + '. Intentá de nuevo.');
-      }
-    };
-
-    try {
-      recognition.start();
-    } catch (error) {
-      setVoiceError('No se pudo iniciar. Intentá de nuevo.');
-      setIsListening(false);
-    }
+    recognition.start();
   };
 
   const processVoiceCommand = (command) => {
@@ -2353,17 +2336,17 @@ const ProjectManager = () => {
       {/* Overlay micrófono */}
       {isListening && (
         <div className="fixed bottom-4 left-4 right-4 bg-red-500 text-white p-4 rounded-lg shadow-lg text-center z-50">
-          <p className="font-bold">🎤 Escuchando...</p>
-          <p className="text-sm">Di: "proyecto [nombre]" o "tarea [descripción]"</p>
+          <p className="font-bold">🎤 Escuchando... hablá ahora</p>
+          <p className="text-sm">Di: "proyecto [nombre]" o "tarea [nombre]"</p>
         </div>
       )}
 
       {/* Toast voz */}
-      {voiceError && !isListening && (
-        <div className={`fixed bottom-4 left-4 right-4 p-4 rounded-lg shadow-lg text-center z-50 ${voiceError.startsWith('✓') ? 'bg-green-500' : 'bg-orange-500'} text-white`}>
+      {voiceError && (
+        <div className={`fixed bottom-4 left-4 right-4 p-4 rounded-lg shadow-lg text-center z-50 ${voiceError.startsWith('✓') ? 'bg-green-500' : isListening ? 'bg-red-500' : 'bg-orange-500'} text-white`}>
           <p className="font-medium">{voiceError}</p>
           {lastVoiceCommand && <p className="text-sm mt-1">Escuché: "{lastVoiceCommand}"</p>}
-          <button onClick={() => { setVoiceError(''); setLastVoiceCommand(''); }} className="mt-2 px-4 py-1 bg-white bg-opacity-30 rounded text-sm">OK</button>
+          {!isListening && <button onClick={() => { setVoiceError(''); setLastVoiceCommand(''); }} className="mt-2 px-4 py-1 bg-white bg-opacity-30 rounded text-sm">OK</button>}
         </div>
       )}
     </div>
