@@ -1273,6 +1273,7 @@ const ProjectManager = () => {
       const transcript = event.results[0][0].transcript;
       setLastVoiceCommand(transcript);
       setIsListening(false);
+      setVoiceError('🎤 Escuché: "' + transcript + '" - procesando...');
       processVoiceCommand(transcript);
     };
 
