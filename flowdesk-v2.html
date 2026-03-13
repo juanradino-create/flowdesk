@@ -860,9 +860,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .progress-bar{background:#e9ecef;height:28px;border-radius:14px;overflow:hidden;margin-bottom:12px}
 .progress-fill{height:100%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:13px;border-radius:14px;transition:width .3s}
 .stats{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
-.stat{flex:1;min-width:70px;text-align:center;padding:10px 6px;background:#fff;border-radius:10px;box-shadow:0 1px 4px rgba(0,0,0,.08)}
-.stat-val{font-size:28px;font-weight:700;line-height:1.1}
-.stat-label{font-size:10px;color:#888;text-transform:uppercase;letter-spacing:.5px;margin-top:2px}
+.stat{flex:1;min-width:70px;text-align:center;padding:12px 6px 10px;background:#fff;border-radius:10px;box-shadow:0 1px 4px rgba(0,0,0,.08);border-top:4px solid #e2e8f0}
+.stat-icon{font-size:20px;margin-bottom:2px}
+.stat-val{font-size:32px;font-weight:700;line-height:1.1}
+.stat-label{font-size:10px;color:#888;text-transform:uppercase;letter-spacing:.5px;margin-top:4px}
 .section{padding:16px 24px}
 .section-title{font-size:14px;font-weight:700;color:#667eea;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;padding-bottom:6px;border-bottom:2px solid #eee}
 .alert-box{background:#fff5f5;border:1px solid #feb2b2;border-radius:10px;padding:12px 16px;margin-bottom:8px}
@@ -945,7 +946,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 
     const html = `<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Reporte: ${project.name}</title><style>${css}</style></head><body><div class="container">
 <div class="header"><h1>${project.name}</h1><p class="date">Reporte generado el ${new Date().toLocaleDateString('es-ES',{year:'numeric',month:'long',day:'numeric'})}</p></div>
-<div class="progress-section"><div class="progress-bar"><div class="progress-fill" style="width:${Math.max(progress,8)}%;background:${progressColor}">${progress}% Completado</div></div><div class="stats"><div class="stat"><div class="stat-val" style="color:#48bb78">${completedObj}</div><div class="stat-label">Completados</div></div><div class="stat"><div class="stat-val" style="color:#ecc94b">${inProgressObj}</div><div class="stat-label">En progreso</div></div><div class="stat"><div class="stat-val" style="color:#ed8936">${waitingObj}</div><div class="stat-label">En espera</div></div><div class="stat"><div class="stat-val" style="color:#a0aec0">${pendingObj}</div><div class="stat-label">Pendientes</div></div></div></div>
+<div class="progress-section"><div class="progress-bar"><div class="progress-fill" style="width:${Math.max(progress,8)}%;background:${progressColor}">${progress}% Completado</div></div><div class="stats"><div class="stat" style="border-top-color:#48bb78"><div class="stat-icon">✅</div><div class="stat-val" style="color:#48bb78">${completedObj}</div><div class="stat-label">Completados</div></div><div class="stat" style="border-top-color:#ecc94b"><div class="stat-icon">🔄</div><div class="stat-val" style="color:#d69e2e">${inProgressObj}</div><div class="stat-label">En progreso</div></div><div class="stat" style="border-top-color:#ed8936"><div class="stat-icon">⏳</div><div class="stat-val" style="color:#ed8936">${waitingObj}</div><div class="stat-label">En espera</div></div><div class="stat" style="border-top-color:#a0aec0"><div class="stat-icon">⬚</div><div class="stat-val" style="color:#a0aec0">${pendingObj}</div><div class="stat-label">Pendientes</div></div></div><p style="text-align:center;font-size:11px;color:#a0aec0;margin-top:10px;line-height:1.6">✅ Terminado · 🔄 Trabajando en esto · ⏳ Necesita tu aprobación · ⬚ Aún no comenzó</p></div>
 <div class="section"><div class="section-title">⚡ Requiere tu atención</div>${attentionHtml}</div>
 <div class="section"><div class="section-title">→ Próximos pasos</div>${nextHtml}</div>
 <div class="section"><div class="section-title">📋 Detalle por objetivo</div>${objectivesHtml}</div>
@@ -1266,7 +1267,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
               </div>
 
               {expandedProjects[project.id] && (
-                <div className="p-4">
+                <div className="p-3 overflow-hidden">
                   {/* Access management */}
                   {managingAccessFor === project.id && isProjectAdmin(project) && (
                     <div className="mb-4 bg-indigo-50 rounded-lg p-3 border border-indigo-200">
@@ -1295,38 +1296,39 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
                     const objProgColor = objProgPct === 100 ? 'bg-green-500 text-white' : objProgPct >= 50 ? 'bg-yellow-100 text-yellow-700' : 'bg-gray-100 text-gray-600';
                     
                     return (
-                    <div key={objective.id} className={`mb-4 border-l-4 pl-4 rounded-r-lg ${objective.status === 'completed' ? 'border-green-500 bg-green-50 bg-opacity-30' : objective.status === 'in-progress' ? 'border-yellow-500 bg-yellow-50 bg-opacity-30' : objective.status === 'waiting' ? 'border-orange-400 bg-orange-50 bg-opacity-30' : 'border-gray-300 bg-gray-50 bg-opacity-30'}`}>
+                    <div key={objective.id} className={`mb-4 border-l-4 pl-3 pr-1 rounded-r-lg overflow-hidden ${objective.status === 'completed' ? 'border-green-500 bg-green-50 bg-opacity-30' : objective.status === 'in-progress' ? 'border-yellow-500 bg-yellow-50 bg-opacity-30' : objective.status === 'waiting' ? 'border-orange-400 bg-orange-50 bg-opacity-30' : 'border-gray-300 bg-gray-50 bg-opacity-30'}`}>
                       <div className="flex items-start justify-between mb-2 pt-2">
-                        <div className="flex-1">
+                        <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 flex-wrap mb-1">
                             <span className="text-xs font-bold uppercase tracking-wider text-indigo-400">Objetivo</span>
                             <span className={`inline-block px-2 py-0.5 rounded-full text-xs text-white ${getStatusColor(objective.status)}`}>{getStatusText(objective.status)}</span>
+                            {(objective.subObjectives||[]).length > 0 && (
+                              <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${objProgColor}`}>
+                                {objProg.completed}/{objProg.total}
+                              </span>
+                            )}
                           </div>
-                          <div className="flex items-center gap-2 flex-wrap mb-1">
+                          <div className="flex items-center gap-1 mb-1">
                             {editingName === `obj-${objective.id}` ? (
-                              <div className="flex items-center gap-1 flex-1">
-                                <input type="text" value={editNameValue} onChange={e => setEditNameValue(e.target.value)} className="font-semibold text-gray-800 border border-indigo-300 rounded px-2 py-0.5 text-sm flex-1" autoFocus onKeyDown={e => { if (e.key === 'Enter') renameObjective(project.id, objective.id, editNameValue); if (e.key === 'Escape') setEditingName(null); }} />
-                                <button onClick={() => renameObjective(project.id, objective.id, editNameValue)} className="p-0.5 text-green-600 hover:bg-green-50 rounded"><Check size={14} /></button>
-                                <button onClick={() => setEditingName(null)} className="p-0.5 text-gray-400 hover:bg-gray-100 rounded"><X size={14} /></button>
+                              <div className="flex items-center gap-1 flex-1 min-w-0">
+                                <input type="text" value={editNameValue} onChange={e => setEditNameValue(e.target.value)} className="font-semibold text-gray-800 border border-indigo-300 rounded px-2 py-0.5 text-sm flex-1 min-w-0" autoFocus onKeyDown={e => { if (e.key === 'Enter') renameObjective(project.id, objective.id, editNameValue); if (e.key === 'Escape') setEditingName(null); }} />
+                                <button onClick={() => renameObjective(project.id, objective.id, editNameValue)} className="p-0.5 text-green-600 hover:bg-green-50 rounded flex-shrink-0"><Check size={14} /></button>
+                                <button onClick={() => setEditingName(null)} className="p-0.5 text-gray-400 hover:bg-gray-100 rounded flex-shrink-0"><X size={14} /></button>
                               </div>
                             ) : (
                               <>
-                                <h3 className="font-semibold text-gray-800">{objective.name}</h3>
+                                <h3 className="font-semibold text-gray-800 break-words">{objective.name}</h3>
                                 {effectiveViewMode === 'work' && isProjectAdmin(project) && (
-                                  <button onClick={() => { setEditingName(`obj-${objective.id}`); setEditNameValue(objective.name); }} className="p-0.5 text-gray-300 hover:text-indigo-600 rounded" title="Editar nombre"><Edit2 size={12} /></button>
+                                  <button onClick={() => { setEditingName(`obj-${objective.id}`); setEditNameValue(objective.name); }} className="p-0.5 text-gray-300 hover:text-indigo-600 rounded flex-shrink-0" title="Editar nombre"><Edit2 size={12} /></button>
                                 )}
                               </>
                             )}
-                            {(objective.subObjectives||[]).length > 0 && (
-                              <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${objProgColor}`}>
-                                {objProg.completed}/{objProg.total} tareas
-                              </span>
-                            )}
-                            {objective.assignedTo && (
-                              <span className="text-xs bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full">
-                                <User size={10} className="inline mr-0.5" />{objective.assignedTo.name}
-                              </span>
-                            )}
+                          </div>
+                          {objective.assignedTo && (
+                            <span className="text-xs bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full inline-block mb-1">
+                              <User size={10} className="inline mr-0.5" />{objective.assignedTo.name}
+                            </span>
+                          )}
                           </div>
                           {(objective.subObjectives||[]).length > 0 && (
                             <div className="w-full bg-gray-200 rounded-full h-1.5 mb-2">
@@ -1439,28 +1441,30 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
                             <div className="mt-3">
                               <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">Tareas ({(objective.subObjectives||[]).filter(s=>s.status==='completed').length}/{(objective.subObjectives||[]).length})</p>
                               {objective.subObjectives.map(sub => (
-                                <div key={sub.id} className={`ml-4 mt-2 p-3 rounded border-l-3 ${sub.status === 'completed' ? 'bg-green-50 border-l-4 border-green-400' : sub.status === 'in-progress' ? 'bg-yellow-50 border-l-4 border-yellow-400' : sub.status === 'waiting' ? 'bg-orange-50 border-l-4 border-orange-300' : 'bg-white border-l-4 border-gray-200'}`}>
+                                <div key={sub.id} className={`ml-2 mt-2 p-2 rounded overflow-hidden ${sub.status === 'completed' ? 'bg-green-50 border-l-4 border-green-400' : sub.status === 'in-progress' ? 'bg-yellow-50 border-l-4 border-yellow-400' : sub.status === 'waiting' ? 'bg-orange-50 border-l-4 border-orange-300' : 'bg-white border-l-4 border-gray-200'}`}>
                                   <div className="flex items-start justify-between">
-                                    <div className="flex-1">
+                                    <div className="flex-1 min-w-0">
                                       <div className="flex items-center gap-2 mb-1 flex-wrap">
                                         <span className={`text-xs font-bold uppercase tracking-wider ${sub.status === 'completed' ? 'text-green-400' : 'text-gray-300'}`}>Tarea</span>
                                         <span className={`inline-block px-2 py-0.5 rounded-full text-xs text-white ${getStatusColor(sub.status)}`} style={{fontSize:'10px'}}>{getStatusText(sub.status)}</span>
                                       </div>
-                                      <div className="flex items-center gap-2 mb-1 flex-wrap">
+                                      <div className="mb-1">
                                         {editingName === `sub-${sub.id}` ? (
-                                          <div className="flex items-center gap-1 flex-1">
-                                            <input type="text" value={editNameValue} onChange={e => setEditNameValue(e.target.value)} className="text-sm font-medium border border-indigo-300 rounded px-2 py-0.5 flex-1" autoFocus onKeyDown={e => { if (e.key === 'Enter') renameSubObjective(project.id, objective.id, sub.id, editNameValue); if (e.key === 'Escape') setEditingName(null); }} />
-                                            <button onClick={() => renameSubObjective(project.id, objective.id, sub.id, editNameValue)} className="p-0.5 text-green-600 hover:bg-green-50 rounded"><Check size={12} /></button>
-                                            <button onClick={() => setEditingName(null)} className="p-0.5 text-gray-400 hover:bg-gray-100 rounded"><X size={12} /></button>
+                                          <div className="flex items-center gap-1">
+                                            <input type="text" value={editNameValue} onChange={e => setEditNameValue(e.target.value)} className="text-sm font-medium border border-indigo-300 rounded px-2 py-0.5 flex-1 min-w-0" autoFocus onKeyDown={e => { if (e.key === 'Enter') renameSubObjective(project.id, objective.id, sub.id, editNameValue); if (e.key === 'Escape') setEditingName(null); }} />
+                                            <button onClick={() => renameSubObjective(project.id, objective.id, sub.id, editNameValue)} className="p-0.5 text-green-600 hover:bg-green-50 rounded flex-shrink-0"><Check size={12} /></button>
+                                            <button onClick={() => setEditingName(null)} className="p-0.5 text-gray-400 hover:bg-gray-100 rounded flex-shrink-0"><X size={12} /></button>
                                           </div>
                                         ) : (
-                                          <>
-                                            <p className="text-sm font-medium">{sub.name}</p>
+                                          <div className="flex items-center gap-1">
+                                            <p className="text-sm font-medium break-words">{sub.name}</p>
                                             {effectiveViewMode === 'work' && isProjectAdmin(project) && (
-                                              <button onClick={() => { setEditingName(`sub-${sub.id}`); setEditNameValue(sub.name); }} className="p-0.5 text-gray-300 hover:text-indigo-600 rounded" title="Editar nombre"><Edit2 size={10} /></button>
+                                              <button onClick={() => { setEditingName(`sub-${sub.id}`); setEditNameValue(sub.name); }} className="p-0.5 text-gray-300 hover:text-indigo-600 rounded flex-shrink-0" title="Editar nombre"><Edit2 size={10} /></button>
                                             )}
-                                          </>
+                                          </div>
                                         )}
+                                      </div>
+                                      <div className="flex items-center gap-2 flex-wrap mb-1">
                                         {sub.assignedTo && (
                                           <span className="text-xs bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full">
                                             <User size={10} className="inline mr-0.5" />{sub.assignedTo.name}
