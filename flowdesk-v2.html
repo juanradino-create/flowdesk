@@ -758,15 +758,151 @@ const ProjectManager = () => {
   };
 
   const downloadReport = (project) => {
-    const progress = calculateProgress(project.objectives);
-    const html = `<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><title>Reporte: ${project.name}</title><style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);padding:20px;color:#333}.container{max-width:1000px;margin:0 auto;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.3)}.header{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:#fff;padding:40px;text-align:center}.header h1{font-size:32px;margin-bottom:10px}.content{padding:30px}.objective{margin-bottom:25px;border-left:5px solid #667eea;padding:15px;background:#f8f9fa;border-radius:8px}.status-badge{display:inline-block;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600}.status-completed{background:#d4edda;color:#155724}.status-in-progress{background:#fff3cd;color:#856404}.status-pending{background:#e2e3e5;color:#383d41}.status-waiting{background:#fed7aa;color:#92400e}.task{margin:10px 0 10px 20px;padding:10px;background:#fff;border-radius:6px;border-left:3px solid #ddd}.notes{background:#fffbeb;border-left:3px solid #fbbf24;padding:10px;margin:10px 0;border-radius:4px;font-size:14px}.footer{text-align:center;padding:20px;background:#f8f9fa;color:#666;font-size:14px}.progress-bar{background:#e9ecef;height:30px;border-radius:15px;overflow:hidden;margin:20px 30px}.progress-fill{background:linear-gradient(90deg,#667eea,#764ba2);height:100%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:bold;font-size:14px}@media print{body{background:#fff;padding:0}.container{box-shadow:none}}</style></head><body><div class="container"><div class="header"><h1>${project.name}</h1><p>Reporte generado el ${new Date().toLocaleDateString('es-ES',{year:'numeric',month:'long',day:'numeric'})}</p></div><div class="progress-bar"><div class="progress-fill" style="width:${progress}%">${progress}% Completado</div></div><div class="content">${(project.objectives||[]).map((obj,i) => {
+    const objectives = project.objectives || [];
+    const progress = calculateProgress(objectives);
+
+    // ---- Compute report data ----
+    const totalObjectives = objectives.length;
+    const completedObj = objectives.filter(o => o.status === 'completed').length;
+    const inProgressObj = objectives.filter(o => o.status === 'in-progress').length;
+    const waitingObj = objectives.filter(o => o.status === 'waiting').length;
+    const pendingObj = objectives.filter(o => o.status === 'pending').length;
+
+    let totalTasks = 0, completedTasks = 0;
+    objectives.forEach(o => {
+      const subs = o.subObjectives || [];
+      if (subs.length === 0) { totalTasks++; if (o.status === 'completed') completedTasks++; }
+      else { totalTasks += subs.length; completedTasks += subs.filter(s => s.status === 'completed').length; }
+    });
+
+    // Items needing attention: overdue, waiting approval, or blocked
+    const attentionItems = [];
+    const today = new Date(); today.setHours(0,0,0,0);
+    objectives.forEach((o, i) => {
+      if (o.status === 'waiting') attentionItems.push({ name: o.name, reason: 'Esperando aprobación' });
+      if (o.dueDate) { const d = new Date(o.dueDate); if (d < today && o.status !== 'completed') attentionItems.push({ name: o.name, reason: 'Fecha vencida (' + d.toLocaleDateString('es-ES',{day:'2-digit',month:'short'}) + ')' }); }
+      (o.subObjectives || []).forEach(s => {
+        if (s.status === 'waiting') attentionItems.push({ name: s.name, reason: 'Esperando aprobación' });
+        if (s.dueDate) { const d = new Date(s.dueDate); if (d < today && s.status !== 'completed') attentionItems.push({ name: s.name, reason: 'Fecha vencida (' + d.toLocaleDateString('es-ES',{day:'2-digit',month:'short'}) + ')' }); }
+      });
+    });
+
+    // Next pending tasks (first 3 not completed)
+    const nextSteps = [];
+    objectives.forEach(o => {
+      (o.subObjectives || []).forEach(s => {
+        if (s.status !== 'completed' && nextSteps.length < 3) {
+          nextSteps.push({ name: s.name, responsible: s.assignedTo?.name || o.assignedTo?.name || 'Sin asignar', due: s.dueDate });
+        }
+      });
+      if ((o.subObjectives||[]).length === 0 && o.status !== 'completed' && nextSteps.length < 3) {
+        nextSteps.push({ name: o.name, responsible: o.assignedTo?.name || 'Sin asignar', due: o.dueDate });
+      }
+    });
+
+    // ---- Build HTML ----
+    const css = `*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);padding:16px;color:#333}
+.container{max-width:800px;margin:0 auto;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.header{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:#fff;padding:30px 24px;text-align:center}
+.header h1{font-size:24px;margin-bottom:6px}
+.header .date{opacity:.85;font-size:13px}
+.progress-section{padding:20px 24px;background:#f8f9fa}
+.progress-bar{background:#e9ecef;height:28px;border-radius:14px;overflow:hidden;margin-bottom:12px}
+.progress-fill{height:100%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:13px;border-radius:14px;transition:width .3s}
+.stats{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.stat{flex:1;min-width:70px;text-align:center;padding:10px 6px;background:#fff;border-radius:10px;box-shadow:0 1px 4px rgba(0,0,0,.08)}
+.stat-val{font-size:28px;font-weight:700;line-height:1.1}
+.stat-label{font-size:10px;color:#888;text-transform:uppercase;letter-spacing:.5px;margin-top:2px}
+.section{padding:16px 24px}
+.section-title{font-size:14px;font-weight:700;color:#667eea;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;padding-bottom:6px;border-bottom:2px solid #eee}
+.alert-box{background:#fff5f5;border:1px solid #feb2b2;border-radius:10px;padding:12px 16px;margin-bottom:8px}
+.alert-item{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid #fed7d7}
+.alert-item:last-child{border:none}
+.alert-name{font-size:13px;font-weight:500;color:#c53030}
+.alert-reason{font-size:11px;color:#e53e3e;background:#fff;padding:2px 8px;border-radius:10px}
+.next-box{background:#f0fff4;border:1px solid #c6f6d5;border-radius:10px;padding:12px 16px;margin-bottom:8px}
+.next-item{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid #e2e8f0}
+.next-item:last-child{border:none}
+.next-name{font-size:13px;font-weight:500;color:#2d3748}
+.next-meta{font-size:11px;color:#718096}
+.obj{margin-bottom:12px;border-radius:10px;overflow:hidden;border:1px solid #e2e8f0}
+.obj-header{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;cursor:pointer}
+.obj-header.completed{background:#f0fff4;border-left:4px solid #48bb78}
+.obj-header.in-progress{background:#fffff0;border-left:4px solid #ecc94b}
+.obj-header.waiting{background:#fffaf0;border-left:4px solid #ed8936}
+.obj-header.pending{background:#f7fafc;border-left:4px solid #cbd5e0}
+.obj-name{font-size:15px;font-weight:600;color:#2d3748;flex:1}
+.obj-meta{font-size:12px;color:#718096;margin-top:2px}
+.badge{display:inline-block;padding:3px 10px;border-radius:12px;font-size:11px;font-weight:600}
+.badge-completed{background:#c6f6d5;color:#22543d}
+.badge-in-progress{background:#fefcbf;color:#744210}
+.badge-waiting{background:#feebc8;color:#7b341e}
+.badge-pending{background:#edf2f7;color:#4a5568}
+.obj-body{padding:8px 16px 12px;background:#fff}
+.task{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;margin:4px 0;background:#f7fafc;border-radius:6px;border-left:3px solid #cbd5e0}
+.task.task-completed{border-left-color:#48bb78;opacity:.7}
+.task.task-in-progress{border-left-color:#ecc94b}
+.task.task-waiting{border-left-color:#ed8936}
+.task-name{font-size:13px;color:#4a5568}
+.task-info{font-size:11px;color:#a0aec0;margin-top:2px}
+.notes{background:#fffbeb;border-left:3px solid #fbbf24;padding:8px 12px;margin:6px 0;border-radius:4px;font-size:13px;color:#78350f}
+.obj-progress{width:100%;background:#e2e8f0;height:6px;border-radius:3px;margin-top:6px}
+.obj-progress-fill{height:100%;border-radius:3px;transition:width .3s}
+.footer{text-align:center;padding:16px;background:#f8f9fa;color:#999;font-size:12px}
+.no-attention{text-align:center;padding:16px;color:#48bb78;font-size:14px}
+@media print{body{background:#fff;padding:0}.container{box-shadow:none}}`;
+
+    const progressColor = progress === 100 ? '#48bb78' : progress >= 50 ? '#ecc94b' : '#667eea';
+
+    let attentionHtml = '';
+    if (attentionItems.length > 0) {
+      attentionHtml = `<div class="alert-box">${attentionItems.map(a => `<div class="alert-item"><span class="alert-name">⚠️ ${a.name}</span><span class="alert-reason">${a.reason}</span></div>`).join('')}</div>`;
+    } else {
+      attentionHtml = `<div class="no-attention">✅ No hay elementos que requieran atención urgente</div>`;
+    }
+
+    let nextHtml = '';
+    if (nextSteps.length > 0) {
+      nextHtml = `<div class="next-box">${nextSteps.map(n => `<div class="next-item"><div><span class="next-name">→ ${n.name}</span><div class="next-meta">Responsable: ${n.responsible}${n.due ? ' · 📅 ' + new Date(n.due).toLocaleDateString('es-ES',{day:'2-digit',month:'short'}) : ''}</div></div></div>`).join('')}</div>`;
+    }
+
+    const objectivesHtml = objectives.map((obj, i) => {
       const prog = getObjectiveProgress(obj);
-      const dueDateStr = obj.dueDate ? ` | 📅 Fecha límite: ${new Date(obj.dueDate).toLocaleDateString('es-ES',{day:'2-digit',month:'short',year:'numeric'})}` : '';
-      return `<div class="objective"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><strong>${i+1}. ${obj.name}</strong><span class="status-badge status-${obj.status}">${getStatusText(obj.status)}</span></div><p style="font-size:13px;color:#666">Tareas: ${prog.completed}/${prog.total} completadas${obj.assignedTo ? ' | Responsable: '+obj.assignedTo.name : ''}${dueDateStr}</p>${obj.notes ? `<div class="notes">📝 ${obj.notes}</div>` : ''}${(obj.subObjectives||[]).map((sub,j) => {
-        const subDue = sub.dueDate ? ` | 📅 ${new Date(sub.dueDate).toLocaleDateString('es-ES',{day:'2-digit',month:'short'})}` : '';
-        return `<div class="task"><div style="display:flex;justify-content:space-between;align-items:center"><span>${i+1}.${j+1}. ${sub.name}</span><span class="status-badge status-${sub.status}" style="font-size:11px">${getStatusText(sub.status)}</span></div><p style="font-size:12px;color:#888;margin-top:4px">${sub.assignedTo ? 'Responsable: '+sub.assignedTo.name : ''}${subDue}</p>${sub.notes ? `<div class="notes" style="font-size:12px">📝 ${sub.notes}</div>` : ''}</div>`;
-      }).join('')}</div>`;
-    }).join('')}</div><div class="footer"><p>© ${new Date().getFullYear()} - Flowdesk</p></div></div></body></html>`;
+      const pct = prog.total > 0 ? Math.round((prog.completed / prog.total) * 100) : 0;
+      const isComplete = pct === 100 || obj.status === 'completed';
+      const statusClass = obj.status;
+      const fillColor = isComplete ? '#48bb78' : pct >= 50 ? '#ecc94b' : '#cbd5e0';
+
+      const dueDateStr = obj.dueDate ? ' · 📅 ' + new Date(obj.dueDate).toLocaleDateString('es-ES',{day:'2-digit',month:'short'}) : '';
+      const responsibleStr = obj.assignedTo ? ' · ' + obj.assignedTo.name : '';
+
+      // Completed objectives: collapsed (no task detail)
+      if (isComplete) {
+        return `<div class="obj"><div class="obj-header completed"><div><span class="obj-name">${i+1}. ${obj.name}</span><div class="obj-meta">${prog.completed}/${prog.total} tareas completadas${responsibleStr}${dueDateStr}</div></div><span class="badge badge-completed">✅ Completado</span></div></div>`;
+      }
+
+      // Non-completed: show tasks
+      const tasksHtml = (obj.subObjectives||[]).map((sub, j) => {
+        const subDue = sub.dueDate ? ' · 📅 ' + new Date(sub.dueDate).toLocaleDateString('es-ES',{day:'2-digit',month:'short'}) : '';
+        const subResp = sub.assignedTo ? sub.assignedTo.name : '';
+        return `<div class="task task-${sub.status}"><div><span class="task-name">${i+1}.${j+1} ${sub.name}</span><div class="task-info">${subResp}${subDue}</div></div><span class="badge badge-${sub.status}">${getStatusText(sub.status)}</span></div>`;
+      }).join('');
+
+      const notesHtml = obj.notes ? `<div class="notes">📝 ${obj.notes}</div>` : '';
+
+      return `<div class="obj"><div class="obj-header ${statusClass}"><div><span class="obj-name">${i+1}. ${obj.name}</span><div class="obj-meta">${prog.completed}/${prog.total} tareas${responsibleStr}${dueDateStr}</div><div class="obj-progress"><div class="obj-progress-fill" style="width:${pct}%;background:${fillColor}"></div></div></div><span class="badge badge-${obj.status}">${getStatusText(obj.status)}</span></div><div class="obj-body">${notesHtml}${tasksHtml}</div></div>`;
+    }).join('');
+
+    const html = `<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Reporte: ${project.name}</title><style>${css}</style></head><body><div class="container">
+<div class="header"><h1>${project.name}</h1><p class="date">Reporte generado el ${new Date().toLocaleDateString('es-ES',{year:'numeric',month:'long',day:'numeric'})}</p></div>
+<div class="progress-section"><div class="progress-bar"><div class="progress-fill" style="width:${Math.max(progress,8)}%;background:${progressColor}">${progress}% Completado</div></div><div class="stats"><div class="stat"><div class="stat-val" style="color:#48bb78">${completedObj}</div><div class="stat-label">Completados</div></div><div class="stat"><div class="stat-val" style="color:#ecc94b">${inProgressObj}</div><div class="stat-label">En progreso</div></div><div class="stat"><div class="stat-val" style="color:#ed8936">${waitingObj}</div><div class="stat-label">En espera</div></div><div class="stat"><div class="stat-val" style="color:#a0aec0">${pendingObj}</div><div class="stat-label">Pendientes</div></div></div></div>
+<div class="section"><div class="section-title">⚡ Requiere tu atención</div>${attentionHtml}</div>
+<div class="section"><div class="section-title">→ Próximos pasos</div>${nextHtml}</div>
+<div class="section"><div class="section-title">📋 Detalle por objetivo</div>${objectivesHtml}</div>
+<div class="footer">© ${new Date().getFullYear()} - Flowdesk</div>
+</div></body></html>`;
+
     const blob = new Blob([html], { type: 'text/html' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
