@@ -94,6 +94,8 @@ const ProjectManager = () => {
   const [addingLinkTo, setAddingLinkTo] = useState(null);
   const [linkUrl, setLinkUrl] = useState('');
   const [linkName, setLinkName] = useState('');
+  const [editingName, setEditingName] = useState(null);
+  const [editNameValue, setEditNameValue] = useState('');
   const [firebaseStatus, setFirebaseStatus] = useState('connecting');
   const [saveError, setSaveError] = useState(null);
 
@@ -623,6 +625,37 @@ const ProjectManager = () => {
     setAddingLinkTo(null);
     setLinkUrl('');
     setLinkName('');
+  };
+
+  // ==================== RENAME ====================
+  const renameProject = (projectId, newName) => {
+    if (!newName.trim()) return;
+    updateProjectInFirebase(projectId, (p) => ({ ...p, name: newName.trim() }));
+    setEditingName(null);
+    setEditNameValue('');
+  };
+
+  const renameObjective = (projectId, objectiveId, newName) => {
+    if (!newName.trim()) return;
+    updateProjectInFirebase(projectId, (p) => ({
+      ...p,
+      objectives: (p.objectives||[]).map(o => o.id === objectiveId ? { ...o, name: newName.trim() } : o)
+    }));
+    setEditingName(null);
+    setEditNameValue('');
+  };
+
+  const renameSubObjective = (projectId, objectiveId, subId, newName) => {
+    if (!newName.trim()) return;
+    updateProjectInFirebase(projectId, (p) => ({
+      ...p,
+      objectives: (p.objectives||[]).map(o => o.id !== objectiveId ? o : {
+        ...o,
+        subObjectives: (o.subObjectives||[]).map(s => s.id === subId ? { ...s, name: newName.trim() } : s)
+      })
+    }));
+    setEditingName(null);
+    setEditNameValue('');
   };
 
   // ==================== TEAM MEMBERS ====================
@@ -1173,7 +1206,20 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
               <div className="bg-gradient-to-r from-indigo-600 to-purple-600 p-4 text-white">
                 <div className="flex items-center justify-between">
                   <div className="flex-1">
-                    <h2 className="text-xl font-bold mb-1">{project.name}</h2>
+                    {editingName === `proj-${project.id}` ? (
+                      <div className="flex items-center gap-2 mb-1">
+                        <input type="text" value={editNameValue} onChange={e => setEditNameValue(e.target.value)} className="text-xl font-bold bg-white bg-opacity-20 border border-white border-opacity-40 rounded px-2 py-0.5 text-white placeholder-white placeholder-opacity-50 flex-1" autoFocus onKeyDown={e => { if (e.key === 'Enter') renameProject(project.id, editNameValue); if (e.key === 'Escape') setEditingName(null); }} />
+                        <button onClick={() => renameProject(project.id, editNameValue)} className="p-1 hover:bg-white hover:bg-opacity-20 rounded"><Check size={18} /></button>
+                        <button onClick={() => setEditingName(null)} className="p-1 hover:bg-white hover:bg-opacity-20 rounded"><X size={18} /></button>
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-2 mb-1">
+                        <h2 className="text-xl font-bold">{project.name}</h2>
+                        {effectiveViewMode === 'work' && isProjectAdmin(project) && (
+                          <button onClick={() => { setEditingName(`proj-${project.id}`); setEditNameValue(project.name); }} className="p-1 hover:bg-white hover:bg-opacity-20 rounded opacity-60 hover:opacity-100" title="Editar nombre"><Edit2 size={14} /></button>
+                        )}
+                      </div>
+                    )}
                     <div className="flex items-center gap-3 mb-1">
                       <div className="flex-1 bg-white bg-opacity-30 rounded-full h-2.5">
                         <div className={`${progressColor} h-2.5 rounded-full transition-all`} style={{ width: `${progress}%` }} />
@@ -1237,7 +1283,20 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
                       <div className="flex items-start justify-between mb-2">
                         <div className="flex-1">
                           <div className="flex items-center gap-2 flex-wrap mb-1">
-                            <h3 className="font-semibold text-gray-800">{objective.name}</h3>
+                            {editingName === `obj-${objective.id}` ? (
+                              <div className="flex items-center gap-1 flex-1">
+                                <input type="text" value={editNameValue} onChange={e => setEditNameValue(e.target.value)} className="font-semibold text-gray-800 border border-indigo-300 rounded px-2 py-0.5 text-sm flex-1" autoFocus onKeyDown={e => { if (e.key === 'Enter') renameObjective(project.id, objective.id, editNameValue); if (e.key === 'Escape') setEditingName(null); }} />
+                                <button onClick={() => renameObjective(project.id, objective.id, editNameValue)} className="p-0.5 text-green-600 hover:bg-green-50 rounded"><Check size={14} /></button>
+                                <button onClick={() => setEditingName(null)} className="p-0.5 text-gray-400 hover:bg-gray-100 rounded"><X size={14} /></button>
+                              </div>
+                            ) : (
+                              <>
+                                <h3 className="font-semibold text-gray-800">{objective.name}</h3>
+                                {effectiveViewMode === 'work' && (
+                                  <button onClick={() => { setEditingName(`obj-${objective.id}`); setEditNameValue(objective.name); }} className="p-0.5 text-gray-300 hover:text-indigo-600 rounded" title="Editar nombre"><Edit2 size={12} /></button>
+                                )}
+                              </>
+                            )}
                             {(objective.subObjectives||[]).length > 0 && (
                               <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${objProgColor}`}>
                                 {objProg.completed}/{objProg.total} tareas
@@ -1359,7 +1418,20 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
                                   <div className="flex items-start justify-between">
                                     <div className="flex-1">
                                       <div className="flex items-center gap-2 mb-1 flex-wrap">
-                                        <p className="text-sm font-medium">{sub.name}</p>
+                                        {editingName === `sub-${sub.id}` ? (
+                                          <div className="flex items-center gap-1 flex-1">
+                                            <input type="text" value={editNameValue} onChange={e => setEditNameValue(e.target.value)} className="text-sm font-medium border border-indigo-300 rounded px-2 py-0.5 flex-1" autoFocus onKeyDown={e => { if (e.key === 'Enter') renameSubObjective(project.id, objective.id, sub.id, editNameValue); if (e.key === 'Escape') setEditingName(null); }} />
+                                            <button onClick={() => renameSubObjective(project.id, objective.id, sub.id, editNameValue)} className="p-0.5 text-green-600 hover:bg-green-50 rounded"><Check size={12} /></button>
+                                            <button onClick={() => setEditingName(null)} className="p-0.5 text-gray-400 hover:bg-gray-100 rounded"><X size={12} /></button>
+                                          </div>
+                                        ) : (
+                                          <>
+                                            <p className="text-sm font-medium">{sub.name}</p>
+                                            {effectiveViewMode === 'work' && (
+                                              <button onClick={() => { setEditingName(`sub-${sub.id}`); setEditNameValue(sub.name); }} className="p-0.5 text-gray-300 hover:text-indigo-600 rounded" title="Editar nombre"><Edit2 size={10} /></button>
+                                            )}
+                                          </>
+                                        )}
                                         {sub.assignedTo && (
                                           <span className="text-xs bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full">
                                             <User size={10} className="inline mr-0.5" />{sub.assignedTo.name}
