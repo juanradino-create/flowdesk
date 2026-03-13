@@ -1292,7 +1292,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
                             ) : (
                               <>
                                 <h3 className="font-semibold text-gray-800">{objective.name}</h3>
-                                {effectiveViewMode === 'work' && (
+                                {effectiveViewMode === 'work' && isProjectAdmin(project) && (
                                   <button onClick={() => { setEditingName(`obj-${objective.id}`); setEditNameValue(objective.name); }} className="p-0.5 text-gray-300 hover:text-indigo-600 rounded" title="Editar nombre"><Edit2 size={12} /></button>
                                 )}
                               </>
@@ -1427,7 +1427,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
                                         ) : (
                                           <>
                                             <p className="text-sm font-medium">{sub.name}</p>
-                                            {effectiveViewMode === 'work' && (
+                                            {effectiveViewMode === 'work' && isProjectAdmin(project) && (
                                               <button onClick={() => { setEditingName(`sub-${sub.id}`); setEditNameValue(sub.name); }} className="p-0.5 text-gray-300 hover:text-indigo-600 rounded" title="Editar nombre"><Edit2 size={10} /></button>
                                             )}
                                           </>
@@ -1541,7 +1541,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
                                         <button onClick={() => moveTask(project.id, objective.id, sub.id, 'down')} disabled={objective.subObjectives.findIndex(s => s.id === sub.id) === objective.subObjectives.length - 1} className="p-0.5 text-gray-400 hover:text-indigo-600 disabled:opacity-20">▼</button>
                                       </div>
                                     )}
-                                    {effectiveViewMode === 'work' && (
+                                    {effectiveViewMode === 'work' && isProjectAdmin(project) && (
                                       <button onClick={() => handleDeleteItem(project.id, objective.id, sub.id)} className="p-1 text-red-500 ml-1"><Trash2 size={14} /></button>
                                     )}
                                   </div>
@@ -1567,7 +1567,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
                             </div>
                           )}
                         </div>
-                        {effectiveViewMode === 'work' && (
+                        {effectiveViewMode === 'work' && isProjectAdmin(project) && (
                           <button onClick={() => handleDeleteItem(project.id, objective.id)} className="p-1 text-red-500 ml-2 mt-1"><Trash2 size={16} /></button>
                         )}
                       </div>
