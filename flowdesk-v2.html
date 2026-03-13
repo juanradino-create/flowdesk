@@ -1329,7 +1329,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
                               <User size={10} className="inline mr-0.5" />{objective.assignedTo.name}
                             </span>
                           )}
-                          </div>
                           {(objective.subObjectives||[]).length > 0 && (
                             <div className="w-full bg-gray-200 rounded-full h-1.5 mb-2">
                               <div className={`h-1.5 rounded-full transition-all ${objProgPct === 100 ? 'bg-green-500' : objProgPct >= 50 ? 'bg-yellow-500' : 'bg-indigo-300'}`} style={{width:`${objProgPct}%`}} />
