@@ -442,13 +442,29 @@ const ProjectManager = () => {
     setNewSubObjectiveName('');
   };
 
+  const computeObjectiveStatus = (objective) => {
+    const subs = objective.subObjectives || [];
+    if (subs.length === 0) return null; // no auto-compute if no tasks
+    const allCompleted = subs.every(s => s.status === 'completed');
+    if (allCompleted) return 'completed';
+    const anyInProgress = subs.some(s => s.status === 'in-progress');
+    const anyCompleted = subs.some(s => s.status === 'completed');
+    if (anyInProgress || anyCompleted) return 'in-progress';
+    const anyWaiting = subs.some(s => s.status === 'waiting');
+    if (anyWaiting) return 'waiting';
+    return 'pending';
+  };
+
   const updateStatus = (projectId, objectiveId, subObjectiveId, newStatus) => {
     updateProjectInFirebase(projectId, (p) => ({
       ...p,
       objectives: (p.objectives||[]).map(o => {
         if (o.id !== objectiveId) return o;
         if (subObjectiveId) {
-          return { ...o, subObjectives: (o.subObjectives||[]).map(s => s.id === subObjectiveId ? { ...s, status: newStatus } : s) };
+          const updatedSubs = (o.subObjectives||[]).map(s => s.id === subObjectiveId ? { ...s, status: newStatus } : s);
+          const updatedObj = { ...o, subObjectives: updatedSubs };
+          const autoStatus = computeObjectiveStatus(updatedObj);
+          return autoStatus ? { ...updatedObj, status: autoStatus } : updatedObj;
         }
         return { ...o, status: newStatus };
       })
@@ -1279,9 +1295,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
                     const objProgColor = objProgPct === 100 ? 'bg-green-500 text-white' : objProgPct >= 50 ? 'bg-yellow-100 text-yellow-700' : 'bg-gray-100 text-gray-600';
                     
                     return (
-                    <div key={objective.id} className="mb-4 border-l-4 border-indigo-300 pl-4">
-                      <div className="flex items-start justify-between mb-2">
+                    <div key={objective.id} className={`mb-4 border-l-4 pl-4 rounded-r-lg ${objective.status === 'completed' ? 'border-green-500 bg-green-50 bg-opacity-30' : objective.status === 'in-progress' ? 'border-yellow-500 bg-yellow-50 bg-opacity-30' : objective.status === 'waiting' ? 'border-orange-400 bg-orange-50 bg-opacity-30' : 'border-gray-300 bg-gray-50 bg-opacity-30'}`}>
+                      <div className="flex items-start justify-between mb-2 pt-2">
                         <div className="flex-1">
+                          <div className="flex items-center gap-2 flex-wrap mb-1">
+                            <span className="text-xs font-bold uppercase tracking-wider text-indigo-400">Objetivo</span>
+                            <span className={`inline-block px-2 py-0.5 rounded-full text-xs text-white ${getStatusColor(objective.status)}`}>{getStatusText(objective.status)}</span>
+                          </div>
                           <div className="flex items-center gap-2 flex-wrap mb-1">
                             {editingName === `obj-${objective.id}` ? (
                               <div className="flex items-center gap-1 flex-1">
@@ -1308,6 +1328,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
                               </span>
                             )}
                           </div>
+                          {(objective.subObjectives||[]).length > 0 && (
+                            <div className="w-full bg-gray-200 rounded-full h-1.5 mb-2">
+                              <div className={`h-1.5 rounded-full transition-all ${objProgPct === 100 ? 'bg-green-500' : objProgPct >= 50 ? 'bg-yellow-500' : 'bg-indigo-300'}`} style={{width:`${objProgPct}%`}} />
+                            </div>
+                          )}
 
                           {effectiveViewMode === 'work' && (
                             <>
@@ -1412,11 +1437,15 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
                           {/* Sub-objectives (Tasks) */}
                           {(objective.subObjectives||[]).length > 0 && (
                             <div className="mt-3">
-                              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Tareas</p>
+                              <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">Tareas ({(objective.subObjectives||[]).filter(s=>s.status==='completed').length}/{(objective.subObjectives||[]).length})</p>
                               {objective.subObjectives.map(sub => (
-                                <div key={sub.id} className="ml-4 mt-2 bg-gray-50 p-3 rounded">
+                                <div key={sub.id} className={`ml-4 mt-2 p-3 rounded border-l-3 ${sub.status === 'completed' ? 'bg-green-50 border-l-4 border-green-400' : sub.status === 'in-progress' ? 'bg-yellow-50 border-l-4 border-yellow-400' : sub.status === 'waiting' ? 'bg-orange-50 border-l-4 border-orange-300' : 'bg-white border-l-4 border-gray-200'}`}>
                                   <div className="flex items-start justify-between">
                                     <div className="flex-1">
+                                      <div className="flex items-center gap-2 mb-1 flex-wrap">
+                                        <span className={`text-xs font-bold uppercase tracking-wider ${sub.status === 'completed' ? 'text-green-400' : 'text-gray-300'}`}>Tarea</span>
+                                        <span className={`inline-block px-2 py-0.5 rounded-full text-xs text-white ${getStatusColor(sub.status)}`} style={{fontSize:'10px'}}>{getStatusText(sub.status)}</span>
+                                      </div>
                                       <div className="flex items-center gap-2 mb-1 flex-wrap">
                                         {editingName === `sub-${sub.id}` ? (
                                           <div className="flex items-center gap-1 flex-1">
