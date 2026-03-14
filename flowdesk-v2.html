@@ -674,6 +674,180 @@ const ProjectManager = () => {
     setEditNameValue('');
   };
 
+  // ==================== IMPORT FROM EXCEL ====================
+  const handleImportExcel = (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+    event.target.value = '';
+
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      try {
+        const XLSX = await import('https://cdn.sheetjs.com/xlsx-0.20.1/package/xlsx.mjs');
+        const data = new Uint8Array(e.target.result);
+        const workbook = XLSX.read(data, { type: 'array' });
+
+        // Read first sheet
+        const sheetName = workbook.SheetNames[0];
+        const sheet = workbook.Sheets[sheetName];
+        const rows = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+
+        // Find header row (look for 'Objetivo' or 'Tarea' in first 10 rows)
+        let headerIdx = -1;
+        let colMap = {};
+        for (let i = 0; i < Math.min(rows.length, 10); i++) {
+          const row = (rows[i] || []).map(c => String(c || '').toLowerCase().trim());
+          if (row.includes('objetivo') || row.includes('tarea')) {
+            headerIdx = i;
+            row.forEach((val, j) => {
+              if (val.includes('objetivo')) colMap.objetivo = j;
+              if (val.includes('tarea')) colMap.tarea = j;
+              if (val.includes('responsable')) colMap.responsable = j;
+              if (val.includes('fecha')) colMap.fecha = j;
+              if (val.includes('estado')) colMap.estado = j;
+              if (val.includes('nota')) colMap.notas = j;
+            });
+            break;
+          }
+        }
+
+        if (headerIdx === -1) {
+          alert('No se encontró la fila de encabezados. Asegurate de que el archivo tenga columnas "Objetivo" y "Tarea".');
+          return;
+        }
+
+        // Find project name (look for PROYECTO: in cells above header)
+        let projectName = file.name.replace(/\.xlsx?$/i, '');
+        for (let i = 0; i < headerIdx; i++) {
+          const row = rows[i] || [];
+          for (let j = 0; j < row.length; j++) {
+            const val = String(row[j] || '');
+            if (j > 0 && row[j] && String(row[j-1] || '').toUpperCase().includes('PROYECTO')) {
+              projectName = val.trim();
+            }
+            if (val && !val.toUpperCase().includes('PROYECTO') && !val.toUpperCase().includes('PLANTILLA') && !val.toUpperCase().includes('INSTRUC') && val.length > 3 && i > 0) {
+              // Could be the project name in a merged cell
+              if (j === 1 || j === 0) projectName = val.trim();
+            }
+          }
+        }
+
+        // Parse data rows into objectives and tasks
+        const dataRows = rows.slice(headerIdx + 1).filter(r => r && r.length > 0);
+        const objectives = [];
+        let currentObj = null;
+
+        const mapStatus = (val) => {
+          if (!val) return 'pending';
+          const v = String(val).toLowerCase().trim();
+          if (v.includes('complet') || v.includes('hecho') || v === '1') return 'completed';
+          if (v.includes('progreso') || v.includes('curso') || v.includes('en curso')) return 'in-progress';
+          if (v.includes('espera')) return 'waiting';
+          return 'pending';
+        };
+
+        const parseDate = (val) => {
+          if (!val) return null;
+          if (typeof val === 'number') {
+            // Excel date serial number
+            const d = new Date((val - 25569) * 86400000);
+            return d.toISOString().split('T')[0];
+          }
+          const d = new Date(val);
+          return isNaN(d.getTime()) ? null : d.toISOString().split('T')[0];
+        };
+
+        for (const row of dataRows) {
+          const objName = colMap.objetivo !== undefined ? String(row[colMap.objetivo] || '').trim() : '';
+          const taskName = colMap.tarea !== undefined ? String(row[colMap.tarea] || '').trim() : '';
+          const responsible = colMap.responsable !== undefined ? String(row[colMap.responsable] || '').trim() : '';
+          const fecha = colMap.fecha !== undefined ? parseDate(row[colMap.fecha]) : null;
+          const estado = colMap.estado !== undefined ? mapStatus(row[colMap.estado]) : 'pending';
+          const notas = colMap.notas !== undefined ? String(row[colMap.notas] || '').trim() : '';
+
+          if (objName) {
+            currentObj = {
+              id: Date.now() + Math.random() * 10000,
+              name: objName,
+              status: 'pending',
+              subObjectives: [],
+              notes: '',
+              files: [],
+              assignedTo: null,
+              dueDate: null,
+              clientComment: null,
+              history: [{ id: Date.now(), user: currentUser.name, userEmail: currentUser.email, action: 'created', details: 'Importado desde Excel', timestamp: new Date().toISOString() }]
+            };
+            objectives.push(currentObj);
+          }
+
+          if (taskName && currentObj) {
+            const assignedMember = responsible ? (getAssignableMembers().find(m => m.name.toLowerCase().includes(responsible.toLowerCase())) || { name: responsible, email: '' }) : null;
+            currentObj.subObjectives.push({
+              id: Date.now() + Math.random() * 10000,
+              name: taskName,
+              status: estado,
+              notes: notas,
+              files: [],
+              assignedTo: assignedMember ? { name: assignedMember.name, email: assignedMember.email } : null,
+              dueDate: fecha,
+              requiresPrevious: false,
+              clientComment: null,
+              history: [{ id: Date.now(), user: currentUser.name, userEmail: currentUser.email, action: 'created', details: 'Importado desde Excel', timestamp: new Date().toISOString() }]
+            });
+          } else if (taskName && !currentObj) {
+            // Task without objective - create an objective with the task name
+            currentObj = {
+              id: Date.now() + Math.random() * 10000,
+              name: taskName,
+              status: estado,
+              subObjectives: [],
+              notes: notas,
+              files: [],
+              assignedTo: null,
+              dueDate: fecha,
+              clientComment: null,
+              history: [{ id: Date.now(), user: currentUser.name, userEmail: currentUser.email, action: 'created', details: 'Importado desde Excel', timestamp: new Date().toISOString() }]
+            };
+            objectives.push(currentObj);
+          }
+        }
+
+        // Auto-compute objective status from tasks
+        objectives.forEach(obj => {
+          if (obj.subObjectives.length > 0) {
+            const auto = computeObjectiveStatus(obj);
+            if (auto) obj.status = auto;
+          }
+        });
+
+        if (objectives.length === 0) {
+          alert('No se encontraron datos para importar. Verificá que el archivo tenga contenido en las columnas correctas.');
+          return;
+        }
+
+        // Create project
+        const newProject = {
+          id: Date.now(),
+          name: projectName,
+          objectives: objectives,
+          createdAt: new Date().toISOString(),
+          createdBy: currentUser.name,
+          createdByEmail: currentUser.email,
+          allowedMembers: [currentUser.email]
+        };
+
+        saveProject(newProject);
+        alert(`✅ Proyecto "${projectName}" importado con ${objectives.length} objetivos.`);
+
+      } catch (error) {
+        console.error('Error importing:', error);
+        alert('Error al importar el archivo. Asegurate de que sea un archivo .xlsx válido.');
+      }
+    };
+    reader.readAsArrayBuffer(file);
+  };
+
   // ==================== TEAM MEMBERS ====================
   const addManualMember = () => {
     if (!newMemberName.trim() || !newMemberEmail.trim()) return;
@@ -1189,9 +1363,15 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 
         {/* Add project button */}
         {effectiveViewMode === 'work' && !showAddProject && (
-          <button onClick={() => setShowAddProject(true)} className="w-full mb-4 py-3 border-2 border-dashed border-indigo-300 rounded-lg text-indigo-600 font-medium hover:bg-indigo-50">
-            <Plus size={20} className="inline mr-2" />Nuevo Proyecto
-          </button>
+          <div className="flex gap-2 mb-4">
+            <button onClick={() => setShowAddProject(true)} className="flex-1 py-3 border-2 border-dashed border-indigo-300 rounded-lg text-indigo-600 font-medium hover:bg-indigo-50">
+              <Plus size={20} className="inline mr-2" />Nuevo Proyecto
+            </button>
+            <label className="flex-1 py-3 border-2 border-dashed border-green-300 rounded-lg text-green-600 font-medium hover:bg-green-50 cursor-pointer text-center">
+              <Download size={20} className="inline mr-2" style={{transform:'rotate(180deg)'}} />Importar Excel
+              <input type="file" accept=".xlsx,.xls" onChange={handleImportExcel} className="hidden" />
+            </label>
+          </div>
         )}
 
         {showAddProject && (
