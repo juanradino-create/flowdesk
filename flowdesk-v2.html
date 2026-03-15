@@ -58,6 +58,7 @@
     const User = ({size=24,className=""}) => <svg {...iconProps(size)} className={className}><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>;
     const Users = ({size=24,className=""}) => <svg {...iconProps(size)} className={className}><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>;
     const Filter = ({size=24,className=""}) => <svg {...iconProps(size)} className={className}><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>;
+    const BarChart = ({size=24,className=""}) => <svg {...iconProps(size)} className={className}><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg>;
 
 // ==================== CUSTOM SVG ICONS FOR ONBOARDING ====================
 const OBIcon = ({ type, size = 40 }) => {
@@ -318,6 +319,10 @@ const ProjectManager = () => {
   const [linkName, setLinkName] = useState('');
   const [editingName, setEditingName] = useState(null);
   const [editNameValue, setEditNameValue] = useState('');
+  const [editingKpi, setEditingKpi] = useState(null);
+  const [kpiName, setKpiName] = useState('');
+  const [kpiCurrent, setKpiCurrent] = useState('');
+  const [kpiTarget, setKpiTarget] = useState('');
   const [firebaseStatus, setFirebaseStatus] = useState('connecting');
   const [saveError, setSaveError] = useState(null);
 
@@ -907,6 +912,24 @@ const ProjectManager = () => {
     }));
     setEditingName(null);
     setEditNameValue('');
+  };
+
+  const saveKpi = (projectId, objectiveId, kpiData) => {
+    updateProjectInFirebase(projectId, (p) => ({
+      ...p,
+      objectives: (p.objectives||[]).map(o => o.id === objectiveId ? { ...o, kpi: kpiData } : o)
+    }));
+    setEditingKpi(null);
+    setKpiName('');
+    setKpiCurrent('');
+    setKpiTarget('');
+  };
+
+  const removeKpi = (projectId, objectiveId) => {
+    updateProjectInFirebase(projectId, (p) => ({
+      ...p,
+      objectives: (p.objectives||[]).map(o => o.id === objectiveId ? { ...o, kpi: null } : o)
+    }));
   };
 
   // ==================== IMPORT FROM EXCEL ====================
@@ -1610,6 +1633,62 @@ const ProjectManager = () => {
                             </div>
                           )}
 
+                          {/* KPI Display */}
+                          {objective.kpi && objective.kpi.name && (
+                            <div className="mb-2 bg-indigo-50 border border-indigo-200 rounded-lg p-2.5">
+                              <div className="flex items-center justify-between mb-1.5">
+                                <div className="flex items-center gap-1.5">
+                                  <BarChart size={14} className="text-indigo-500" />
+                                  <span className="text-xs font-semibold text-indigo-700">{objective.kpi.name}</span>
+                                </div>
+                                {effectiveViewMode === 'work' && (
+                                  <div className="flex items-center gap-1">
+                                    <button onClick={() => { setEditingKpi(`obj-${objective.id}`); setKpiName(objective.kpi.name); setKpiCurrent(String(objective.kpi.current||'')); setKpiTarget(String(objective.kpi.target||'')); }} className="text-xs text-indigo-400 hover:text-indigo-600 px-1"><Edit2 size={10} /></button>
+                                    <button onClick={() => removeKpi(project.id, objective.id)} className="text-xs text-red-300 hover:text-red-500 px-1"><X size={10} /></button>
+                                  </div>
+                                )}
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <div className="flex-1 bg-indigo-200 rounded-full h-2">
+                                  <div className="h-2 rounded-full transition-all bg-indigo-500" style={{width:`${objective.kpi.target > 0 ? Math.min(100, Math.round((objective.kpi.current / objective.kpi.target) * 100)) : 0}%`}} />
+                                </div>
+                                <span className="text-xs font-bold text-indigo-700 whitespace-nowrap">{objective.kpi.current} / {objective.kpi.target}</span>
+                                <span className={`text-xs font-bold px-1.5 py-0.5 rounded ${objective.kpi.target > 0 && objective.kpi.current >= objective.kpi.target ? 'bg-green-100 text-green-700' : 'text-indigo-500'}`}>
+                                  {objective.kpi.target > 0 ? Math.round((objective.kpi.current / objective.kpi.target) * 100) : 0}%
+                                </span>
+                              </div>
+                            </div>
+                          )}
+
+                          {/* KPI Edit Form */}
+                          {editingKpi === `obj-${objective.id}` && effectiveViewMode === 'work' && (
+                            <div className="mb-2 bg-indigo-50 border border-indigo-300 rounded-lg p-3">
+                              <p className="text-xs font-semibold text-indigo-700 mb-2"><BarChart size={12} className="inline mr-1" />KPI del Objetivo</p>
+                              <input type="text" value={kpiName} onChange={e => setKpiName(e.target.value)} placeholder="¿Cómo medís este objetivo? (ej: Clientes nuevos)" className="w-full p-2 border border-gray-300 rounded mb-2 text-xs" autoFocus />
+                              <div className="grid grid-cols-2 gap-2 mb-2">
+                                <div>
+                                  <label className="text-xs text-gray-500 mb-0.5 block">Actual</label>
+                                  <input type="number" value={kpiCurrent} onChange={e => setKpiCurrent(e.target.value)} placeholder="0" className="w-full p-2 border border-gray-300 rounded text-xs" />
+                                </div>
+                                <div>
+                                  <label className="text-xs text-gray-500 mb-0.5 block">Meta</label>
+                                  <input type="number" value={kpiTarget} onChange={e => setKpiTarget(e.target.value)} placeholder="100" className="w-full p-2 border border-gray-300 rounded text-xs" />
+                                </div>
+                              </div>
+                              <div className="flex gap-2">
+                                <button onClick={() => { if (kpiName.trim()) saveKpi(project.id, objective.id, { name: kpiName.trim(), current: parseFloat(kpiCurrent) || 0, target: parseFloat(kpiTarget) || 0 }); }} className="flex-1 bg-indigo-600 text-white py-1.5 rounded text-xs font-medium"><Check size={12} className="inline mr-1" />Guardar KPI</button>
+                                <button onClick={() => { setEditingKpi(null); setKpiName(''); setKpiCurrent(''); setKpiTarget(''); }} className="flex-1 bg-gray-300 text-gray-700 py-1.5 rounded text-xs"><X size={12} className="inline mr-1" />Cancelar</button>
+                              </div>
+                            </div>
+                          )}
+
+                          {/* Add KPI button (only when no KPI exists and not editing) */}
+                          {!objective.kpi && editingKpi !== `obj-${objective.id}` && effectiveViewMode === 'work' && (
+                            <button onClick={() => { setEditingKpi(`obj-${objective.id}`); setKpiName(''); setKpiCurrent(''); setKpiTarget(''); }} className="mb-2 text-xs text-indigo-400 hover:text-indigo-600 flex items-center gap-1 py-0.5">
+                              <BarChart size={12} />Agregar KPI
+                            </button>
+                          )}
+
                           {effectiveViewMode === 'work' && (
                             <>
                               <div className="flex gap-2 flex-wrap mb-2">
@@ -1651,6 +1730,23 @@ const ProjectManager = () => {
                               {(objective.subObjectives||[]).length > 0 && (
                                 <div className="w-full bg-gray-200 rounded-full h-1.5 mt-1">
                                   <div className={`h-1.5 rounded-full transition-all ${objProgPct === 100 ? 'bg-green-500' : objProgPct >= 50 ? 'bg-yellow-500' : 'bg-gray-400'}`} style={{width:`${objProgPct}%`}} />
+                                </div>
+                              )}
+                              {objective.kpi && objective.kpi.name && (
+                                <div className="bg-indigo-50 border border-indigo-200 rounded-lg p-2.5">
+                                  <div className="flex items-center gap-1.5 mb-1.5">
+                                    <BarChart size={14} className="text-indigo-500" />
+                                    <span className="text-xs font-semibold text-indigo-700">{objective.kpi.name}</span>
+                                  </div>
+                                  <div className="flex items-center gap-2">
+                                    <div className="flex-1 bg-indigo-200 rounded-full h-2">
+                                      <div className="h-2 rounded-full transition-all bg-indigo-500" style={{width:`${objective.kpi.target > 0 ? Math.min(100, Math.round((objective.kpi.current / objective.kpi.target) * 100)) : 0}%`}} />
+                                    </div>
+                                    <span className="text-xs font-bold text-indigo-700 whitespace-nowrap">{objective.kpi.current} / {objective.kpi.target}</span>
+                                    <span className={`text-xs font-bold px-1.5 py-0.5 rounded ${objective.kpi.target > 0 && objective.kpi.current >= objective.kpi.target ? 'bg-green-100 text-green-700' : 'text-indigo-500'}`}>
+                                      {objective.kpi.target > 0 ? Math.round((objective.kpi.current / objective.kpi.target) * 100) : 0}%
+                                    </span>
+                                  </div>
                                 </div>
                               )}
                               {objective.status === 'waiting' && (
