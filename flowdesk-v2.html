@@ -59,6 +59,26 @@
     const Users = ({size=24,className=""}) => <svg {...iconProps(size)} className={className}><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>;
     const Filter = ({size=24,className=""}) => <svg {...iconProps(size)} className={className}><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>;
     const BarChart = ({size=24,className=""}) => <svg {...iconProps(size)} className={className}><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg>;
+    // Extended icon set for unified design
+    const MessageCircle = ({size=24,className=""}) => <svg {...iconProps(size)} className={className}><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>;
+    const Calendar = ({size=24,className=""}) => <svg {...iconProps(size)} className={className}><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>;
+    const CheckCircle = ({size=24,className=""}) => <svg {...iconProps(size)} className={className}><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>;
+    const Clock = ({size=24,className=""}) => <svg {...iconProps(size)} className={className}><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>;
+    const AlertTriangle = ({size=24,className=""}) => <svg {...iconProps(size)} className={className}><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>;
+    const Lock = ({size=24,className=""}) => <svg {...iconProps(size)} className={className}><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>;
+    const Bell = ({size=24,className=""}) => <svg {...iconProps(size)} className={className}><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>;
+    const Star = ({size=24,className=""}) => <svg {...iconProps(size)} className={className}><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>;
+    const DollarSign = ({size=24,className=""}) => <svg {...iconProps(size)} className={className}><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>;
+    const Zap = ({size=24,className=""}) => <svg {...iconProps(size)} className={className}><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>;
+    const ArrowUpCircle = ({size=24,className=""}) => <svg {...iconProps(size)} className={className}><circle cx="12" cy="12" r="10"/><polyline points="16 12 12 8 8 12"/><line x1="12" y1="16" x2="12" y2="8"/></svg>;
+    const RefreshCw = ({size=24,className=""}) => <svg {...iconProps(size)} className={className}><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>;
+    const Award = ({size=24,className=""}) => <svg {...iconProps(size)} className={className}><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>;
+    const Folder = ({size=24,className=""}) => <svg {...iconProps(size)} className={className}><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>;
+    const Cloud = ({size=24,className=""}) => <svg {...iconProps(size)} className={className}><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg>;
+    const Image = ({size=24,className=""}) => <svg {...iconProps(size)} className={className}><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>;
+    const Package = ({size=24,className=""}) => <svg {...iconProps(size)} className={className}><line x1="16.5" y1="9.4" x2="7.5" y2="4.21"/><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>;
+    const Clipboard = ({size=24,className=""}) => <svg {...iconProps(size)} className={className}><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>;
+    const Wrench = ({size=24,className=""}) => <svg {...iconProps(size)} className={className}><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>;
 
 // ==================== CUSTOM SVG ICONS FOR ONBOARDING ====================
 const OBIcon = ({ type, size = 40 }) => {
@@ -175,28 +195,28 @@ const OnboardingWizard = ({ onComplete, userRole }) => {
             <h2 className="text-xl font-bold text-gray-800 mb-4">Bienvenido a Flowdesk</h2>
             <div className="w-full space-y-3 text-left mb-6">
               <div className="flex items-start gap-3 bg-gray-50 p-3 rounded-xl">
-                <span className="text-lg mt-0.5">📊</span>
+                <span className="mt-0.5"><BarChart size={20} className="text-indigo-500" /></span>
                 <div>
                   <p className="text-sm font-semibold text-gray-800">Seguí el avance</p>
                   <p className="text-xs text-gray-500">Vas a ver el estado de cada objetivo y tarea del proyecto en tiempo real.</p>
                 </div>
               </div>
               <div className="flex items-start gap-3 bg-gray-50 p-3 rounded-xl">
-                <span className="text-lg mt-0.5">✅</span>
+                <span className="mt-0.5"><CheckCircle size={20} className="text-green-500" /></span>
                 <div>
                   <p className="text-sm font-semibold text-gray-800">Aprobá tareas</p>
                   <p className="text-xs text-gray-500">Cuando una tarea necesite tu autorización, vas a ver un botón para aprobarla.</p>
                 </div>
               </div>
               <div className="flex items-start gap-3 bg-gray-50 p-3 rounded-xl">
-                <span className="text-lg mt-0.5">💬</span>
+                <span className="mt-0.5"><MessageCircle size={20} className="text-blue-500" /></span>
                 <div>
                   <p className="text-sm font-semibold text-gray-800">Dejá comentarios</p>
                   <p className="text-xs text-gray-500">Podés comentar en cualquier objetivo o tarea para dar feedback al equipo.</p>
                 </div>
               </div>
               <div className="flex items-start gap-3 bg-gray-50 p-3 rounded-xl">
-                <span className="text-lg mt-0.5">📥</span>
+                <span className="mt-0.5"><Download size={20} className="text-purple-500" /></span>
                 <div>
                   <p className="text-sm font-semibold text-gray-800">Descargá reportes</p>
                   <p className="text-xs text-gray-500">El botón de descarga genera un resumen del estado actual del proyecto.</p>
@@ -227,14 +247,14 @@ const OnboardingWizard = ({ onComplete, userRole }) => {
             <p className="text-sm text-gray-500 mb-6">Antes de empezar, una pregunta rápida:</p>
             <div className="w-full space-y-3">
               <button onClick={() => setOnboardingPath('m360')} className="w-full p-4 rounded-xl border-2 border-indigo-200 bg-indigo-50 hover:border-indigo-400 transition-all text-left flex items-center gap-3">
-                <span className="text-2xl">🎓</span>
+                <span><Award size={28} className="text-indigo-600" /></span>
                 <div>
                   <p className="text-sm font-semibold text-indigo-800">Conozco el sistema M360</p>
                   <p className="text-xs text-indigo-500">Hice la capacitación o conozco la metodología</p>
                 </div>
               </button>
               <button onClick={() => setOnboardingPath('generic')} className="w-full p-4 rounded-xl border-2 border-gray-200 bg-gray-50 hover:border-indigo-300 transition-all text-left flex items-center gap-3">
-                <span className="text-2xl">🚀</span>
+                <span><ArrowUpCircle size={28} className="text-gray-600" /></span>
                 <div>
                   <p className="text-sm font-semibold text-gray-800">Quiero conocer la herramienta</p>
                   <p className="text-xs text-gray-500">Es mi primera vez, mostrala directamente</p>
@@ -648,7 +668,7 @@ const ProjectManager = () => {
           notes.push({
             id: `comment-obj-${obj.id}`,
             projectName: project.name,
-            text: `💬 Comentario en "${obj.name}"`,
+            text: `<MessageCircle size={12} className="inline mr-1" />Comentario en "${obj.name}"`,
             detail: commentText,
             type: 'comment'
           });
@@ -659,7 +679,7 @@ const ProjectManager = () => {
             notes.push({
               id: `comment-sub-${sub.id}`,
               projectName: project.name,
-              text: `💬 Comentario en tarea "${sub.name}"`,
+              text: `<MessageCircle size={12} className="inline mr-1" />Comentario en tarea "${sub.name}"`,
               detail: commentText,
               type: 'comment'
             });
@@ -669,7 +689,7 @@ const ProjectManager = () => {
             notes.push({
               id: `diag-bounce-${sub.id}`,
               projectName: project.name,
-              text: `⚠️ Tarea "${sub.name}" cambia de estado frecuentemente`,
+              text: `△ Tarea "${sub.name}" cambia de estado frecuentemente`,
               detail: 'Posible problema de proceso — considerar revisar el diseño de la tarea o crear un checklist',
               type: 'diagnostic'
             });
@@ -698,12 +718,12 @@ const ProjectManager = () => {
       const today = new Date(); today.setHours(0,0,0,0);
       const due = new Date(item.dueDate);
       const diffDays = Math.ceil((due - today) / (1000*60*60*24));
-      if (diffDays < -3) warnings.push({ type: 'overdue', label: 'Tarea vencida sin resolver', icon: '🔴' });
+      if (diffDays < -3) warnings.push({ type: 'overdue', label: 'Tarea vencida sin resolver', icon: '●' });
     }
     // Pattern 2: Status bouncing (4+ changes = process issue)
     const changes = item.statusChangeCount || 0;
-    if (changes >= 6) warnings.push({ type: 'bounce', label: 'Rebota mucho — revisar proceso', icon: '🔄' });
-    else if (changes >= 4) warnings.push({ type: 'bounce', label: 'Posible problema de proceso', icon: '⚠️' });
+    if (changes >= 6) warnings.push({ type: 'bounce', label: 'Rebota mucho — revisar proceso', icon: '⟳' });
+    else if (changes >= 4) warnings.push({ type: 'bounce', label: 'Posible problema de proceso', icon: '△' });
     return warnings;
   };
 
@@ -1056,9 +1076,9 @@ const ProjectManager = () => {
 
   const getImpactConfig = (impact) => {
     switch(impact) {
-      case 'high': return { label: 'Alto impacto', icon: '🔴', color: 'bg-red-100 text-red-700 border-red-200', headerColor: 'bg-red-500 bg-opacity-30' };
-      case 'medium': return { label: 'Medio impacto', icon: '🟡', color: 'bg-yellow-100 text-yellow-700 border-yellow-200', headerColor: 'bg-yellow-500 bg-opacity-30' };
-      case 'low': return { label: 'Bajo impacto', icon: '🟢', color: 'bg-green-100 text-green-700 border-green-200', headerColor: 'bg-green-500 bg-opacity-30' };
+      case 'high': return { label: 'Alto impacto', dot: 'bg-red-500', color: 'bg-red-100 text-red-700 border-red-200', headerColor: 'bg-red-500 bg-opacity-30' };
+      case 'medium': return { label: 'Medio impacto', dot: 'bg-yellow-500', color: 'bg-yellow-100 text-yellow-700 border-yellow-200', headerColor: 'bg-yellow-500 bg-opacity-30' };
+      case 'low': return { label: 'Bajo impacto', dot: 'bg-green-500', color: 'bg-green-100 text-green-700 border-green-200', headerColor: 'bg-green-500 bg-opacity-30' };
       default: return null;
     }
   };
@@ -1244,7 +1264,7 @@ const ProjectManager = () => {
           createdByEmail: currentUser.email, allowedMembers: [currentUser.email]
         };
         saveProject(newProject);
-        alert(`✅ Proyecto "${projectName}" importado con ${objectives.length} objetivos.`);
+        alert(`Proyecto "${projectName}" importado con ${objectives.length} objetivos.`);
       } catch (error) {
         console.error('Error importing:', error);
         alert('Error al importar el archivo. Asegurate de que sea un archivo .xlsx válido.');
@@ -1312,11 +1332,11 @@ const ProjectManager = () => {
   };
 
   const getFileIcon = (type) => {
-    if (type === 'gdrive') return <span className="text-base">📁</span>;
-    if (type === 'dropbox') return <span className="text-base">📦</span>;
-    if (type === 'onedrive') return <span className="text-base">☁️</span>;
-    if (type === 'pdf') return <span className="text-base">📄</span>;
-    if (type === 'image') return <span className="text-base">🖼️</span>;
+    if (type === 'gdrive') return <Folder size={16} className="text-blue-500" />;
+    if (type === 'dropbox') return <Package size={16} className="text-indigo-500" />;
+    if (type === 'onedrive') return <Cloud size={16} className="text-sky-500" />;
+    if (type === 'pdf') return <FileText size={16} className="text-red-500" />;
+    if (type === 'image') return <Image size={16} className="text-emerald-500" />;
     return <Link size={16} className="text-blue-500" />;
   };
 
@@ -1337,7 +1357,7 @@ const ProjectManager = () => {
     return (
       <div className={`mt-2 p-2 rounded border-l-2 ${isReadOnly ? 'bg-gray-50 border-gray-300' : 'bg-blue-50 border-blue-400'}`}>
         <div className="flex items-center gap-2 mb-1">
-          <span className="text-xs">{role === 'client' ? '👁️' : '🛠️'}</span>
+          <span className="text-xs">{role === 'client' ? <Eye size={12} className="inline text-green-600" /> : <Wrench size={12} className="inline text-indigo-600" />}</span>
           <span className="text-xs font-semibold text-gray-700">{author || 'Usuario'}</span>
           {timestamp && <span className="text-xs text-gray-400">• {new Date(timestamp).toLocaleDateString('es-ES', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}</span>}
         </div>
@@ -1351,7 +1371,7 @@ const ProjectManager = () => {
     if (addingLinkTo !== key) return null;
     return (
       <div className="mt-2 bg-blue-50 p-3 rounded border border-blue-200">
-        <p className="text-xs font-semibold text-blue-700 mb-2">🔗 Agregar link externo</p>
+        <p className="text-xs font-semibold text-blue-700 mb-2"><Link size={12} className="inline mr-1" />Agregar link externo</p>
         <input type="url" value={linkUrl} onChange={e => setLinkUrl(e.target.value)} placeholder="https://drive.google.com/..." className="w-full p-2 border border-gray-300 rounded mb-2 text-xs" autoFocus />
         <input type="text" value={linkName} onChange={e => setLinkName(e.target.value)} placeholder="Nombre del archivo (opcional)" className="w-full p-2 border border-gray-300 rounded mb-2 text-xs" />
         <p className="text-xs text-gray-400 mb-2">Google Drive, Dropbox, OneDrive o cualquier link público.</p>
@@ -1416,25 +1436,25 @@ const ProjectManager = () => {
     });
     const css = `*{margin:0;padding:0;box-sizing:border-box}body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);padding:16px;color:#333}.container{max-width:800px;margin:0 auto;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.3)}.header{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:#fff;padding:30px 24px;text-align:center}.header h1{font-size:24px;margin-bottom:6px}.header .date{opacity:.85;font-size:13px}.progress-section{padding:20px 24px;background:#f8f9fa}.progress-bar{background:#e9ecef;height:28px;border-radius:14px;overflow:hidden;margin-bottom:12px}.progress-fill{height:100%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:13px;border-radius:14px}.stats{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}.stat{flex:1;min-width:70px;text-align:center;padding:12px 6px 10px;background:#fff;border-radius:10px;box-shadow:0 1px 4px rgba(0,0,0,.08);border-top:4px solid #e2e8f0}.stat-icon{font-size:20px;margin-bottom:2px}.stat-val{font-size:32px;font-weight:700;line-height:1.1}.stat-label{font-size:10px;color:#888;text-transform:uppercase;letter-spacing:.5px;margin-top:4px}.section{padding:16px 24px}.section-title{font-size:14px;font-weight:700;color:#667eea;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;padding-bottom:6px;border-bottom:2px solid #eee}.alert-box{background:#fff5f5;border:1px solid #feb2b2;border-radius:10px;padding:12px 16px;margin-bottom:8px}.alert-item{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid #fed7d7}.alert-item:last-child{border:none}.alert-name{font-size:13px;font-weight:500;color:#c53030}.alert-reason{font-size:11px;color:#e53e3e;background:#fff;padding:2px 8px;border-radius:10px}.next-box{background:#f0fff4;border:1px solid #c6f6d5;border-radius:10px;padding:12px 16px;margin-bottom:8px}.next-item{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid #e2e8f0}.next-item:last-child{border:none}.next-name{font-size:13px;font-weight:500;color:#2d3748}.next-meta{font-size:11px;color:#718096}.obj{margin-bottom:12px;border-radius:10px;overflow:hidden;border:1px solid #e2e8f0}.obj-header{display:flex;justify-content:space-between;align-items:center;padding:12px 16px}.obj-header.completed{background:#f0fff4;border-left:4px solid #48bb78}.obj-header.in-progress{background:#fffff0;border-left:4px solid #ecc94b}.obj-header.waiting{background:#fffaf0;border-left:4px solid #ed8936}.obj-header.pending{background:#f7fafc;border-left:4px solid #cbd5e0}.obj-name{font-size:15px;font-weight:600;color:#2d3748;flex:1}.badge{display:inline-block;padding:3px 10px;border-radius:12px;font-size:11px;font-weight:600}.badge-completed{background:#c6f6d5;color:#22543d}.badge-in-progress{background:#fefcbf;color:#744210}.badge-waiting{background:#feebc8;color:#7b341e}.badge-pending{background:#edf2f7;color:#4a5568}.obj-body{padding:8px 16px 12px;background:#fff}.task{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;margin:4px 0;background:#f7fafc;border-radius:6px;border-left:3px solid #cbd5e0}.task.task-completed{border-left-color:#48bb78;opacity:.7}.task.task-in-progress{border-left-color:#ecc94b}.task.task-waiting{border-left-color:#ed8936}.task-name{font-size:13px;color:#4a5568}.task-info{font-size:11px;color:#a0aec0;margin-top:2px}.notes{background:#fffbeb;border-left:3px solid #fbbf24;padding:8px 12px;margin:6px 0;border-radius:4px;font-size:13px;color:#78350f}.obj-progress{width:100%;background:#e2e8f0;height:6px;border-radius:3px;margin-top:6px}.obj-progress-fill{height:100%;border-radius:3px}.footer{text-align:center;padding:16px;background:#f8f9fa;color:#999;font-size:12px}.no-attention{text-align:center;padding:16px;color:#48bb78;font-size:14px}@media print{body{background:#fff;padding:0}.container{box-shadow:none}}`;
     const progressColor = progress === 100 ? '#48bb78' : progress >= 50 ? '#ecc94b' : '#667eea';
-    let attentionHtml = attentionItems.length > 0 ? `<div class="alert-box">${attentionItems.map(a => `<div class="alert-item"><span class="alert-name">⚠️ ${a.name}</span><span class="alert-reason">${a.reason}</span></div>`).join('')}</div>` : `<div class="no-attention">✅ No hay elementos que requieran atención urgente</div>`;
-    let nextHtml = nextSteps.length > 0 ? `<div class="next-box">${nextSteps.map(n => `<div class="next-item"><div><span class="next-name">→ ${n.name}</span><div class="next-meta">Responsable: ${n.responsible}${n.due ? ' · 📅 ' + new Date(n.due).toLocaleDateString('es-ES',{day:'2-digit',month:'short'}) : ''}</div></div></div>`).join('')}</div>` : '';
+    let attentionHtml = attentionItems.length > 0 ? `<div class="alert-box">${attentionItems.map(a => `<div class="alert-item"><span class="alert-name">△ ${a.name}</span><span class="alert-reason">${a.reason}</span></div>`).join('')}</div>` : `<div class="no-attention">No hay elementos que requieran atención urgente</div>`;
+    let nextHtml = nextSteps.length > 0 ? `<div class="next-box">${nextSteps.map(n => `<div class="next-item"><div><span class="next-name">→ ${n.name}</span><div class="next-meta">Responsable: ${n.responsible}${n.due ? ' · ' + new Date(n.due).toLocaleDateString('es-ES',{day:'2-digit',month:'short'}) : ''}</div></div></div>`).join('')}</div>` : '';
     const objectivesHtml = objectives.map((obj, i) => {
       const prog = getObjectiveProgress(obj);
       const pct = prog.total > 0 ? Math.round((prog.completed / prog.total) * 100) : 0;
       const isComplete = pct === 100 || obj.status === 'completed';
       const fillColor = isComplete ? '#48bb78' : pct >= 50 ? '#ecc94b' : '#cbd5e0';
-      const dueDateStr = obj.dueDate ? ' · 📅 ' + new Date(obj.dueDate).toLocaleDateString('es-ES',{day:'2-digit',month:'short'}) : '';
+      const dueDateStr = obj.dueDate ? ' · ' + new Date(obj.dueDate).toLocaleDateString('es-ES',{day:'2-digit',month:'short'}) : '';
       const responsibleStr = obj.assignedTo ? ' · ' + obj.assignedTo.name : '';
-      if (isComplete) return `<div class="obj"><div class="obj-header completed"><div><span class="obj-name">${i+1}. ${obj.name}</span><div style="font-size:12px;color:#718096;margin-top:2px">${prog.completed}/${prog.total} tareas completadas${responsibleStr}${dueDateStr}</div></div><span class="badge badge-completed">✅ Completado</span></div></div>`;
+      if (isComplete) return `<div class="obj"><div class="obj-header completed"><div><span class="obj-name">${i+1}. ${obj.name}</span><div style="font-size:12px;color:#718096;margin-top:2px">${prog.completed}/${prog.total} tareas completadas${responsibleStr}${dueDateStr}</div></div><span class="badge badge-completed">Completado</span></div></div>`;
       const tasksHtml = (obj.subObjectives||[]).map((sub, j) => {
-        const subDue = sub.dueDate ? ' · 📅 ' + new Date(sub.dueDate).toLocaleDateString('es-ES',{day:'2-digit',month:'short'}) : '';
+        const subDue = sub.dueDate ? ' · ' + new Date(sub.dueDate).toLocaleDateString('es-ES',{day:'2-digit',month:'short'}) : '';
         const subResp = sub.assignedTo ? sub.assignedTo.name : '';
         return `<div class="task task-${sub.status}"><div><span class="task-name">${i+1}.${j+1} ${sub.name}</span><div class="task-info">${subResp}${subDue}</div></div><span class="badge badge-${sub.status}">${getStatusText(sub.status)}</span></div>`;
       }).join('');
-      const notesHtml = obj.notes ? `<div class="notes">📝 ${obj.notes}</div>` : '';
+      const notesHtml = obj.notes ? `<div class="notes">${obj.notes}</div>` : '';
       return `<div class="obj"><div class="obj-header ${obj.status}"><div><span class="obj-name">${i+1}. ${obj.name}</span><div style="font-size:12px;color:#718096;margin-top:2px">${prog.completed}/${prog.total} tareas${responsibleStr}${dueDateStr}</div><div class="obj-progress"><div class="obj-progress-fill" style="width:${pct}%;background:${fillColor}"></div></div></div><span class="badge badge-${obj.status}">${getStatusText(obj.status)}</span></div><div class="obj-body">${notesHtml}${tasksHtml}</div></div>`;
     }).join('');
-    const html = `<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Reporte: ${project.name}</title><style>${css}</style></head><body><div class="container"><div class="header"><h1>${project.name}</h1><p class="date">Reporte generado el ${new Date().toLocaleDateString('es-ES',{year:'numeric',month:'long',day:'numeric'})}</p></div><div class="progress-section"><div class="progress-bar"><div class="progress-fill" style="width:${Math.max(progress,8)}%;background:${progressColor}">${progress}% Completado</div></div><div class="stats"><div class="stat" style="border-top-color:#48bb78"><div class="stat-icon">✅</div><div class="stat-val" style="color:#48bb78">${completedObj}</div><div class="stat-label">Completados</div></div><div class="stat" style="border-top-color:#ecc94b"><div class="stat-icon">🔄</div><div class="stat-val" style="color:#d69e2e">${inProgressObj}</div><div class="stat-label">En progreso</div></div><div class="stat" style="border-top-color:#ed8936"><div class="stat-icon">⏳</div><div class="stat-val" style="color:#ed8936">${waitingObj}</div><div class="stat-label">En espera</div></div><div class="stat" style="border-top-color:#a0aec0"><div class="stat-icon">⬚</div><div class="stat-val" style="color:#a0aec0">${pendingObj}</div><div class="stat-label">Pendientes</div></div></div><p style="text-align:center;font-size:11px;color:#a0aec0;margin-top:10px;line-height:1.6">✅ Terminado · 🔄 Trabajando en esto · ⏳ Necesita tu aprobación · ⬚ Aún no comenzó</p></div><div class="section"><div class="section-title">⚡ Requiere tu atención</div>${attentionHtml}</div><div class="section"><div class="section-title">→ Próximos pasos</div>${nextHtml}</div><div class="section"><div class="section-title">📋 Detalle por objetivo</div>${objectivesHtml}</div><div class="footer">© ${new Date().getFullYear()} - Flowdesk</div></div></body></html>`;
+    const html = `<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Reporte: ${project.name}</title><style>${css}</style></head><body><div class="container"><div class="header"><h1>${project.name}</h1><p class="date">Reporte generado el ${new Date().toLocaleDateString('es-ES',{year:'numeric',month:'long',day:'numeric'})}</p></div><div class="progress-section"><div class="progress-bar"><div class="progress-fill" style="width:${Math.max(progress,8)}%;background:${progressColor}">${progress}% Completado</div></div><p style="text-align:center;font-size:13px;color:#4a5568;margin-bottom:8px;font-weight:600">${objectives.length} objetivos</p><div class="stats"><div class="stat" style="border-top-color:#48bb78"><div class="stat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#48bb78" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div><div class="stat-val" style="color:#48bb78">${completedObj}</div><div class="stat-label">Completados</div></div><div class="stat" style="border-top-color:#ecc94b"><div class="stat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#d69e2e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg></div><div class="stat-val" style="color:#d69e2e">${inProgressObj}</div><div class="stat-label">En progreso</div></div><div class="stat" style="border-top-color:#ed8936"><div class="stat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ed8936" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><div class="stat-val" style="color:#ed8936">${waitingObj}</div><div class="stat-label">En espera</div></div><div class="stat" style="border-top-color:#a0aec0"><div class="stat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#a0aec0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/></svg></div><div class="stat-val" style="color:#a0aec0">${pendingObj}</div><div class="stat-label">Pendientes</div></div></div><p style="text-align:center;font-size:12px;color:#718096;margin-top:12px;background:#edf2f7;padding:8px 12px;border-radius:8px">${totalTasks} tareas en total · ${completedTasks} completadas · ${totalTasks - completedTasks} pendientes</p></div><div class="section"><div class="section-title">⚡ Requiere tu atención</div>${attentionHtml}</div><div class="section"><div class="section-title">→ Próximos pasos</div>${nextHtml}</div><div class="section"><div class="section-title">Detalle por objetivo</div>${objectivesHtml}</div><div class="footer">© ${new Date().getFullYear()} - Flowdesk</div></div></body></html>`;
     const blob = new Blob([html], { type: 'text/html' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -1470,11 +1490,11 @@ const ProjectManager = () => {
           <p className="text-gray-500 mb-6">{pendingGoogleUser.displayName}, ¿cuál es tu rol?</p>
           <div className="grid grid-cols-2 gap-3">
             <button onClick={() => completeRoleSelection('team')} className="p-4 rounded-xl border-2 border-indigo-500 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 transition-all">
-              <div className="text-3xl mb-2">🛠️</div>
+              <div className="mb-2"><Wrench size={36} className="text-indigo-600 mx-auto" /></div>
               <p className="font-semibold">Equipo</p>
             </button>
             <button onClick={() => completeRoleSelection('client')} className="p-4 rounded-xl border-2 border-green-500 bg-green-50 text-green-700 hover:bg-green-100 transition-all">
-              <div className="text-3xl mb-2">👁️</div>
+              <div className="mb-2"><Eye size={36} className="text-green-600 mx-auto" /></div>
               <p className="font-semibold">Cliente</p>
             </button>
           </div>
@@ -1525,7 +1545,7 @@ const ProjectManager = () => {
 
       {saveError && (
         <div className="fixed top-4 left-1/2 transform -translate-x-1/2 bg-red-600 text-white px-6 py-3 rounded-lg shadow-lg z-50 text-sm font-medium">
-          ⚠️ {saveError}
+          <AlertTriangle size={14} className="inline mr-1" /> {saveError}
         </div>
       )}
 
@@ -1536,7 +1556,7 @@ const ProjectManager = () => {
               <h1 className="text-2xl font-bold text-gray-800">Flowdesk</h1>
               <p className="text-sm text-gray-600">👤 {currentUser.name}
                 <span className={`ml-2 text-xs px-2 py-0.5 rounded-full ${firebaseStatus === 'connected' ? 'bg-green-100 text-green-600' : 'bg-yellow-100 text-yellow-600'}`}>
-                  {firebaseStatus === 'connected' ? '🟢 Live' : '⏳ Conectando'}
+                  {firebaseStatus === 'connected' ? '<CheckCircle size={12} className="inline mr-0.5" />Live' : '<Clock size={12} className="inline mr-0.5" />Conectando'}
                 </span>
               </p>
             </div>
@@ -1596,12 +1616,12 @@ const ProjectManager = () => {
           return (
             <div className="mb-4 bg-white rounded-lg shadow-md overflow-hidden">
               <div className="bg-gradient-to-r from-indigo-600 to-purple-600 p-4 text-white flex items-center justify-between">
-                <h3 className="font-bold">🔔 Novedades</h3>
+                <h3 className="font-bold"><Bell size={16} className="inline mr-1" />Novedades</h3>
                 <button onClick={() => setShowNotifications(false)} className="p-1 hover:bg-white hover:bg-opacity-20 rounded"><X size={18} /></button>
               </div>
               <div className="p-4">
                 {notifs.length === 0 ? (
-                  <p className="text-sm text-gray-500 text-center py-4">✨ Todo al día</p>
+                  <p className="text-sm text-gray-500 text-center py-4"><CheckCircle size={16} className="inline mr-1 text-green-500" />Todo al día</p>
                 ) : (
                   <div>
                     {notifs.some(n => !seenNotifications.includes(n.id)) && (
@@ -1639,7 +1659,7 @@ const ProjectManager = () => {
                   <div className="flex items-center gap-2">
                     {member.email === currentUser.email && <span className="text-xs bg-indigo-100 text-indigo-600 px-2 py-0.5 rounded-full">Vos</span>}
                     <span className={`text-xs px-2 py-0.5 rounded-full ${member.role === 'client' ? 'bg-green-100 text-green-600' : 'bg-indigo-100 text-indigo-600'}`}>
-                      {member.role === 'client' ? '👁️ Cliente' : '🛠️ Equipo'}
+                      {member.role === 'client' ? '<Eye size={12} className="inline mr-0.5" />Cliente' : '<Wrench size={12} className="inline mr-0.5" />Equipo'}
                     </span>
                     {member.email !== currentUser.email && (
                       <button onClick={() => removeMember(member.id)} className="p-1 text-red-400 hover:text-red-600"><X size={14} /></button>
@@ -1652,8 +1672,8 @@ const ProjectManager = () => {
                 <input type="text" value={newMemberName} onChange={e => setNewMemberName(e.target.value)} placeholder="Nombre" className="w-full p-2 border border-gray-300 rounded-lg mb-2 text-sm" />
                 <input type="email" value={newMemberEmail} onChange={e => setNewMemberEmail(e.target.value)} placeholder="Email" className="w-full p-2 border border-gray-300 rounded-lg mb-2 text-sm" />
                 <div className="grid grid-cols-2 gap-2 mb-2">
-                  <button onClick={() => setNewMemberRole('team')} className={`p-2 rounded-lg border-2 text-xs font-medium ${newMemberRole === 'team' ? 'border-indigo-500 bg-indigo-50 text-indigo-700' : 'border-gray-200 text-gray-500'}`}>🛠️ Equipo</button>
-                  <button onClick={() => setNewMemberRole('client')} className={`p-2 rounded-lg border-2 text-xs font-medium ${newMemberRole === 'client' ? 'border-green-500 bg-green-50 text-green-700' : 'border-gray-200 text-gray-500'}`}>👁️ Cliente</button>
+                  <button onClick={() => setNewMemberRole('team')} className={`p-2 rounded-lg border-2 text-xs font-medium ${newMemberRole === 'team' ? 'border-indigo-500 bg-indigo-50 text-indigo-700' : 'border-gray-200 text-gray-500'}`}><Wrench size={12} className="inline mr-0.5" />Equipo</button>
+                  <button onClick={() => setNewMemberRole('client')} className={`p-2 rounded-lg border-2 text-xs font-medium ${newMemberRole === 'client' ? 'border-green-500 bg-green-50 text-green-700' : 'border-gray-200 text-gray-500'}`}><Eye size={12} className="inline mr-0.5" />Cliente</button>
                 </div>
                 <button onClick={addManualMember} className="w-full bg-indigo-600 text-white py-2 rounded-lg text-sm font-medium hover:bg-indigo-700">
                   <Plus size={14} className="inline mr-1" />Agregar al equipo
@@ -1714,7 +1734,7 @@ const ProjectManager = () => {
                         <h2 className="text-xl font-bold">{project.name}</h2>
                         {project.economicImpact && (() => {
                           const ic = getImpactConfig(project.economicImpact);
-                          return ic ? <span className="text-xs px-2 py-0.5 rounded-full bg-white bg-opacity-25 font-medium">{ic.icon} {ic.label}</span> : null;
+                          return ic ? <span className="text-xs px-2 py-0.5 rounded-full bg-white bg-opacity-25 font-medium"><span className={"inline-block w-2 h-2 rounded-full mr-1 " + ic.dot} />{ic.label}</span> : null;
                         })()}
                         {effectiveViewMode === 'work' && isProjectAdmin(project) && (
                           <button onClick={() => { setEditingName(`proj-${project.id}`); setEditNameValue(project.name); }} className="p-1 hover:bg-white hover:bg-opacity-20 rounded opacity-60 hover:opacity-100" title="Editar nombre"><Edit2 size={14} /></button>
@@ -1728,9 +1748,9 @@ const ProjectManager = () => {
                       <span className="text-sm font-semibold">{progress}%</span>
                     </div>
                     <p className="text-xs text-white text-opacity-80">
-                      ✅ {completedTasks}/{totalTasks} completadas
-                      {inProgressTasks > 0 && ` · 🔄 ${inProgressTasks} en progreso`}
-                      {progress === 100 && ' · 🎉 ¡Proyecto completo!'}
+                      <CheckCircle size={12} className="inline" /> {completedTasks}/{totalTasks} completadas
+                      {inProgressTasks > 0 && ` · <RefreshCw size={12} className="inline" /> ${inProgressTasks} en progreso`}
+                      {progress === 100 && ' · <Award size={12} className="inline" /> ¡Proyecto completo!'}
                     </p>
                   </div>
                   <div className="flex items-center gap-2 ml-4">
@@ -1738,10 +1758,10 @@ const ProjectManager = () => {
                       <button onClick={() => downloadReport(project)} className="p-2 hover:bg-white hover:bg-opacity-20 rounded" title="Descargar reporte"><Download size={18} /></button>
                     )}
                     {effectiveViewMode === 'work' && isProjectAdmin(project) && (
-                      <button onClick={() => setEditingImpact(editingImpact === project.id ? null : project.id)} className={`p-2 hover:bg-white hover:bg-opacity-20 rounded ${editingImpact === project.id ? 'bg-white bg-opacity-20' : ''}`} title="Impacto económico">💰</button>
+                      <button onClick={() => setEditingImpact(editingImpact === project.id ? null : project.id)} className={`p-2 hover:bg-white hover:bg-opacity-20 rounded ${editingImpact === project.id ? 'bg-white bg-opacity-20' : ''}`} title="Impacto económico"><DollarSign size={18} /></button>
                     )}
                     {effectiveViewMode === 'work' && isProjectAdmin(project) && (
-                      <button onClick={() => setManagingAccessFor(managingAccessFor === project.id ? null : project.id)} className="p-2 hover:bg-white hover:bg-opacity-20 rounded" title="Gestionar acceso">👥</button>
+                      <button onClick={() => setManagingAccessFor(managingAccessFor === project.id ? null : project.id)} className="p-2 hover:bg-white hover:bg-opacity-20 rounded" title="Gestionar acceso"><Users size={18} /></button>
                     )}
                     {effectiveViewMode === 'work' && isProjectAdmin(project) && (
                       <button onClick={() => handleDeleteItem(project.id)} className="p-2 hover:bg-white hover:bg-opacity-20 rounded"><Trash2 size={18} /></button>
@@ -1757,17 +1777,17 @@ const ProjectManager = () => {
                 <div className="p-3 overflow-hidden">
                   {managingAccessFor === project.id && isProjectAdmin(project) && (
                     <div className="mb-4 bg-indigo-50 rounded-lg p-3 border border-indigo-200">
-                      <p className="text-xs font-semibold text-indigo-700 uppercase mb-2">👥 Acceso al proyecto</p>
+                      <p className="text-xs font-semibold text-indigo-700 uppercase mb-2"><Users size={14} className="inline mr-1" />Acceso al proyecto</p>
                       {getAssignableMembers().filter(m => m.email !== currentUser.email).map(member => {
                         const hasAccess = (project.allowedMembers||[]).includes(member.email);
                         return (
                           <div key={member.id || member.email} className="flex items-center justify-between py-1.5 border-b border-indigo-100 last:border-0">
                             <div>
                               <p className="text-sm font-medium text-gray-700">{member.name}</p>
-                              <p className="text-xs text-gray-400">{member.role === 'client' ? '👁️ Cliente' : '🛠️ Equipo'}</p>
+                              <p className="text-xs text-gray-400">{member.role === 'client' ? '<Eye size={12} className="inline mr-0.5" />Cliente' : '<Wrench size={12} className="inline mr-0.5" />Equipo'}</p>
                             </div>
                             <button onClick={() => toggleProjectAccess(project.id, member.email)} className={`px-3 py-1 rounded-full text-xs font-medium ${hasAccess ? 'bg-indigo-600 text-white' : 'bg-white border border-gray-300 text-gray-500'}`}>
-                              {hasAccess ? '✅ Puede verlo' : '🔒 Sin acceso'}
+                              {hasAccess ? '<CheckCircle size={12} className="inline mr-0.5" />Puede verlo' : '<Lock size={10} className="inline mr-0.5" />Sin acceso'}
                             </button>
                           </div>
                         );
@@ -1777,17 +1797,17 @@ const ProjectManager = () => {
 
                   {editingImpact === project.id && isProjectAdmin(project) && (
                     <div className="mb-4 bg-amber-50 rounded-lg p-3 border border-amber-200">
-                      <p className="text-xs font-semibold text-amber-700 uppercase mb-2">💰 Impacto en rentabilidad</p>
+                      <p className="text-xs font-semibold text-amber-700 uppercase mb-2"><DollarSign size={14} className="inline mr-1" />Impacto en rentabilidad</p>
                       <p className="text-xs text-gray-500 mb-3">¿Cuánto aporta este proyecto al resultado económico?</p>
                       <div className="flex gap-2">
                         {[
-                          { value: 'high', icon: '🔴', label: 'Alto' },
-                          { value: 'medium', icon: '🟡', label: 'Medio' },
-                          { value: 'low', icon: '🟢', label: 'Bajo' }
+                          { value: 'high', icon: '●', label: 'Alto' },
+                          { value: 'medium', icon: '●', label: 'Medio' },
+                          { value: 'low', icon: '●', label: 'Bajo' }
                         ].map(opt => (
                           <button key={opt.value} onClick={() => setProjectImpact(project.id, opt.value)}
                             className={`flex-1 py-2 rounded-lg text-sm font-medium border-2 transition-all ${project.economicImpact === opt.value ? 'border-amber-500 bg-amber-100 text-amber-800' : 'border-gray-200 bg-white text-gray-600 hover:border-amber-300'}`}>
-                            {opt.icon} {opt.label}
+                            <span className={"inline-block w-2.5 h-2.5 rounded-full mr-1.5 " + (opt.value === 'high' ? 'bg-red-500' : opt.value === 'medium' ? 'bg-yellow-500' : 'bg-green-500')} />{opt.label}
                           </button>
                         ))}
                       </div>
@@ -1945,7 +1965,7 @@ const ProjectManager = () => {
                                 const ds = getDueDateStatus(objective.dueDate, objective.status);
                                 return (
                                   <div className="flex items-center gap-2 mb-2 flex-wrap">
-                                    <label className="text-xs text-gray-400 flex items-center gap-1">📅 <input type="date" value={objective.dueDate||''} onChange={e => updateDueDate(project.id, objective.id, null, e.target.value||null)} className="text-xs border border-gray-200 rounded px-1 py-0.5" /></label>
+                                    <label className="text-xs text-gray-400 flex items-center gap-1"><Calendar size={12} className="inline" /> <input type="date" value={objective.dueDate||''} onChange={e => updateDueDate(project.id, objective.id, null, e.target.value||null)} className="text-xs border border-gray-200 rounded px-1 py-0.5" /></label>
                                     {ds && <span className={`text-xs px-2 py-0.5 rounded-full border font-medium ${ds.color}`}>{ds.label}</span>}
                                     {objective.dueDate && <button onClick={() => updateDueDate(project.id, objective.id, null, null)} className="text-xs text-gray-300 hover:text-red-400">✕</button>}
                                   </div>
@@ -1969,7 +1989,7 @@ const ProjectManager = () => {
                               <div className="flex items-center gap-2 flex-wrap mb-1">
                                 <span className={`inline-block px-3 py-1 rounded-full text-xs text-white ${getStatusColor(objective.status)}`}>{getStatusText(objective.status)}</span>
                                 {objective.assignedTo && <span className="text-xs text-gray-500"><User size={12} className="inline" /> {objective.assignedTo.name}</span>}
-                                {objective.dueDate && <span className="text-xs text-gray-400">📅 {new Date(objective.dueDate).toLocaleDateString('es-ES',{day:'2-digit',month:'short'})}</span>}
+                                {objective.dueDate && <span className="text-xs text-gray-400"><Calendar size={10} className="inline" /> {new Date(objective.dueDate).toLocaleDateString('es-ES',{day:'2-digit',month:'short'})}</span>}
                               </div>
                               {objective.kpi && objective.kpi.name && (
                                 <div className="bg-indigo-50 border border-indigo-200 rounded-lg p-2.5">
@@ -1989,7 +2009,7 @@ const ProjectManager = () => {
                                 </div>
                               )}
                               {objective.status === 'waiting' && (
-                                <button onClick={() => approveTask(project.id, objective.id)} className="px-3 py-1 bg-green-500 text-white text-xs rounded-full font-medium hover:bg-green-600">✅ Aprobar</button>
+                                <button onClick={() => approveTask(project.id, objective.id)} className="px-3 py-1 bg-green-500 text-white text-xs rounded-full font-medium hover:bg-green-600"><CheckCircle size={12} className="inline mr-0.5" />Aprobar</button>
                               )}
                               {renderCommentDisplay(objective.clientComment)}
                               {editingClientComment === `obj-${objective.id}` ? (
@@ -2002,7 +2022,7 @@ const ProjectManager = () => {
                                 </div>
                               ) : (
                                 <button onClick={() => { setEditingClientComment(`obj-${objective.id}`); setClientComment(typeof objective.clientComment === 'object' ? objective.clientComment?.text || '' : objective.clientComment || ''); }} className="text-xs text-blue-500 hover:text-blue-700">
-                                  💬 {objective.clientComment ? 'Editar comentario' : 'Dejar comentario'}
+                                  <MessageCircle size={12} className="inline mr-1" />{objective.clientComment ? 'Editar comentario' : 'Dejar comentario'}
                                 </button>
                               )}
                             </div>
@@ -2012,7 +2032,7 @@ const ProjectManager = () => {
 
                           {objective.notes && (
                             <div className="mt-3 bg-yellow-50 p-3 rounded border-l-2 border-yellow-400">
-                              <p className="text-sm font-medium text-yellow-800 mb-1">📝 Informe:</p>
+                              <p className="text-sm font-medium text-yellow-800 mb-1"><FileText size={12} className="inline mr-1 text-yellow-700" />Informe:</p>
                               <p className="text-sm text-gray-700 whitespace-pre-wrap">{objective.notes}</p>
                             </div>
                           )}
@@ -2074,7 +2094,7 @@ const ProjectManager = () => {
                                             <User size={10} className="inline mr-0.5" />{sub.assignedTo.name}
                                           </span>
                                         )}
-                                        {sub.requiresPrevious && !isPreviousCompleted(objective, sub.id) && <span className="text-xs bg-red-100 text-red-600 px-2 py-0.5 rounded-full">🔒 Bloqueada</span>}
+                                        {sub.requiresPrevious && !isPreviousCompleted(objective, sub.id) && <span className="text-xs bg-red-100 text-red-600 px-2 py-0.5 rounded-full"><Lock size={10} className="inline mr-0.5" />Bloqueada</span>}
                                         {getIncompetenceDiagnostic(sub).map((w, i) => (
                                           <span key={i} className={`text-xs px-2 py-0.5 rounded-full font-medium ${w.type === 'overdue' ? 'bg-red-100 text-red-700 border border-red-200' : 'bg-amber-100 text-amber-700 border border-amber-200'}`} title="Gestión de incompetencias: posible falla de proceso">
                                             {w.icon} {w.label}
@@ -2094,7 +2114,7 @@ const ProjectManager = () => {
                                             const ds = getDueDateStatus(sub.dueDate, sub.status);
                                             return (
                                               <div className="flex items-center gap-2 mb-2 flex-wrap">
-                                                <label className="text-xs text-gray-400 flex items-center gap-1">📅 <input type="date" value={sub.dueDate||''} onChange={e => updateDueDate(project.id, objective.id, sub.id, e.target.value||null)} className="text-xs border border-gray-200 rounded px-1 py-0.5" /></label>
+                                                <label className="text-xs text-gray-400 flex items-center gap-1"><Calendar size={12} className="inline" /> <input type="date" value={sub.dueDate||''} onChange={e => updateDueDate(project.id, objective.id, sub.id, e.target.value||null)} className="text-xs border border-gray-200 rounded px-1 py-0.5" /></label>
                                                 {ds && <span className={`text-xs px-2 py-0.5 rounded-full border font-medium ${ds.color}`}>{ds.label}</span>}
                                                 {sub.dueDate && <button onClick={() => updateDueDate(project.id, objective.id, sub.id, null)} className="text-xs text-gray-300 hover:text-red-400">✕</button>}
                                               </div>
@@ -2103,7 +2123,7 @@ const ProjectManager = () => {
                                           {objective.subObjectives.findIndex(s => s.id === sub.id) > 0 && (
                                             <label className="flex items-center gap-2 text-xs text-gray-500 cursor-pointer mb-2 select-none">
                                               <input type="checkbox" checked={!!sub.requiresPrevious} onChange={() => toggleRequiresPrevious(project.id, objective.id, sub.id)} className="w-3 h-3 accent-orange-400" />
-                                              🔒 Requiere tarea anterior
+                                              <Lock size={10} className="inline mr-0.5" />Requiere tarea anterior
                                             </label>
                                           )}
                                         </>
@@ -2124,9 +2144,9 @@ const ProjectManager = () => {
                                           <div className="flex items-center gap-2 flex-wrap mb-1">
                                             <span className={`inline-block px-2 py-1 rounded-full text-xs text-white ${getStatusColor(sub.status)}`}>{getStatusText(sub.status)}</span>
                                             {sub.assignedTo && <span className="text-xs text-gray-500"><User size={12} className="inline" /> {sub.assignedTo.name}</span>}
-                                            {sub.dueDate && <span className="text-xs text-gray-400">📅 {new Date(sub.dueDate).toLocaleDateString('es-ES',{day:'2-digit',month:'short'})}</span>}
+                                            {sub.dueDate && <span className="text-xs text-gray-400"><Calendar size={10} className="inline" /> {new Date(sub.dueDate).toLocaleDateString('es-ES',{day:'2-digit',month:'short'})}</span>}
                                           </div>
-                                          {sub.status === 'waiting' && <button onClick={() => approveTask(project.id, objective.id, sub.id)} className="px-3 py-1 bg-green-500 text-white text-xs rounded-full font-medium">✅ Aprobar</button>}
+                                          {sub.status === 'waiting' && <button onClick={() => approveTask(project.id, objective.id, sub.id)} className="px-3 py-1 bg-green-500 text-white text-xs rounded-full font-medium"><CheckCircle size={12} className="inline mr-0.5" />Aprobar</button>}
                                           {renderCommentDisplay(sub.clientComment)}
                                           {editingClientComment === `sub-${sub.id}` ? (
                                             <div className="mt-1 bg-blue-50 p-2 rounded border border-blue-200">
@@ -2138,7 +2158,7 @@ const ProjectManager = () => {
                                             </div>
                                           ) : (
                                             <button onClick={() => { setEditingClientComment(`sub-${sub.id}`); setClientComment(typeof sub.clientComment === 'object' ? sub.clientComment?.text||'' : sub.clientComment||''); }} className="text-xs text-blue-500">
-                                              💬 {sub.clientComment ? 'Editar comentario' : 'Dejar comentario'}
+                                              <MessageCircle size={12} className="inline mr-1" />{sub.clientComment ? 'Editar comentario' : 'Dejar comentario'}
                                             </button>
                                           )}
                                         </div>
@@ -2148,7 +2168,7 @@ const ProjectManager = () => {
 
                                       {sub.notes && (
                                         <div className="mt-2 bg-yellow-50 p-2 rounded border-l-2 border-yellow-400">
-                                          <p className="text-xs font-medium text-yellow-800">📝 Informe:</p>
+                                          <p className="text-xs font-medium text-yellow-800"><FileText size={12} className="inline mr-1 text-yellow-700" />Informe:</p>
                                           <p className="text-xs text-gray-700 whitespace-pre-wrap">{sub.notes}</p>
                                         </div>
                                       )}
@@ -2236,7 +2256,7 @@ const ProjectManager = () => {
 
         {filteredProjects.length === 0 && (
           <div className="text-center py-12">
-            <p className="text-4xl mb-4">📋</p>
+            <p className="mb-4"><Clipboard size={48} className="text-gray-300 mx-auto" /></p>
             <p className="text-gray-500">{effectiveViewMode === 'client' ? 'No tenés proyectos asignados todavía' : 'No hay proyectos. ¡Creá el primero!'}</p>
           </div>
         )}
