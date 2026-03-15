@@ -59,11 +59,135 @@
     const Users = ({size=24,className=""}) => <svg {...iconProps(size)} className={className}><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>;
     const Filter = ({size=24,className=""}) => <svg {...iconProps(size)} className={className}><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>;
 
+// ==================== ONBOARDING COMPONENT ====================
+const OnboardingWizard = ({ onComplete }) => {
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const totalSlides = 4;
+
+  const nextSlide = () => {
+    if (currentSlide < totalSlides - 1) setCurrentSlide(currentSlide + 1);
+    else onComplete();
+  };
+
+  const skip = () => onComplete();
+
+  const slides = [
+    // Slide 0: Welcome
+    <div key="s0" className="flex flex-col items-center text-center px-6">
+      <div className="w-20 h-20 bg-indigo-100 rounded-full flex items-center justify-center mb-5">
+        <span className="text-4xl font-bold text-indigo-600">F</span>
+      </div>
+      <h2 className="text-xl font-bold text-gray-800 mb-3">Bienvenido a Flowdesk</h2>
+      <p className="text-sm text-gray-500 mb-2">Tu plataforma para convertir la estrategia en ejecución diaria.</p>
+      <p className="text-xs text-gray-400">Basada en el sistema de gestión <span className="font-semibold text-indigo-600">M360</span>, Flowdesk conecta lo que tu empresa quiere lograr con lo que tu equipo hace cada día.</p>
+    </div>,
+
+    // Slide 1: Structure
+    <div key="s1" className="flex flex-col items-center text-center px-6">
+      <h2 className="text-xl font-bold text-gray-800 mb-2">Organizá en 3 niveles</h2>
+      <p className="text-sm text-gray-500 mb-4">Toda tu gestión en una estructura simple:</p>
+      <div className="w-full space-y-2">
+        <div className="flex items-center gap-3 bg-indigo-50 p-3 rounded-lg">
+          <span className="text-2xl">📋</span>
+          <div className="text-left">
+            <p className="text-sm font-semibold text-indigo-800">Proyecto</p>
+            <p className="text-xs text-indigo-500">La prioridad estratégica de tu empresa</p>
+          </div>
+        </div>
+        <div className="flex items-center gap-3 bg-blue-50 p-3 rounded-lg ml-4">
+          <span className="text-2xl">🎯</span>
+          <div className="text-left">
+            <p className="text-sm font-semibold text-blue-800">Objetivo</p>
+            <p className="text-xs text-blue-500">Las acciones tácticas para lograrlo</p>
+          </div>
+        </div>
+        <div className="flex items-center gap-3 bg-green-50 p-3 rounded-lg ml-8">
+          <span className="text-2xl">✅</span>
+          <div className="text-left">
+            <p className="text-sm font-semibold text-green-800">Tarea</p>
+            <p className="text-xs text-green-500">El trabajo diario con responsable y fecha</p>
+          </div>
+        </div>
+      </div>
+    </div>,
+
+    // Slide 2: Meetings
+    <div key="s2" className="flex flex-col items-center text-center px-6">
+      <h2 className="text-xl font-bold text-gray-800 mb-2">Conectado con tus reuniones</h2>
+      <p className="text-sm text-gray-500 mb-4">Cada tipo de reunión tiene su nivel en Flowdesk:</p>
+      <div className="grid grid-cols-3 gap-2 w-full">
+        <div className="bg-orange-50 p-3 rounded-lg text-center">
+          <p className="text-2xl mb-1">⚔️</p>
+          <p className="text-xs font-semibold text-orange-800">Estratégica</p>
+          <p className="text-xs text-orange-500 mt-0.5">Define proyectos y objetivos</p>
+        </div>
+        <div className="bg-blue-50 p-3 rounded-lg text-center">
+          <p className="text-2xl mb-1">🎯</p>
+          <p className="text-xs font-semibold text-blue-800">Táctica</p>
+          <p className="text-xs text-blue-500 mt-0.5">Revisa KPIs y avance</p>
+        </div>
+        <div className="bg-green-50 p-3 rounded-lg text-center">
+          <p className="text-2xl mb-1">✅</p>
+          <p className="text-xs font-semibold text-green-800">Operativa</p>
+          <p className="text-xs text-green-500 mt-0.5">Controla tareas y responsables</p>
+        </div>
+      </div>
+      <p className="text-xs text-gray-400 mt-4">Así cada decisión baja desde la estrategia hasta la acción concreta.</p>
+    </div>,
+
+    // Slide 3: Get started
+    <div key="s3" className="flex flex-col items-center text-center px-6">
+      <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mb-5">
+        <span className="text-4xl">🚀</span>
+      </div>
+      <h2 className="text-xl font-bold text-gray-800 mb-3">¡Empezá ahora!</h2>
+      <p className="text-sm text-gray-500 mb-2">Creá tu primer proyecto y empezá a organizar la ejecución de tu equipo.</p>
+      <p className="text-xs text-gray-400">Podés crear proyectos manualmente o importar desde un archivo Excel con la plantilla M360.</p>
+    </div>
+  ];
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
+      <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden">
+        <div className="py-8 min-h-[340px] flex items-center justify-center">
+          {slides[currentSlide]}
+        </div>
+
+        {/* Dots */}
+        <div className="flex justify-center gap-2 mb-4">
+          {Array.from({ length: totalSlides }).map((_, i) => (
+            <div key={i} className={`h-2 rounded-full transition-all duration-300 ${i === currentSlide ? 'w-6 bg-indigo-600' : 'w-2 bg-gray-300'}`} />
+          ))}
+        </div>
+
+        {/* Buttons */}
+        <div className="px-6 pb-6">
+          {currentSlide < totalSlides - 1 ? (
+            <div className="flex gap-3">
+              <button onClick={skip} className="flex-1 py-3 border border-gray-300 rounded-lg text-gray-500 text-sm font-medium hover:bg-gray-50">
+                Saltar
+              </button>
+              <button onClick={nextSlide} className="flex-[2] py-3 bg-indigo-600 text-white rounded-lg text-sm font-semibold hover:bg-indigo-700">
+                Siguiente
+              </button>
+            </div>
+          ) : (
+            <button onClick={onComplete} className="w-full py-3 bg-indigo-600 text-white rounded-lg text-sm font-semibold hover:bg-indigo-700">
+              🚀 Comenzar a usar Flowdesk
+            </button>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const ProjectManager = () => {
   const [currentUser, setCurrentUser] = useState(null);
   const [authLoading, setAuthLoading] = useState(true);
   const [showRoleSelect, setShowRoleSelect] = useState(false);
   const [pendingGoogleUser, setPendingGoogleUser] = useState(null);
+  const [showOnboarding, setShowOnboarding] = useState(false);
   
   const [projects, setProjects] = useState([]);
   const [viewMode, setViewMode] = useState('work');
@@ -126,6 +250,11 @@ const ProjectManager = () => {
           setCurrentUser(u);
           localStorage.setItem('currentUser', JSON.stringify(u));
           if (existing.role === 'client') setViewMode('client');
+          // Check if user has seen onboarding
+          const hasSeenOnboarding = localStorage.getItem('flowdesk_onboarding_' + user.email);
+          if (!hasSeenOnboarding) {
+            setShowOnboarding(true);
+          }
           setShowRoleSelect(false);
           setAuthLoading(false);
         } else {
@@ -175,6 +304,15 @@ const ProjectManager = () => {
     if (role === 'client') setViewMode('client');
     setShowRoleSelect(false);
     setPendingGoogleUser(null);
+    // New user always sees onboarding
+    setShowOnboarding(true);
+  };
+
+  const completeOnboarding = () => {
+    setShowOnboarding(false);
+    if (currentUser?.email) {
+      localStorage.setItem('flowdesk_onboarding_' + currentUser.email, 'true');
+    }
   };
 
   const handleLogout = async () => {
@@ -270,7 +408,6 @@ const ProjectManager = () => {
       project.objectives?.forEach(obj => {
         if (obj.clientComment) {
           const commentText = typeof obj.clientComment === 'object' ? obj.clientComment.text : obj.clientComment;
-          const commentAuthor = typeof obj.clientComment === 'object' ? obj.clientComment.author : null;
           notes.push({
             id: `comment-obj-${obj.id}`,
             projectName: project.name,
@@ -444,7 +581,7 @@ const ProjectManager = () => {
 
   const computeObjectiveStatus = (objective) => {
     const subs = objective.subObjectives || [];
-    if (subs.length === 0) return null; // no auto-compute if no tasks
+    if (subs.length === 0) return null;
     const allCompleted = subs.every(s => s.status === 'completed');
     if (allCompleted) return 'completed';
     const anyInProgress = subs.some(s => s.status === 'in-progress');
@@ -686,13 +823,10 @@ const ProjectManager = () => {
         const XLSX = await import('https://cdn.sheetjs.com/xlsx-0.20.1/package/xlsx.mjs');
         const data = new Uint8Array(e.target.result);
         const workbook = XLSX.read(data, { type: 'array' });
-
-        // Read first sheet
         const sheetName = workbook.SheetNames[0];
         const sheet = workbook.Sheets[sheetName];
         const rows = XLSX.utils.sheet_to_json(sheet, { header: 1 });
 
-        // Find header row (look for 'Objetivo' or 'Tarea' in first 10 rows)
         let headerIdx = -1;
         let colMap = {};
         for (let i = 0; i < Math.min(rows.length, 10); i++) {
@@ -716,7 +850,6 @@ const ProjectManager = () => {
           return;
         }
 
-        // Find project name (look for PROYECTO: in cells above header)
         let projectName = file.name.replace(/\.xlsx?$/i, '');
         for (let i = 0; i < headerIdx; i++) {
           const row = rows[i] || [];
@@ -726,13 +859,11 @@ const ProjectManager = () => {
               projectName = val.trim();
             }
             if (val && !val.toUpperCase().includes('PROYECTO') && !val.toUpperCase().includes('PLANTILLA') && !val.toUpperCase().includes('INSTRUC') && val.length > 3 && i > 0) {
-              // Could be the project name in a merged cell
               if (j === 1 || j === 0) projectName = val.trim();
             }
           }
         }
 
-        // Parse data rows into objectives and tasks
         const dataRows = rows.slice(headerIdx + 1).filter(r => r && r.length > 0);
         const objectives = [];
         let currentObj = null;
@@ -749,7 +880,6 @@ const ProjectManager = () => {
         const parseDate = (val) => {
           if (!val) return null;
           if (typeof val === 'number') {
-            // Excel date serial number
             const d = new Date((val - 25569) * 86400000);
             return d.toISOString().split('T')[0];
           }
@@ -768,14 +898,8 @@ const ProjectManager = () => {
           if (objName) {
             currentObj = {
               id: Date.now() + Math.random() * 10000,
-              name: objName,
-              status: 'pending',
-              subObjectives: [],
-              notes: '',
-              files: [],
-              assignedTo: null,
-              dueDate: null,
-              clientComment: null,
+              name: objName, status: 'pending', subObjectives: [], notes: '', files: [],
+              assignedTo: null, dueDate: null, clientComment: null,
               history: [{ id: Date.now(), user: currentUser.name, userEmail: currentUser.email, action: 'created', details: 'Importado desde Excel', timestamp: new Date().toISOString() }]
             };
             objectives.push(currentObj);
@@ -785,35 +909,22 @@ const ProjectManager = () => {
             const assignedMember = responsible ? (getAssignableMembers().find(m => m.name.toLowerCase().includes(responsible.toLowerCase())) || { name: responsible, email: '' }) : null;
             currentObj.subObjectives.push({
               id: Date.now() + Math.random() * 10000,
-              name: taskName,
-              status: estado,
-              notes: notas,
-              files: [],
+              name: taskName, status: estado, notes: notas, files: [],
               assignedTo: assignedMember ? { name: assignedMember.name, email: assignedMember.email } : null,
-              dueDate: fecha,
-              requiresPrevious: false,
-              clientComment: null,
+              dueDate: fecha, requiresPrevious: false, clientComment: null,
               history: [{ id: Date.now(), user: currentUser.name, userEmail: currentUser.email, action: 'created', details: 'Importado desde Excel', timestamp: new Date().toISOString() }]
             });
           } else if (taskName && !currentObj) {
-            // Task without objective - create an objective with the task name
             currentObj = {
               id: Date.now() + Math.random() * 10000,
-              name: taskName,
-              status: estado,
-              subObjectives: [],
-              notes: notas,
-              files: [],
-              assignedTo: null,
-              dueDate: fecha,
-              clientComment: null,
+              name: taskName, status: estado, subObjectives: [], notes: notas, files: [],
+              assignedTo: null, dueDate: fecha, clientComment: null,
               history: [{ id: Date.now(), user: currentUser.name, userEmail: currentUser.email, action: 'created', details: 'Importado desde Excel', timestamp: new Date().toISOString() }]
             };
             objectives.push(currentObj);
           }
         }
 
-        // Auto-compute objective status from tasks
         objectives.forEach(obj => {
           if (obj.subObjectives.length > 0) {
             const auto = computeObjectiveStatus(obj);
@@ -822,24 +933,17 @@ const ProjectManager = () => {
         });
 
         if (objectives.length === 0) {
-          alert('No se encontraron datos para importar. Verificá que el archivo tenga contenido en las columnas correctas.');
+          alert('No se encontraron datos para importar.');
           return;
         }
 
-        // Create project
         const newProject = {
-          id: Date.now(),
-          name: projectName,
-          objectives: objectives,
-          createdAt: new Date().toISOString(),
-          createdBy: currentUser.name,
-          createdByEmail: currentUser.email,
-          allowedMembers: [currentUser.email]
+          id: Date.now(), name: projectName, objectives: objectives,
+          createdAt: new Date().toISOString(), createdBy: currentUser.name,
+          createdByEmail: currentUser.email, allowedMembers: [currentUser.email]
         };
-
         saveProject(newProject);
         alert(`✅ Proyecto "${projectName}" importado con ${objectives.length} objetivos.`);
-
       } catch (error) {
         console.error('Error importing:', error);
         alert('Error al importar el archivo. Asegurate de que sea un archivo .xlsx válido.');
@@ -929,7 +1033,6 @@ const ProjectManager = () => {
     const role = typeof comment === 'object' ? comment.role : null;
     const timestamp = typeof comment === 'object' ? comment.timestamp : null;
     if (!text) return null;
-    
     return (
       <div className={`mt-2 p-2 rounded border-l-2 ${isReadOnly ? 'bg-gray-50 border-gray-300' : 'bg-blue-50 border-blue-400'}`}>
         <div className="flex items-center gap-2 mb-1">
@@ -983,25 +1086,19 @@ const ProjectManager = () => {
   const downloadReport = (project) => {
     const objectives = project.objectives || [];
     const progress = calculateProgress(objectives);
-
-    // ---- Compute report data ----
-    const totalObjectives = objectives.length;
     const completedObj = objectives.filter(o => o.status === 'completed').length;
     const inProgressObj = objectives.filter(o => o.status === 'in-progress').length;
     const waitingObj = objectives.filter(o => o.status === 'waiting').length;
     const pendingObj = objectives.filter(o => o.status === 'pending').length;
-
     let totalTasks = 0, completedTasks = 0;
     objectives.forEach(o => {
       const subs = o.subObjectives || [];
       if (subs.length === 0) { totalTasks++; if (o.status === 'completed') completedTasks++; }
       else { totalTasks += subs.length; completedTasks += subs.filter(s => s.status === 'completed').length; }
     });
-
-    // Items needing attention: overdue, waiting approval, or blocked
     const attentionItems = [];
     const today = new Date(); today.setHours(0,0,0,0);
-    objectives.forEach((o, i) => {
+    objectives.forEach((o) => {
       if (o.status === 'waiting') attentionItems.push({ name: o.name, reason: 'Esperando aprobación' });
       if (o.dueDate) { const d = new Date(o.dueDate); if (d < today && o.status !== 'completed') attentionItems.push({ name: o.name, reason: 'Fecha vencida (' + d.toLocaleDateString('es-ES',{day:'2-digit',month:'short'}) + ')' }); }
       (o.subObjectives || []).forEach(s => {
@@ -1009,124 +1106,34 @@ const ProjectManager = () => {
         if (s.dueDate) { const d = new Date(s.dueDate); if (d < today && s.status !== 'completed') attentionItems.push({ name: s.name, reason: 'Fecha vencida (' + d.toLocaleDateString('es-ES',{day:'2-digit',month:'short'}) + ')' }); }
       });
     });
-
-    // Next pending tasks (first 3 not completed)
     const nextSteps = [];
     objectives.forEach(o => {
       (o.subObjectives || []).forEach(s => {
-        if (s.status !== 'completed' && nextSteps.length < 3) {
-          nextSteps.push({ name: s.name, responsible: s.assignedTo?.name || o.assignedTo?.name || 'Sin asignar', due: s.dueDate });
-        }
+        if (s.status !== 'completed' && nextSteps.length < 3) nextSteps.push({ name: s.name, responsible: s.assignedTo?.name || o.assignedTo?.name || 'Sin asignar', due: s.dueDate });
       });
-      if ((o.subObjectives||[]).length === 0 && o.status !== 'completed' && nextSteps.length < 3) {
-        nextSteps.push({ name: o.name, responsible: o.assignedTo?.name || 'Sin asignar', due: o.dueDate });
-      }
+      if ((o.subObjectives||[]).length === 0 && o.status !== 'completed' && nextSteps.length < 3) nextSteps.push({ name: o.name, responsible: o.assignedTo?.name || 'Sin asignar', due: o.dueDate });
     });
-
-    // ---- Build HTML ----
-    const css = `*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);padding:16px;color:#333}
-.container{max-width:800px;margin:0 auto;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.3)}
-.header{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:#fff;padding:30px 24px;text-align:center}
-.header h1{font-size:24px;margin-bottom:6px}
-.header .date{opacity:.85;font-size:13px}
-.progress-section{padding:20px 24px;background:#f8f9fa}
-.progress-bar{background:#e9ecef;height:28px;border-radius:14px;overflow:hidden;margin-bottom:12px}
-.progress-fill{height:100%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:13px;border-radius:14px;transition:width .3s}
-.stats{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
-.stat{flex:1;min-width:70px;text-align:center;padding:12px 6px 10px;background:#fff;border-radius:10px;box-shadow:0 1px 4px rgba(0,0,0,.08);border-top:4px solid #e2e8f0}
-.stat-icon{font-size:20px;margin-bottom:2px}
-.stat-val{font-size:32px;font-weight:700;line-height:1.1}
-.stat-label{font-size:10px;color:#888;text-transform:uppercase;letter-spacing:.5px;margin-top:4px}
-.section{padding:16px 24px}
-.section-title{font-size:14px;font-weight:700;color:#667eea;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;padding-bottom:6px;border-bottom:2px solid #eee}
-.alert-box{background:#fff5f5;border:1px solid #feb2b2;border-radius:10px;padding:12px 16px;margin-bottom:8px}
-.alert-item{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid #fed7d7}
-.alert-item:last-child{border:none}
-.alert-name{font-size:13px;font-weight:500;color:#c53030}
-.alert-reason{font-size:11px;color:#e53e3e;background:#fff;padding:2px 8px;border-radius:10px}
-.next-box{background:#f0fff4;border:1px solid #c6f6d5;border-radius:10px;padding:12px 16px;margin-bottom:8px}
-.next-item{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid #e2e8f0}
-.next-item:last-child{border:none}
-.next-name{font-size:13px;font-weight:500;color:#2d3748}
-.next-meta{font-size:11px;color:#718096}
-.obj{margin-bottom:12px;border-radius:10px;overflow:hidden;border:1px solid #e2e8f0}
-.obj-header{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;cursor:pointer}
-.obj-header.completed{background:#f0fff4;border-left:4px solid #48bb78}
-.obj-header.in-progress{background:#fffff0;border-left:4px solid #ecc94b}
-.obj-header.waiting{background:#fffaf0;border-left:4px solid #ed8936}
-.obj-header.pending{background:#f7fafc;border-left:4px solid #cbd5e0}
-.obj-name{font-size:15px;font-weight:600;color:#2d3748;flex:1}
-.obj-meta{font-size:12px;color:#718096;margin-top:2px}
-.badge{display:inline-block;padding:3px 10px;border-radius:12px;font-size:11px;font-weight:600}
-.badge-completed{background:#c6f6d5;color:#22543d}
-.badge-in-progress{background:#fefcbf;color:#744210}
-.badge-waiting{background:#feebc8;color:#7b341e}
-.badge-pending{background:#edf2f7;color:#4a5568}
-.obj-body{padding:8px 16px 12px;background:#fff}
-.task{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;margin:4px 0;background:#f7fafc;border-radius:6px;border-left:3px solid #cbd5e0}
-.task.task-completed{border-left-color:#48bb78;opacity:.7}
-.task.task-in-progress{border-left-color:#ecc94b}
-.task.task-waiting{border-left-color:#ed8936}
-.task-name{font-size:13px;color:#4a5568}
-.task-info{font-size:11px;color:#a0aec0;margin-top:2px}
-.notes{background:#fffbeb;border-left:3px solid #fbbf24;padding:8px 12px;margin:6px 0;border-radius:4px;font-size:13px;color:#78350f}
-.obj-progress{width:100%;background:#e2e8f0;height:6px;border-radius:3px;margin-top:6px}
-.obj-progress-fill{height:100%;border-radius:3px;transition:width .3s}
-.footer{text-align:center;padding:16px;background:#f8f9fa;color:#999;font-size:12px}
-.no-attention{text-align:center;padding:16px;color:#48bb78;font-size:14px}
-@media print{body{background:#fff;padding:0}.container{box-shadow:none}}`;
-
+    const css = `*{margin:0;padding:0;box-sizing:border-box}body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);padding:16px;color:#333}.container{max-width:800px;margin:0 auto;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.3)}.header{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:#fff;padding:30px 24px;text-align:center}.header h1{font-size:24px;margin-bottom:6px}.header .date{opacity:.85;font-size:13px}.progress-section{padding:20px 24px;background:#f8f9fa}.progress-bar{background:#e9ecef;height:28px;border-radius:14px;overflow:hidden;margin-bottom:12px}.progress-fill{height:100%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:13px;border-radius:14px}.stats{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}.stat{flex:1;min-width:70px;text-align:center;padding:12px 6px 10px;background:#fff;border-radius:10px;box-shadow:0 1px 4px rgba(0,0,0,.08);border-top:4px solid #e2e8f0}.stat-icon{font-size:20px;margin-bottom:2px}.stat-val{font-size:32px;font-weight:700;line-height:1.1}.stat-label{font-size:10px;color:#888;text-transform:uppercase;letter-spacing:.5px;margin-top:4px}.section{padding:16px 24px}.section-title{font-size:14px;font-weight:700;color:#667eea;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;padding-bottom:6px;border-bottom:2px solid #eee}.alert-box{background:#fff5f5;border:1px solid #feb2b2;border-radius:10px;padding:12px 16px;margin-bottom:8px}.alert-item{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid #fed7d7}.alert-item:last-child{border:none}.alert-name{font-size:13px;font-weight:500;color:#c53030}.alert-reason{font-size:11px;color:#e53e3e;background:#fff;padding:2px 8px;border-radius:10px}.next-box{background:#f0fff4;border:1px solid #c6f6d5;border-radius:10px;padding:12px 16px;margin-bottom:8px}.next-item{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid #e2e8f0}.next-item:last-child{border:none}.next-name{font-size:13px;font-weight:500;color:#2d3748}.next-meta{font-size:11px;color:#718096}.obj{margin-bottom:12px;border-radius:10px;overflow:hidden;border:1px solid #e2e8f0}.obj-header{display:flex;justify-content:space-between;align-items:center;padding:12px 16px}.obj-header.completed{background:#f0fff4;border-left:4px solid #48bb78}.obj-header.in-progress{background:#fffff0;border-left:4px solid #ecc94b}.obj-header.waiting{background:#fffaf0;border-left:4px solid #ed8936}.obj-header.pending{background:#f7fafc;border-left:4px solid #cbd5e0}.obj-name{font-size:15px;font-weight:600;color:#2d3748;flex:1}.badge{display:inline-block;padding:3px 10px;border-radius:12px;font-size:11px;font-weight:600}.badge-completed{background:#c6f6d5;color:#22543d}.badge-in-progress{background:#fefcbf;color:#744210}.badge-waiting{background:#feebc8;color:#7b341e}.badge-pending{background:#edf2f7;color:#4a5568}.obj-body{padding:8px 16px 12px;background:#fff}.task{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;margin:4px 0;background:#f7fafc;border-radius:6px;border-left:3px solid #cbd5e0}.task.task-completed{border-left-color:#48bb78;opacity:.7}.task.task-in-progress{border-left-color:#ecc94b}.task.task-waiting{border-left-color:#ed8936}.task-name{font-size:13px;color:#4a5568}.task-info{font-size:11px;color:#a0aec0;margin-top:2px}.notes{background:#fffbeb;border-left:3px solid #fbbf24;padding:8px 12px;margin:6px 0;border-radius:4px;font-size:13px;color:#78350f}.obj-progress{width:100%;background:#e2e8f0;height:6px;border-radius:3px;margin-top:6px}.obj-progress-fill{height:100%;border-radius:3px}.footer{text-align:center;padding:16px;background:#f8f9fa;color:#999;font-size:12px}.no-attention{text-align:center;padding:16px;color:#48bb78;font-size:14px}@media print{body{background:#fff;padding:0}.container{box-shadow:none}}`;
     const progressColor = progress === 100 ? '#48bb78' : progress >= 50 ? '#ecc94b' : '#667eea';
-
-    let attentionHtml = '';
-    if (attentionItems.length > 0) {
-      attentionHtml = `<div class="alert-box">${attentionItems.map(a => `<div class="alert-item"><span class="alert-name">⚠️ ${a.name}</span><span class="alert-reason">${a.reason}</span></div>`).join('')}</div>`;
-    } else {
-      attentionHtml = `<div class="no-attention">✅ No hay elementos que requieran atención urgente</div>`;
-    }
-
-    let nextHtml = '';
-    if (nextSteps.length > 0) {
-      nextHtml = `<div class="next-box">${nextSteps.map(n => `<div class="next-item"><div><span class="next-name">→ ${n.name}</span><div class="next-meta">Responsable: ${n.responsible}${n.due ? ' · 📅 ' + new Date(n.due).toLocaleDateString('es-ES',{day:'2-digit',month:'short'}) : ''}</div></div></div>`).join('')}</div>`;
-    }
-
+    let attentionHtml = attentionItems.length > 0 ? `<div class="alert-box">${attentionItems.map(a => `<div class="alert-item"><span class="alert-name">⚠️ ${a.name}</span><span class="alert-reason">${a.reason}</span></div>`).join('')}</div>` : `<div class="no-attention">✅ No hay elementos que requieran atención urgente</div>`;
+    let nextHtml = nextSteps.length > 0 ? `<div class="next-box">${nextSteps.map(n => `<div class="next-item"><div><span class="next-name">→ ${n.name}</span><div class="next-meta">Responsable: ${n.responsible}${n.due ? ' · 📅 ' + new Date(n.due).toLocaleDateString('es-ES',{day:'2-digit',month:'short'}) : ''}</div></div></div>`).join('')}</div>` : '';
     const objectivesHtml = objectives.map((obj, i) => {
       const prog = getObjectiveProgress(obj);
       const pct = prog.total > 0 ? Math.round((prog.completed / prog.total) * 100) : 0;
       const isComplete = pct === 100 || obj.status === 'completed';
-      const statusClass = obj.status;
       const fillColor = isComplete ? '#48bb78' : pct >= 50 ? '#ecc94b' : '#cbd5e0';
-
       const dueDateStr = obj.dueDate ? ' · 📅 ' + new Date(obj.dueDate).toLocaleDateString('es-ES',{day:'2-digit',month:'short'}) : '';
       const responsibleStr = obj.assignedTo ? ' · ' + obj.assignedTo.name : '';
-
-      // Completed objectives: collapsed (no task detail)
-      if (isComplete) {
-        return `<div class="obj"><div class="obj-header completed"><div><span class="obj-name">${i+1}. ${obj.name}</span><div class="obj-meta">${prog.completed}/${prog.total} tareas completadas${responsibleStr}${dueDateStr}</div></div><span class="badge badge-completed">✅ Completado</span></div></div>`;
-      }
-
-      // Non-completed: show tasks
+      if (isComplete) return `<div class="obj"><div class="obj-header completed"><div><span class="obj-name">${i+1}. ${obj.name}</span><div style="font-size:12px;color:#718096;margin-top:2px">${prog.completed}/${prog.total} tareas completadas${responsibleStr}${dueDateStr}</div></div><span class="badge badge-completed">✅ Completado</span></div></div>`;
       const tasksHtml = (obj.subObjectives||[]).map((sub, j) => {
         const subDue = sub.dueDate ? ' · 📅 ' + new Date(sub.dueDate).toLocaleDateString('es-ES',{day:'2-digit',month:'short'}) : '';
         const subResp = sub.assignedTo ? sub.assignedTo.name : '';
         return `<div class="task task-${sub.status}"><div><span class="task-name">${i+1}.${j+1} ${sub.name}</span><div class="task-info">${subResp}${subDue}</div></div><span class="badge badge-${sub.status}">${getStatusText(sub.status)}</span></div>`;
       }).join('');
-
       const notesHtml = obj.notes ? `<div class="notes">📝 ${obj.notes}</div>` : '';
-
-      return `<div class="obj"><div class="obj-header ${statusClass}"><div><span class="obj-name">${i+1}. ${obj.name}</span><div class="obj-meta">${prog.completed}/${prog.total} tareas${responsibleStr}${dueDateStr}</div><div class="obj-progress"><div class="obj-progress-fill" style="width:${pct}%;background:${fillColor}"></div></div></div><span class="badge badge-${obj.status}">${getStatusText(obj.status)}</span></div><div class="obj-body">${notesHtml}${tasksHtml}</div></div>`;
+      return `<div class="obj"><div class="obj-header ${obj.status}"><div><span class="obj-name">${i+1}. ${obj.name}</span><div style="font-size:12px;color:#718096;margin-top:2px">${prog.completed}/${prog.total} tareas${responsibleStr}${dueDateStr}</div><div class="obj-progress"><div class="obj-progress-fill" style="width:${pct}%;background:${fillColor}"></div></div></div><span class="badge badge-${obj.status}">${getStatusText(obj.status)}</span></div><div class="obj-body">${notesHtml}${tasksHtml}</div></div>`;
     }).join('');
-
-    const html = `<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Reporte: ${project.name}</title><style>${css}</style></head><body><div class="container">
-<div class="header"><h1>${project.name}</h1><p class="date">Reporte generado el ${new Date().toLocaleDateString('es-ES',{year:'numeric',month:'long',day:'numeric'})}</p></div>
-<div class="progress-section"><div class="progress-bar"><div class="progress-fill" style="width:${Math.max(progress,8)}%;background:${progressColor}">${progress}% Completado</div></div><div class="stats"><div class="stat" style="border-top-color:#48bb78"><div class="stat-icon">✅</div><div class="stat-val" style="color:#48bb78">${completedObj}</div><div class="stat-label">Completados</div></div><div class="stat" style="border-top-color:#ecc94b"><div class="stat-icon">🔄</div><div class="stat-val" style="color:#d69e2e">${inProgressObj}</div><div class="stat-label">En progreso</div></div><div class="stat" style="border-top-color:#ed8936"><div class="stat-icon">⏳</div><div class="stat-val" style="color:#ed8936">${waitingObj}</div><div class="stat-label">En espera</div></div><div class="stat" style="border-top-color:#a0aec0"><div class="stat-icon">⬚</div><div class="stat-val" style="color:#a0aec0">${pendingObj}</div><div class="stat-label">Pendientes</div></div></div><p style="text-align:center;font-size:11px;color:#a0aec0;margin-top:10px;line-height:1.6">✅ Terminado · 🔄 Trabajando en esto · ⏳ Necesita tu aprobación · ⬚ Aún no comenzó</p></div>
-<div class="section"><div class="section-title">⚡ Requiere tu atención</div>${attentionHtml}</div>
-<div class="section"><div class="section-title">→ Próximos pasos</div>${nextHtml}</div>
-<div class="section"><div class="section-title">📋 Detalle por objetivo</div>${objectivesHtml}</div>
-<div class="footer">© ${new Date().getFullYear()} - Flowdesk</div>
-</div></body></html>`;
-
+    const html = `<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Reporte: ${project.name}</title><style>${css}</style></head><body><div class="container"><div class="header"><h1>${project.name}</h1><p class="date">Reporte generado el ${new Date().toLocaleDateString('es-ES',{year:'numeric',month:'long',day:'numeric'})}</p></div><div class="progress-section"><div class="progress-bar"><div class="progress-fill" style="width:${Math.max(progress,8)}%;background:${progressColor}">${progress}% Completado</div></div><div class="stats"><div class="stat" style="border-top-color:#48bb78"><div class="stat-icon">✅</div><div class="stat-val" style="color:#48bb78">${completedObj}</div><div class="stat-label">Completados</div></div><div class="stat" style="border-top-color:#ecc94b"><div class="stat-icon">🔄</div><div class="stat-val" style="color:#d69e2e">${inProgressObj}</div><div class="stat-label">En progreso</div></div><div class="stat" style="border-top-color:#ed8936"><div class="stat-icon">⏳</div><div class="stat-val" style="color:#ed8936">${waitingObj}</div><div class="stat-label">En espera</div></div><div class="stat" style="border-top-color:#a0aec0"><div class="stat-icon">⬚</div><div class="stat-val" style="color:#a0aec0">${pendingObj}</div><div class="stat-label">Pendientes</div></div></div><p style="text-align:center;font-size:11px;color:#a0aec0;margin-top:10px;line-height:1.6">✅ Terminado · 🔄 Trabajando en esto · ⏳ Necesita tu aprobación · ⬚ Aún no comenzó</p></div><div class="section"><div class="section-title">⚡ Requiere tu atención</div>${attentionHtml}</div><div class="section"><div class="section-title">→ Próximos pasos</div>${nextHtml}</div><div class="section"><div class="section-title">📋 Detalle por objetivo</div>${objectivesHtml}</div><div class="footer">© ${new Date().getFullYear()} - Flowdesk</div></div></body></html>`;
     const blob = new Blob([html], { type: 'text/html' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -1140,7 +1147,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 
   // ==================== RENDER ====================
   
-  // Loading state
   if (authLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
@@ -1152,7 +1158,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
     );
   }
 
-  // Role selection for new Google users
   if (showRoleSelect && pendingGoogleUser) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
@@ -1177,7 +1182,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
     );
   }
 
-  // Login screen
   if (!currentUser) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
@@ -1188,10 +1192,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
           <h1 className="text-3xl font-bold text-gray-800 mb-1">Flowdesk</h1>
           <p className="text-indigo-500 font-medium text-sm mb-1">Gestión de proyectos simple y colaborativa</p>
           <p className="text-gray-500 text-sm mb-8">Iniciá sesión para continuar</p>
-          <button
-            onClick={handleGoogleLogin}
-            className="w-full py-3 px-6 bg-white border-2 border-gray-300 rounded-lg font-semibold text-gray-700 hover:bg-gray-50 hover:border-gray-400 transition-all flex items-center justify-center gap-3"
-          >
+          <button onClick={handleGoogleLogin} className="w-full py-3 px-6 bg-white border-2 border-gray-300 rounded-lg font-semibold text-gray-700 hover:bg-gray-50 hover:border-gray-400 transition-all flex items-center justify-center gap-3">
             <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.611 20.083H42V20H24v8h11.303c-1.649 4.657-6.08 8-11.303 8-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 12.955 4 4 12.955 4 24s8.955 20 20 20 20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z"/><path fill="#FF3D00" d="M6.306 14.691l6.571 4.819C14.655 15.108 18.961 12 24 12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 16.318 4 9.656 8.337 6.306 14.691z"/><path fill="#4CAF50" d="M24 44c5.166 0 9.86-1.977 13.409-5.192l-6.19-5.238A11.91 11.91 0 0 1 24 36c-5.202 0-9.619-3.317-11.283-7.946l-6.522 5.025C9.505 39.556 16.227 44 24 44z"/><path fill="#1976D2" d="M43.611 20.083H42V20H24v8h11.303a12.04 12.04 0 0 1-4.087 5.571l.003-.002 6.19 5.238C36.971 39.205 44 34 44 24c0-1.341-.138-2.65-.389-3.917z"/></svg>
             Continuar con Google
           </button>
@@ -1200,11 +1201,15 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
     );
   }
 
+  // ==================== ONBOARDING ====================
+  if (showOnboarding) {
+    return <OnboardingWizard onComplete={completeOnboarding} />;
+  }
+
   const filteredProjects = getFilteredProjects();
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 pb-20">
-      {/* Confirm Dialog */}
       {confirmDialog && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-xl p-6 max-w-sm w-full shadow-2xl">
@@ -1217,14 +1222,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
         </div>
       )}
 
-      {/* Save error toast */}
       {saveError && (
         <div className="fixed top-4 left-1/2 transform -translate-x-1/2 bg-red-600 text-white px-6 py-3 rounded-lg shadow-lg z-50 text-sm font-medium">
           ⚠️ {saveError}
         </div>
       )}
 
-      {/* Header */}
       <div className="bg-white shadow-sm sticky top-0 z-10">
         <div className="max-w-4xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between mb-3">
@@ -1287,7 +1290,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
       </div>
 
       <div className="max-w-4xl mx-auto px-4 py-6">
-        {/* Notifications panel */}
         {showNotifications && currentUser?.role !== 'client' && (() => {
           const notifs = getNotifications();
           return (
@@ -1320,7 +1322,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
           );
         })()}
 
-        {/* Team panel */}
         {showTeamPanel && (
           <div className="mb-4 bg-white rounded-lg shadow-md overflow-hidden">
             <div className="bg-gradient-to-r from-indigo-600 to-purple-600 p-4 text-white flex items-center justify-between">
@@ -1361,7 +1362,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
           </div>
         )}
 
-        {/* Add project button */}
         {effectiveViewMode === 'work' && !showAddProject && (
           <div className="flex gap-2 mb-4">
             <button onClick={() => setShowAddProject(true)} className="flex-1 py-3 border-2 border-dashed border-indigo-300 rounded-lg text-indigo-600 font-medium hover:bg-indigo-50">
@@ -1384,7 +1384,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
           </div>
         )}
 
-        {/* Projects */}
         {filteredProjects.map(project => {
           const progress = calculateProgress(project.objectives);
           const totalTasks = (project.objectives||[]).reduce((acc, obj) => acc + ((obj.subObjectives||[]).length || 1), 0);
@@ -1448,7 +1447,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 
               {expandedProjects[project.id] && (
                 <div className="p-3 overflow-hidden">
-                  {/* Access management */}
                   {managingAccessFor === project.id && isProjectAdmin(project) && (
                     <div className="mb-4 bg-indigo-50 rounded-lg p-3 border border-indigo-200">
                       <p className="text-xs font-semibold text-indigo-700 uppercase mb-2">👥 Acceso al proyecto</p>
@@ -1469,7 +1467,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
                     </div>
                   )}
 
-                  {/* Objectives */}
                   {(project.objectives||[]).map(objective => {
                     const objProg = getObjectiveProgress(objective);
                     const objProgPct = objProg.total > 0 ? Math.round((objProg.completed / objProg.total) * 100) : 0;
@@ -1578,10 +1575,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
                             </div>
                           )}
 
-                          {/* Comment in work mode (read-only) */}
                           {effectiveViewMode === 'work' && renderCommentDisplay(objective.clientComment, true)}
 
-                          {/* Notes */}
                           {objective.notes && (
                             <div className="mt-3 bg-yellow-50 p-3 rounded border-l-2 border-yellow-400">
                               <p className="text-sm font-medium text-yellow-800 mb-1">📝 Informe:</p>
@@ -1589,14 +1584,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
                             </div>
                           )}
 
-                          {/* Files */}
                           {objective.files && objective.files.length > 0 && (
                             <div className="mt-3 space-y-2">
                               {objective.files.map(file => renderFile(file, project.id, objective.id, null))}
                             </div>
                           )}
 
-                          {/* Work mode actions */}
                           {effectiveViewMode === 'work' && editingNotes !== `obj-${objective.id}` && (
                             <div className="flex gap-2 mt-3">
                               <button onClick={() => { setEditingNotes(`obj-${objective.id}`); setNoteText(objective.notes||''); }} className="text-xs px-3 py-1.5 bg-yellow-100 text-yellow-700 rounded"><FileText size={14} className="inline mr-1" />{objective.notes ? 'Editar Informe' : 'Agregar Informe'}</button>
@@ -1615,7 +1608,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
                             </div>
                           )}
 
-                          {/* Sub-objectives (Tasks) */}
                           {(objective.subObjectives||[]).length > 0 && (
                             <div className="mt-3">
                               <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">Tareas ({(objective.subObjectives||[]).filter(s=>s.status==='completed').length}/{(objective.subObjectives||[]).length})</p>
@@ -1762,7 +1754,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
                             </div>
                           )}
 
-                          {/* Add task button */}
                           {effectiveViewMode === 'work' && addingSubObjectiveTo !== objective.id && (
                             <button onClick={() => setAddingSubObjectiveTo(objective.id)} className="mt-2 text-xs text-indigo-500 hover:text-indigo-700 py-1">
                               <Plus size={14} className="inline mr-1" />Agregar Tarea
@@ -1787,7 +1778,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
                     );
                   })}
 
-                  {/* Add objective button */}
                   {effectiveViewMode === 'work' && addingObjectiveTo !== project.id && (
                     <button onClick={() => setAddingObjectiveTo(project.id)} className="w-full mt-2 py-2 border-2 border-dashed border-indigo-200 rounded-lg text-indigo-500 text-sm hover:bg-indigo-50">
                       <Plus size={16} className="inline mr-1" />Agregar Objetivo
