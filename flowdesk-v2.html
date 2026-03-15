@@ -323,6 +323,7 @@ const ProjectManager = () => {
   const [kpiName, setKpiName] = useState('');
   const [kpiCurrent, setKpiCurrent] = useState('');
   const [kpiTarget, setKpiTarget] = useState('');
+  const [editingImpact, setEditingImpact] = useState(null);
   const [firebaseStatus, setFirebaseStatus] = useState('connecting');
   const [saveError, setSaveError] = useState(null);
 
@@ -912,6 +913,21 @@ const ProjectManager = () => {
     setAddingLinkTo(null);
     setLinkUrl('');
     setLinkName('');
+  };
+
+  // ==================== ECONOMIC IMPACT ====================
+  const setProjectImpact = (projectId, impact) => {
+    updateProjectInFirebase(projectId, (p) => ({ ...p, economicImpact: impact }));
+    setEditingImpact(null);
+  };
+
+  const getImpactConfig = (impact) => {
+    switch(impact) {
+      case 'high': return { label: 'Alto impacto', icon: '🔴', color: 'bg-red-100 text-red-700 border-red-200', headerColor: 'bg-red-500 bg-opacity-30' };
+      case 'medium': return { label: 'Medio impacto', icon: '🟡', color: 'bg-yellow-100 text-yellow-700 border-yellow-200', headerColor: 'bg-yellow-500 bg-opacity-30' };
+      case 'low': return { label: 'Bajo impacto', icon: '🟢', color: 'bg-green-100 text-green-700 border-green-200', headerColor: 'bg-green-500 bg-opacity-30' };
+      default: return null;
+    }
   };
 
   // ==================== RENAME ====================
@@ -1563,6 +1579,10 @@ const ProjectManager = () => {
                     ) : (
                       <div className="flex items-center gap-2 mb-1">
                         <h2 className="text-xl font-bold">{project.name}</h2>
+                        {project.economicImpact && (() => {
+                          const ic = getImpactConfig(project.economicImpact);
+                          return ic ? <span className="text-xs px-2 py-0.5 rounded-full bg-white bg-opacity-25 font-medium">{ic.icon} {ic.label}</span> : null;
+                        })()}
                         {effectiveViewMode === 'work' && isProjectAdmin(project) && (
                           <button onClick={() => { setEditingName(`proj-${project.id}`); setEditNameValue(project.name); }} className="p-1 hover:bg-white hover:bg-opacity-20 rounded opacity-60 hover:opacity-100" title="Editar nombre"><Edit2 size={14} /></button>
                         )}
@@ -1583,6 +1603,9 @@ const ProjectManager = () => {
                   <div className="flex items-center gap-2 ml-4">
                     {effectiveViewMode === 'client' && (
                       <button onClick={() => downloadReport(project)} className="p-2 hover:bg-white hover:bg-opacity-20 rounded" title="Descargar reporte"><Download size={18} /></button>
+                    )}
+                    {effectiveViewMode === 'work' && isProjectAdmin(project) && (
+                      <button onClick={() => setEditingImpact(editingImpact === project.id ? null : project.id)} className={`p-2 hover:bg-white hover:bg-opacity-20 rounded ${editingImpact === project.id ? 'bg-white bg-opacity-20' : ''}`} title="Impacto económico">💰</button>
                     )}
                     {effectiveViewMode === 'work' && isProjectAdmin(project) && (
                       <button onClick={() => setManagingAccessFor(managingAccessFor === project.id ? null : project.id)} className="p-2 hover:bg-white hover:bg-opacity-20 rounded" title="Gestionar acceso">👥</button>
@@ -1616,6 +1639,28 @@ const ProjectManager = () => {
                           </div>
                         );
                       })}
+                    </div>
+                  )}
+
+                  {editingImpact === project.id && isProjectAdmin(project) && (
+                    <div className="mb-4 bg-amber-50 rounded-lg p-3 border border-amber-200">
+                      <p className="text-xs font-semibold text-amber-700 uppercase mb-2">💰 Impacto en rentabilidad</p>
+                      <p className="text-xs text-gray-500 mb-3">¿Cuánto aporta este proyecto al resultado económico?</p>
+                      <div className="flex gap-2">
+                        {[
+                          { value: 'high', icon: '🔴', label: 'Alto' },
+                          { value: 'medium', icon: '🟡', label: 'Medio' },
+                          { value: 'low', icon: '🟢', label: 'Bajo' }
+                        ].map(opt => (
+                          <button key={opt.value} onClick={() => setProjectImpact(project.id, opt.value)}
+                            className={`flex-1 py-2 rounded-lg text-sm font-medium border-2 transition-all ${project.economicImpact === opt.value ? 'border-amber-500 bg-amber-100 text-amber-800' : 'border-gray-200 bg-white text-gray-600 hover:border-amber-300'}`}>
+                            {opt.icon} {opt.label}
+                          </button>
+                        ))}
+                      </div>
+                      {project.economicImpact && (
+                        <button onClick={() => setProjectImpact(project.id, null)} className="w-full mt-2 text-xs text-gray-400 hover:text-red-400">Quitar etiqueta de impacto</button>
+                      )}
                     </div>
                   )}
 
