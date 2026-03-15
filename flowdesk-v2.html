@@ -159,32 +159,107 @@ const OBIcon = ({ type, size = 40 }) => {
 };
 
 // ==================== ONBOARDING COMPONENT ====================
-const OnboardingWizard = ({ onComplete }) => {
+const OnboardingWizard = ({ onComplete, userRole }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
-  const totalSlides = 4;
+  const [onboardingPath, setOnboardingPath] = useState(userRole === 'client' ? 'client' : null); // null = choosing, 'm360', 'generic', 'client'
 
-  const nextSlide = () => {
-    if (currentSlide < totalSlides - 1) setCurrentSlide(currentSlide + 1);
-    else onComplete();
-  };
+  // ---- CLIENT ONBOARDING: single screen ----
+  if (onboardingPath === 'client') {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-start sm:items-center justify-center p-4 pt-12 sm:pt-4">
+        <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden">
+          <div className="py-8 px-6 flex flex-col items-center text-center">
+            <div className="w-16 h-16 bg-green-50 rounded-2xl flex items-center justify-center mb-5 border border-green-100" style={{boxShadow:'0 4px 12px rgba(34,197,94,0.12)'}}>
+              <OBIcon type="flowdesk" size={36} />
+            </div>
+            <h2 className="text-xl font-bold text-gray-800 mb-4">Bienvenido a Flowdesk</h2>
+            <div className="w-full space-y-3 text-left mb-6">
+              <div className="flex items-start gap-3 bg-gray-50 p-3 rounded-xl">
+                <span className="text-lg mt-0.5">📊</span>
+                <div>
+                  <p className="text-sm font-semibold text-gray-800">Seguí el avance</p>
+                  <p className="text-xs text-gray-500">Vas a ver el estado de cada objetivo y tarea del proyecto en tiempo real.</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3 bg-gray-50 p-3 rounded-xl">
+                <span className="text-lg mt-0.5">✅</span>
+                <div>
+                  <p className="text-sm font-semibold text-gray-800">Aprobá tareas</p>
+                  <p className="text-xs text-gray-500">Cuando una tarea necesite tu autorización, vas a ver un botón para aprobarla.</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3 bg-gray-50 p-3 rounded-xl">
+                <span className="text-lg mt-0.5">💬</span>
+                <div>
+                  <p className="text-sm font-semibold text-gray-800">Dejá comentarios</p>
+                  <p className="text-xs text-gray-500">Podés comentar en cualquier objetivo o tarea para dar feedback al equipo.</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3 bg-gray-50 p-3 rounded-xl">
+                <span className="text-lg mt-0.5">📥</span>
+                <div>
+                  <p className="text-sm font-semibold text-gray-800">Descargá reportes</p>
+                  <p className="text-xs text-gray-500">El botón de descarga genera un resumen del estado actual del proyecto.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="px-6 pb-6">
+            <button onClick={onComplete} className="w-full py-3.5 bg-green-600 text-white rounded-lg text-sm font-semibold hover:bg-green-700 transition-colors">
+              Entendido, ver mi proyecto
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
-  const skip = () => onComplete();
+  // ---- PATH CHOOSER: M360 or Generic (only for team users) ----
+  if (onboardingPath === null) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-start sm:items-center justify-center p-4 pt-12 sm:pt-4">
+        <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden">
+          <div className="py-8 px-6 flex flex-col items-center text-center">
+            <div className="w-20 h-20 bg-indigo-50 rounded-2xl flex items-center justify-center mb-5 border border-indigo-100" style={{boxShadow:'0 4px 12px rgba(99,102,241,0.15)'}}>
+              <OBIcon type="flowdesk" size={44} />
+            </div>
+            <h2 className="text-xl font-bold text-gray-800 mb-2">Bienvenido a Flowdesk</h2>
+            <p className="text-sm text-gray-500 mb-6">Antes de empezar, una pregunta rápida:</p>
+            <div className="w-full space-y-3">
+              <button onClick={() => setOnboardingPath('m360')} className="w-full p-4 rounded-xl border-2 border-indigo-200 bg-indigo-50 hover:border-indigo-400 transition-all text-left flex items-center gap-3">
+                <span className="text-2xl">🎓</span>
+                <div>
+                  <p className="text-sm font-semibold text-indigo-800">Conozco el sistema M360</p>
+                  <p className="text-xs text-indigo-500">Hice la capacitación o conozco la metodología</p>
+                </div>
+              </button>
+              <button onClick={() => setOnboardingPath('generic')} className="w-full p-4 rounded-xl border-2 border-gray-200 bg-gray-50 hover:border-indigo-300 transition-all text-left flex items-center gap-3">
+                <span className="text-2xl">🚀</span>
+                <div>
+                  <p className="text-sm font-semibold text-gray-800">Quiero conocer la herramienta</p>
+                  <p className="text-xs text-gray-500">Es mi primera vez, mostrala directamente</p>
+                </div>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
-  const slides = [
-    // Slide 0: Welcome
-    <div key="s0" className="flex flex-col items-center text-center px-6">
+  // ---- M360 SLIDES (original, for trained users) ----
+  const m360Slides = [
+    <div key="m0" className="flex flex-col items-center text-center px-6">
       <div className="w-20 h-20 bg-indigo-50 rounded-2xl flex items-center justify-center mb-5 border border-indigo-100" style={{boxShadow:'0 4px 12px rgba(99,102,241,0.15)'}}>
         <OBIcon type="flowdesk" size={44} />
       </div>
-      <h2 className="text-xl font-bold text-gray-800 mb-3">Bienvenido a Flowdesk</h2>
+      <h2 className="text-xl font-bold text-gray-800 mb-3">Flowdesk + M360</h2>
       <p className="text-sm text-gray-500 mb-2">Tu plataforma para convertir la estrategia en ejecución diaria.</p>
-      <p className="text-xs text-gray-400 leading-relaxed">Basada en el sistema de gestión <span className="font-semibold text-indigo-600">M360</span>, Flowdesk conecta lo que tu empresa quiere lograr con lo que tu equipo hace cada día.</p>
+      <p className="text-xs text-gray-400 leading-relaxed">Flowdesk conecta el sistema <span className="font-semibold text-indigo-600">M360</span> con lo que tu equipo hace cada día.</p>
     </div>,
-
-    // Slide 1: Structure — stepped indentation
-    <div key="s1" className="flex flex-col items-center text-center px-4">
-      <h2 className="text-xl font-bold text-gray-800 mb-2">Organizá en 3 niveles</h2>
-      <p className="text-sm text-gray-500 mb-4">Toda tu gestión en una estructura simple:</p>
+    <div key="m1" className="flex flex-col items-center text-center px-4">
+      <h2 className="text-xl font-bold text-gray-800 mb-2">Mapa de Ejecución M360</h2>
+      <p className="text-sm text-gray-500 mb-4">La estructura que ya conocés, ahora digital:</p>
       <div className="w-full space-y-2.5">
         <div className="flex items-center gap-3 bg-indigo-50 border border-indigo-100 p-3.5 rounded-xl mr-6">
           <div className="flex-shrink-0"><OBIcon type="proyecto" size={36} /></div>
@@ -209,9 +284,7 @@ const OnboardingWizard = ({ onComplete }) => {
         </div>
       </div>
     </div>,
-
-    // Slide 2: Meetings
-    <div key="s2" className="flex flex-col items-center text-center px-4">
+    <div key="m2" className="flex flex-col items-center text-center px-4">
       <h2 className="text-xl font-bold text-gray-800 mb-2">Conectado con tus reuniones</h2>
       <p className="text-sm text-gray-500 mb-4">Cada tipo de reunión tiene su nivel en Flowdesk:</p>
       <div className="grid grid-cols-3 gap-2.5 w-full">
@@ -233,9 +306,7 @@ const OnboardingWizard = ({ onComplete }) => {
       </div>
       <p className="text-xs text-gray-400 mt-4">Así cada decisión baja desde la estrategia hasta la acción concreta.</p>
     </div>,
-
-    // Slide 3: Get started
-    <div key="s3" className="flex flex-col items-center text-center px-6">
+    <div key="m3" className="flex flex-col items-center text-center px-6">
       <div className="w-20 h-20 bg-green-50 rounded-2xl flex items-center justify-center mb-5 border border-green-100" style={{boxShadow:'0 4px 12px rgba(34,197,94,0.15)'}}>
         <OBIcon type="launch" size={44} />
       </div>
@@ -244,6 +315,67 @@ const OnboardingWizard = ({ onComplete }) => {
       <p className="text-xs text-gray-400 leading-relaxed">Podés crear proyectos manualmente o importar desde un archivo Excel con la plantilla M360.</p>
     </div>
   ];
+
+  // ---- GENERIC SLIDES (for users who don't know M360) ----
+  const genericSlides = [
+    <div key="g0" className="flex flex-col items-center text-center px-6">
+      <div className="w-20 h-20 bg-indigo-50 rounded-2xl flex items-center justify-center mb-5 border border-indigo-100" style={{boxShadow:'0 4px 12px rgba(99,102,241,0.15)'}}>
+        <OBIcon type="flowdesk" size={44} />
+      </div>
+      <h2 className="text-xl font-bold text-gray-800 mb-3">Bienvenido a Flowdesk</h2>
+      <p className="text-sm text-gray-500 mb-2">La forma más simple de organizar el trabajo de tu equipo.</p>
+      <p className="text-xs text-gray-400 leading-relaxed">Creá proyectos, definí objetivos, asigná tareas y seguí el avance — todo en un solo lugar.</p>
+    </div>,
+    <div key="g1" className="flex flex-col items-center text-center px-4">
+      <h2 className="text-xl font-bold text-gray-800 mb-2">Organizá en 3 niveles</h2>
+      <p className="text-sm text-gray-500 mb-4">Simple y visual:</p>
+      <div className="w-full space-y-2.5">
+        <div className="flex items-center gap-3 bg-indigo-50 border border-indigo-100 p-3.5 rounded-xl mr-6">
+          <div className="flex-shrink-0"><OBIcon type="proyecto" size={36} /></div>
+          <div className="text-left">
+            <p className="text-sm font-semibold text-indigo-800">Proyecto</p>
+            <p className="text-xs text-indigo-500">Lo que querés lograr</p>
+          </div>
+        </div>
+        <div className="flex items-center gap-3 bg-blue-50 border border-blue-100 p-3.5 rounded-xl ml-4 mr-2">
+          <div className="flex-shrink-0"><OBIcon type="objetivo" size={36} /></div>
+          <div className="text-left">
+            <p className="text-sm font-semibold text-blue-800">Objetivo</p>
+            <p className="text-xs text-blue-500">Los pasos para lograrlo</p>
+          </div>
+        </div>
+        <div className="flex items-center gap-3 bg-green-50 border border-green-100 p-3.5 rounded-xl ml-8">
+          <div className="flex-shrink-0"><OBIcon type="tarea" size={36} /></div>
+          <div className="text-left">
+            <p className="text-sm font-semibold text-green-800">Tarea</p>
+            <p className="text-xs text-green-500">El trabajo concreto con responsable y fecha</p>
+          </div>
+        </div>
+      </div>
+    </div>,
+    <div key="g2" className="flex flex-col items-center text-center px-6">
+      <div className="w-20 h-20 bg-green-50 rounded-2xl flex items-center justify-center mb-5 border border-green-100" style={{boxShadow:'0 4px 12px rgba(34,197,94,0.15)'}}>
+        <OBIcon type="launch" size={44} />
+      </div>
+      <h2 className="text-xl font-bold text-gray-800 mb-3">¡Empezá ahora!</h2>
+      <p className="text-sm text-gray-500 mb-2">Creá tu primer proyecto y empezá a organizar el trabajo de tu equipo.</p>
+      <p className="text-xs text-gray-400 leading-relaxed mb-4">Podés crear proyectos manualmente o importar desde un archivo Excel.</p>
+      <div className="bg-indigo-50 border border-indigo-200 rounded-xl p-3 w-full">
+        <p className="text-xs text-indigo-600">💡 <span className="font-semibold">¿Querés sacarle más provecho?</span></p>
+        <p className="text-xs text-indigo-500 mt-1">Flowdesk está basado en un método de gestión profesional. <a href="https://flowdesk360.app" className="underline font-semibold" target="_blank" rel="noopener noreferrer">Conocé el sistema M360</a></p>
+      </div>
+    </div>
+  ];
+
+  const slides = onboardingPath === 'm360' ? m360Slides : genericSlides;
+  const totalSlides = slides.length;
+
+  const nextSlide = () => {
+    if (currentSlide < totalSlides - 1) setCurrentSlide(currentSlide + 1);
+    else onComplete();
+  };
+
+  const skip = () => onComplete();
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-start sm:items-center justify-center p-4 pt-12 sm:pt-4">
@@ -1371,7 +1503,7 @@ const ProjectManager = () => {
 
   // ==================== ONBOARDING ====================
   if (showOnboarding) {
-    return <OnboardingWizard onComplete={completeOnboarding} />;
+    return <OnboardingWizard onComplete={completeOnboarding} userRole={currentUser?.role} />;
   }
 
   const filteredProjects = getFilteredProjects();
