@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" style="scroll-behavior:smooth">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -76,8 +76,8 @@
     /* ===== STRUCTURE SECTION ===== */
     .structure { padding: 80px 0; background: var(--slate-100); }
     .structure .section-label { text-align: center; font-size: 13px; font-weight: 600; color: var(--indigo); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 12px; }
-    .structure h2 { text-align: center; font-size: 36px; font-weight: 700; color: var(--slate-900); margin-bottom: 12px; }
-    .structure .section-sub { text-align: center; font-size: 16px; color: var(--slate-500); margin-bottom: 48px; max-width: 540px; margin-left: auto; margin-right: auto; }
+    .structure h2, .section-title { text-align: center; font-size: 36px; font-weight: 700; color: var(--slate-900); margin-bottom: 12px; }
+    .structure .section-sub, .section-sub { text-align: center; font-size: 16px; color: var(--slate-500); margin-bottom: 48px; max-width: 540px; margin-left: auto; margin-right: auto; line-height: 1.6; }
     .levels { display: flex; flex-direction: column; gap: 0; max-width: 600px; margin: 0 auto; position: relative; }
     .level { display: flex; align-items: center; gap: 20px; padding: 24px 28px; background: white; border-radius: 14px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); position: relative; z-index: 1; }
     .level:nth-child(2) { margin-left: 40px; margin-top: -4px; z-index: 2; }
@@ -137,9 +137,76 @@
     }
 
     /* Animations */
-    @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-    .animate { animation: fadeUp 0.6s ease forwards; opacity: 0; }
-    .d1 { animation-delay: 0.1s; } .d2 { animation-delay: 0.2s; } .d3 { animation-delay: 0.3s; } .d4 { animation-delay: 0.4s; }
+    .reveal { opacity: 0; transform: translateY(40px); transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .reveal-left { opacity: 0; transform: translateX(-40px); transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+    .reveal-left.visible { opacity: 1; transform: translateX(0); }
+    .reveal-right { opacity: 0; transform: translateX(40px); transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+    .reveal-right.visible { opacity: 1; transform: translateX(0); }
+    .s1 { transition-delay: 0.1s; } .s2 { transition-delay: 0.2s; } .s3 { transition-delay: 0.3s; }
+    .s4 { transition-delay: 0.4s; } .s5 { transition-delay: 0.5s; } .s6 { transition-delay: 0.6s; }
+
+    /* Floating orbs */
+    .hero::before { content: ''; position: absolute; top: -10%; right: -5%; width: 500px; height: 500px; background: radial-gradient(circle, rgba(79,70,229,0.1) 0%, transparent 70%); border-radius: 50%; animation: floatOrb 8s ease-in-out infinite; pointer-events: none; }
+    .hero::after { content: ''; position: absolute; bottom: -20%; left: -10%; width: 400px; height: 400px; background: radial-gradient(circle, rgba(124,58,237,0.07) 0%, transparent 70%); border-radius: 50%; animation: floatOrb 10s ease-in-out infinite reverse; pointer-events: none; }
+    @keyframes floatOrb { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(20px, -20px); } }
+
+    /* Hero badge pulse */
+    .hero-badge .pulse { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #22c55e; animation: pulse 2s infinite; }
+    @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(1.5); } }
+
+    /* Gradient text */
+    .hero h1 em { background: linear-gradient(135deg, var(--indigo), var(--purple)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+
+    /* Hero card 3D tilt */
+    .hero-card { transform: rotateY(-2deg) rotateX(2deg); transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
+    .hero-card:hover { transform: rotateY(0) rotateX(0); }
+    .hero-visual { perspective: 1000px; }
+
+    /* Animated progress bar */
+    .hero-card .progress-fill { width: 0%; transition: width 1.5s cubic-bezier(0.16, 1, 0.3, 1) 0.8s; }
+    .hero-card.anim .progress-fill { width: 65%; }
+
+    /* Staggered objectives */
+    .obj-row { opacity: 0; transform: translateX(-10px); transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
+    .hero-card.anim .obj-row { opacity: 1; transform: translateX(0); }
+    .hero-card.anim .obj-row:nth-child(1) { transition-delay: 1s; }
+    .hero-card.anim .obj-row:nth-child(2) { transition-delay: 1.2s; }
+    .hero-card.anim .obj-row:nth-child(3) { transition-delay: 1.4s; }
+    .hero-card.anim .obj-row:nth-child(4) { transition-delay: 1.6s; }
+
+    /* Level hover */
+    .level { transition: transform 0.3s, box-shadow 0.3s; }
+    .level:hover { transform: translateX(8px); box-shadow: 0 8px 30px rgba(0,0,0,0.1); }
+    .level:hover .level-icon { transform: scale(1.1); }
+    .level-icon { transition: transform 0.3s; }
+
+    /* Animated connector lines */
+    .level-connector .line { width: 100%; height: 0%; background: linear-gradient(to bottom, var(--indigo), var(--blue)); border-radius: 1px; transition: height 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+    .level-connector.visible .line { height: 100%; }
+    .level-connector { overflow: hidden; }
+
+    /* Feature card hover */
+    .feature-card { transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); cursor: default; }
+    .feature-card:hover { box-shadow: 0 16px 40px rgba(0,0,0,0.1); transform: translateY(-6px); border-color: transparent; }
+    .feature-card:hover .feature-icon { transform: scale(1.15) rotate(-5deg); }
+    .feature-icon { transition: transform 0.3s; }
+
+    /* M360 item hover */
+    .m360-item { transition: all 0.3s; cursor: default; }
+    .m360-item:hover { background: rgba(255,255,255,0.1); transform: translateX(6px); border-color: rgba(255,255,255,0.12); }
+
+    /* Nav scroll effect */
+    nav { transition: all 0.3s; }
+    nav.scrolled { box-shadow: 0 4px 20px rgba(0,0,0,0.06); }
+
+    /* M360 bg orb */
+    .m360 { overflow: hidden; }
+    .m360::before { content: ''; position: absolute; top: -50%; right: -20%; width: 600px; height: 600px; background: radial-gradient(circle, rgba(79,70,229,0.15) 0%, transparent 70%); border-radius: 50%; pointer-events: none; }
+
+    /* CTA bg glow */
+    .cta-section { position: relative; }
+    .cta-section::before { content: ''; position: absolute; top: 50%; left: 50%; width: 400px; height: 400px; background: radial-gradient(circle, rgba(79,70,229,0.06) 0%, transparent 70%); border-radius: 50%; transform: translate(-50%, -50%); pointer-events: none; }
   </style>
 </head>
 <body>
@@ -162,10 +229,10 @@
     <div class="container">
       <div class="hero-grid">
         <div class="animate">
-          <div class="hero-badge">Gratuito — empezá ahora</div>
-          <h1>Tu equipo sabe qué hacer.<br/><em>Pero no lo ejecuta.</em></h1>
-          <p class="subtitle">Flowdesk360 convierte tu estrategia en acción diaria. Organizá proyectos, objetivos y tareas con responsables — simple, visual y ejecutable.</p>
-          <div class="cta-row">
+          <div class="hero-badge reveal visible"><span class="pulse"></span> Gratuito — empezá ahora</div>
+          <h1 class="reveal visible s1">Tu equipo sabe qué hacer.<br/><em>Pero no lo ejecuta.</em></h1>
+          <p class="subtitle reveal visible s2">Flowdesk360 convierte tu estrategia en acción diaria. Organizá proyectos, objetivos y tareas con responsables — simple, visual y ejecutable.</p>
+          <div class="cta-row reveal visible s3">
             <a href="flowdesk-v2.html" class="btn-primary">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
               Empezar gratis
@@ -173,8 +240,8 @@
             <a href="#estructura" class="btn-secondary">Ver cómo funciona</a>
           </div>
         </div>
-        <div class="hero-visual animate d2">
-          <div class="hero-card">
+        <div class="hero-visual reveal-right visible s2">
+          <div class="hero-card" id="heroCard">
             <div class="project-header">
               <h3>Expansión Zona Norte</h3>
               <div class="progress-bar"><div class="progress-fill"></div></div>
@@ -209,11 +276,11 @@
   <!-- STRUCTURE -->
   <section class="structure" id="estructura">
     <div class="container">
-      <div class="section-label">Cómo funciona</div>
-      <h2>Tres niveles. Una ejecución clara.</h2>
-      <p class="section-sub">Organizá todo el trabajo de tu equipo en una estructura simple que conecta lo que querés lograr con lo que se hace cada día.</p>
+      <div class="section-label reveal">Cómo funciona</div>
+      <h2 class="section-title reveal s1">Tres niveles. Una ejecución clara.</h2>
+      <p class="section-sub reveal s2">Organizá todo el trabajo de tu equipo en una estructura simple que conecta lo que querés lograr con lo que se hace cada día.</p>
       <div class="levels">
-        <div class="level animate">
+        <div class="level reveal s1">
           <div class="level-icon indigo">
             <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
           </div>
@@ -222,8 +289,8 @@
             <p>Lo que querés lograr — una prioridad, una iniciativa, un cambio importante.</p>
           </div>
         </div>
-        <div class="level-connector"></div>
-        <div class="level animate d1">
+        <div class="level-connector" id="conn1"><div class="line"></div></div>
+        <div class="level reveal s2">
           <div class="level-icon blue">
             <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
           </div>
@@ -232,8 +299,8 @@
             <p>Los pasos concretos para lograrlo — cada uno con KPI, fecha y responsable.</p>
           </div>
         </div>
-        <div class="level-connector" style="margin-left:70px"></div>
-        <div class="level animate d2">
+        <div class="level-connector" id="conn2" style="margin-left:70px"><div class="line"></div></div>
+        <div class="level reveal s3">
           <div class="level-icon green">
             <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
           </div>
@@ -249,45 +316,45 @@
   <!-- FEATURES -->
   <section class="features" id="funciones">
     <div class="container">
-      <div class="section-label">Funciones</div>
-      <h2>Todo lo que necesitás para ejecutar</h2>
+      <div class="section-label reveal">Funciones</div>
+      <h2 class="section-title reveal s1">Todo lo que necesitás para ejecutar</h2>
       <div class="features-grid">
-        <div class="feature-card">
+        <div class="feature-card reveal s1">
           <div class="feature-icon" style="background:rgba(79,70,229,0.1)">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#4f46e5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg>
           </div>
           <h3>KPIs por objetivo</h3>
           <p>Cada objetivo puede tener un indicador con meta y valor actual. Sabé de un vistazo si estás llegando.</p>
         </div>
-        <div class="feature-card">
+        <div class="feature-card reveal s2">
           <div class="feature-icon" style="background:rgba(245,158,11,0.1)">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
           </div>
           <h3>Alertas automáticas</h3>
           <p>Tareas vencidas o que cambian de estado muchas veces se señalan solas. El problema es del proceso, no de la persona.</p>
         </div>
-        <div class="feature-card">
+        <div class="feature-card reveal s3">
           <div class="feature-icon" style="background:rgba(34,197,94,0.1)">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
           </div>
           <h3>Equipo y clientes</h3>
           <p>Invitá a tu equipo y a tus clientes. Cada uno ve lo que le corresponde con los permisos adecuados.</p>
         </div>
-        <div class="feature-card">
+        <div class="feature-card reveal s4">
           <div class="feature-icon" style="background:rgba(59,130,246,0.1)">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
           </div>
           <h3>Impacto económico</h3>
           <p>Etiquetá cada proyecto por su aporte a la rentabilidad. Priorizá lo que mueve la aguja.</p>
         </div>
-        <div class="feature-card">
+        <div class="feature-card reveal s5">
           <div class="feature-icon" style="background:rgba(168,85,247,0.1)">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#a855f7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
           </div>
           <h3>Reportes descargables</h3>
           <p>Tu cliente descarga un reporte visual del avance del proyecto con un click. Sin pedirte nada.</p>
         </div>
-        <div class="feature-card">
+        <div class="feature-card reveal s6">
           <div class="feature-icon" style="background:rgba(236,72,153,0.1)">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ec4899" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
           </div>
@@ -310,31 +377,31 @@
           <a href="#" class="btn-primary" style="background: var(--indigo-light);">Conocer el método M360</a>
         </div>
         <div class="m360-items">
-          <div class="m360-item">
+          <div class="m360-item reveal-right s1">
             <div class="icon" style="background:rgba(249,115,22,0.15)">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f97316" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
             </div>
             <span>Dirección por reuniones — estratégica, táctica, operativa</span>
           </div>
-          <div class="m360-item">
+          <div class="m360-item reveal-right s2">
             <div class="icon" style="background:rgba(59,130,246,0.15)">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
             </div>
             <span>Gestión del tiempo del gerente</span>
           </div>
-          <div class="m360-item">
+          <div class="m360-item reveal-right s3">
             <div class="icon" style="background:rgba(239,68,68,0.15)">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/></svg>
             </div>
             <span>Gestión de incompetencias — errores de proceso, no de personas</span>
           </div>
-          <div class="m360-item">
+          <div class="m360-item reveal-right s4">
             <div class="icon" style="background:rgba(34,197,94,0.15)">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
             </div>
             <span>Enfoque en rentabilidad — cada decisión aporta al resultado</span>
           </div>
-          <div class="m360-item">
+          <div class="m360-item reveal-right s5">
             <div class="icon" style="background:rgba(168,85,247,0.15)">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#a855f7" stroke-width="2"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg>
             </div>
@@ -348,9 +415,9 @@
   <!-- CTA -->
   <section class="cta-section">
     <div class="container">
-      <h2>Empezá a ejecutar hoy</h2>
-      <p>Creá tu cuenta gratis y organizá el trabajo de tu equipo en minutos.</p>
-      <div class="cta-row">
+      <h2 class="reveal">Empezá a ejecutar hoy</h2>
+      <p class="reveal s1">Creá tu cuenta gratis y organizá el trabajo de tu equipo en minutos.</p>
+      <div class="cta-row reveal s2">
         <a href="flowdesk-v2.html" class="btn-primary">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
           Empezar gratis
@@ -367,21 +434,40 @@
   </footer>
 
   <script>
+    // Nav scroll effect
+    const nav = document.querySelector('nav');
+    window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 40));
+
     // Smooth scroll
     document.querySelectorAll('a[href^="#"]').forEach(a => {
       a.addEventListener('click', e => {
         e.preventDefault();
-        const target = document.querySelector(a.getAttribute('href'));
-        if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        const t = document.querySelector(a.getAttribute('href'));
+        if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' });
       });
     });
-    // Animate on scroll
-    const observer = new IntersectionObserver((entries) => {
+
+    // Reveal on scroll
+    const revealObs = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
-        if (entry.isIntersecting) entry.target.classList.add('animate');
+        if (entry.isIntersecting) entry.target.classList.add('visible');
       });
-    }, { threshold: 0.1 });
-    document.querySelectorAll('.level, .feature-card, .m360-item').forEach(el => observer.observe(el));
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+    document.querySelectorAll('.reveal, .reveal-left, .reveal-right').forEach(el => {
+      if (!el.closest('.hero')) revealObs.observe(el);
+    });
+
+    // Connector line animation
+    const connObs = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) entry.target.classList.add('visible');
+      });
+    }, { threshold: 0.5 });
+    document.querySelectorAll('.level-connector').forEach(el => connObs.observe(el));
+
+    // Hero card entrance
+    setTimeout(() => document.getElementById('heroCard')?.classList.add('anim'), 400);
   </script>
 </body>
 </html>
